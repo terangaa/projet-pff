@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier un produit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Modifier le produit</h1>
+
+    <form th:action="@{/produits/modifier/{id}(id=${produit.id})}" th:object="${produit}" method="post">
+        <div class="mb-3">
+            <label for="nom" class="form-label">Nom :</label>
+            <input type="text" id="nom" th:field="*{nom}" class="form-control" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="prix" class="form-label">Prix :</label>
+            <input type="number" id="prix" th:field="*{prix}" step="0.01" class="form-control" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="producteur" class="form-label">Producteur :</label>
+            <select id="producteur" th:field="*{producteur.id}" class="form-select" required>
+                <option th:each="prod : ${producteurs}" th:value="${prod.id}" th:text="${prod.nom}"
+                        th:selected="${prod.id} == ${produit.producteur.id}"></option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <a th:href="@{/produits}" class="btn btn-secondary ms-2">Retour à la liste</a>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

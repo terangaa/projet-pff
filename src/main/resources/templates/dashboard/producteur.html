@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Producteurs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="fragments/navbar :: *"></div>
+
+<div class="container mt-4">
+    <h1>Liste des Producteurs</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr><th>ID</th><th>Nom</th><th>Email</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${producteurs}">
+            <td th:text="${p.id}">1</td>
+            <td th:text="${p.nom}">Ali</td>
+            <td th:text="${p.email}">ali@mail.com</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
