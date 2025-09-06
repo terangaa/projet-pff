@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Capteurs</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Chart.js et WebSocket -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+    <style>
+        body { background-color: #f0f2f5; }
+        .card-capteur { transition: transform 0.2s; }
+        .card-capteur:hover { transform: scale(1.02); }
+        .alerte-badge { font-size: 1.1rem; font-weight: bold; padding: 0.5em 0.8em; }
+        .alert-red { animation: blink 1s infinite; }
+        @keyframes blink { 0%,50%,100% { opacity:1; } 25%,75% { opacity:0.3; } }
+        canvas { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .alerte-explication { font-size: 0.9rem; font-weight: 500; color: #d9534f; margin-top: 0.3rem; }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center">Dashboard Capteurs Simulés</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-2 g-4" id="capteurs-container">
+        <div class="col" th:each="c : ${capteurs}" th:id="'capteur-' + ${c.id}">
+            <div class="card card-capteur shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${c.reference}">CAP-001</h5>
+                    <p class="card-text mb-1"><strong>Type :</strong> <span th:text="${c.type}">TEMP</span></p>
+                    <p class="card-text mb-1"><strong>Localisation :</strong> <span class="capteur-localisation" th:text="${c.localisation}">Région 1</span></p>
+
+                    <span class="badge alerte-badge bg-success alerte">🟢</span>
+                    <p class="mt-1 small text-muted ml-message">Dernier message ML</p>
+                    <p class="alerte-explication"></p>
+
+                    <canvas class="chart-temp" height="80"></canvas>
+                    <canvas class="chart-humid mt-2" height="80"></canvas>
+                    <canvas class="chart-lumi mt-2" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.card-capteur');
+        const charts = {};
+
+        // Initialiser les charts
+        cards.forEach(card => {
+            const capteurId = card.getAttribute('id').replace('capteur-', '');
+            const tempCtx = card.querySelector('.chart-temp').getContext('2d');
+            const humidCtx = card.querySelector('.chart-humid').getContext('2d');
+            const lumiCtx = card.querySelector('.chart-lumi').getContext('2d');
+
+            charts[capteurId] = {
+                temp: new Chart(tempCtx, { type: 'line', data: { labels: [], datasets: [{ label: 'Temp °C', data: [], borderColor: 'red', tension: 0.4 }] }, options: { responsive: true, plugins: { legend: { display: false } } } }),
+                humid: new Chart(humidCtx, { type: 'line', data: { labels: [], datasets: [{ label: 'Humidité %', data: [], borderColor: 'blue', tension: 0.4 }] }, options: { responsive: true, plugins: { legend: { display: false } } } }),
+                lumi: new Chart(lumiCtx, { type: 'line', data: { labels: [], datasets: [{ label: 'Luminosité lux', data: [], borderColor: 'orange', tension: 0.4 }] }, options: { responsive: true, plugins: { legend: { display: false } } } })
+            };
+        });
+
+        // Connexion WebSocket
+        const socket = new SockJS('/ws');
+        const stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, frame => {
+            console.log('Connecté : ' + frame);
+
+            stompClient.subscribe('/topic/alertes', message => {
+                const payload = JSON.parse(message.body);
+                const time = new Date().toLocaleTimeString();
+                const card = document.querySelector('#capteur-' + payload.id);
+                if(!card) return;
+
+                const badge = card.querySelector('.alerte');
+                const mlMsg = card.querySelector('.ml-message');
+                const localisationSpan = card.querySelector('.capteur-localisation');
+                const explication = card.querySelector('.alerte-explication');
+
+                // Mise à jour localisation
+                if(payload.localisation) localisationSpan.innerText = payload.localisation;
+
+                // Badge et message ML
+                badge.innerText = payload.alerte;
+                mlMsg.innerText = payload.message || `Temp: ${payload.temperature}°C, Humid: ${payload.humidite}%`;
+
+                // Couleur et explication badge
+                badge.classList.remove('bg-success','bg-warning','bg-danger','alert-red','text-dark');
+                if(payload.alerte === "🟢") {
+                    badge.classList.add('bg-success');
+                    explication.innerText = "Tout va bien, pas d'action nécessaire.";
+                } else if(payload.alerte === "🟡") {
+                    badge.classList.add('bg-warning','text-dark');
+                    explication.innerText = payload.message || "Surveillance recommandée.";
+                } else if(payload.alerte === "🔴") {
+                    badge.classList.add('bg-danger','alert-red');
+                    explication.innerText = payload.message || "Irrigation nécessaire pour maintenir la santé des plantes.";
+                }
+
+                // Mise à jour charts
+                const capteurCharts = charts[payload.id];
+                if(!capteurCharts) return;
+
+                const tempVal = payload.temperature.toFixed(1);
+                const humidVal = payload.humidite.toFixed(1);
+                const lumiVal = payload.luminosite.toFixed(1);
+
+                ['temp','humid','lumi'].forEach(key => {
+                    const chart = capteurCharts[key];
+                    const val = key === 'temp' ? tempVal : key === 'humid' ? humidVal : lumiVal;
+                    chart.data.labels.push(time);
+                    chart.data.datasets[0].data.push(val);
+                    if(chart.data.labels.length > 10) {
+                        chart.data.labels.shift();
+                        chart.data.datasets[0].data.shift();
+                    }
+                    chart.update();
+                });
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

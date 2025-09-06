@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="head :: head"></head>
+<body class="container mt-4">
+
+<div class="mb-3">
+    <a th:href="@{/producteurs}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Retour à la liste
+    </a>
+</div>
+
+<h1 class="mb-4">Créer un nouveau producteur</h1>
+
+<form th:action="@{/producteurs/creer}" th:object="${producteur}" method="post">
+    <div class="mb-3">
+        <label for="nom" class="form-label">Nom</label>
+        <input type="text" th:field="*{nom}" class="form-control" id="nom" required>
+    </div>
+    <div class="mb-3">
+        <label for="prenom" class="form-label">Prénom</label>
+        <input type="text" th:field="*{prenom}" class="form-control" id="prenom" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" th:field="*{email}" class="form-control" id="email" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        <i class="bi bi-plus-lg"></i> Créer
+    </button>
+    <a th:href="@{/producteurs}" class="btn btn-secondary">Annuler</a>
+</form>
+
+<footer th:replace="footer :: footer"></footer>
+</body>
+</html>

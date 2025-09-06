@@ -1,0 +1,30 @@
+<!-- src/main/resources/templates/creer-utilisateur.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="head :: head"></head>
+<body class="container mt-4">
+
+<h1 class="mb-4">Créer un nouvel utilisateur</h1>
+
+<form th:action="@{/utilisateurs/creer}" th:object="${utilisateur}" method="post">
+    <div class="mb-3">
+        <label for="nom" class="form-label">Nom</label>
+        <input type="text" th:field="*{nom}" class="form-control" id="nom" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" th:field="*{email}" class="form-control" id="email" required>
+    </div>
+    <div class="mb-3">
+        <label for="motDePasse" class="form-label">Mot de passe</label>
+        <input type="password" th:field="*{motDePasse}" class="form-control" id="motDePasse" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">Créer</button>
+    <a th:href="@{/templates/utilisateurs}" class="btn btn-secondary">Annuler</a>
+</form>
+
+<footer th:replace="footer :: footer"></footer>
+
+</body>
+</html>

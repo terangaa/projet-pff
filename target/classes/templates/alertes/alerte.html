@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Alertes</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: "Segoe UI", sans-serif;
+        }
+        .navbar { background-color: #1f1f1f !important; }
+        .navbar-brand { font-weight: bold; }
+        .card {
+            background-color: #1e1e2f;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            color: #e0e0e0;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #2a2a40, #1e1e2f);
+            border-bottom: none;
+        }
+        .card-title { color: #fff; }
+        #alertes-messages {
+            background: #0f0f1a;
+            padding: 1rem;
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+        }
+        .message {
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+        .message.show { opacity: 1; transform: translateY(0); }
+        .alerte-vert { color: #00ff88; border-left: 4px solid #00ff88; }
+        .alerte-jaune { color: #ffd700; border-left: 4px solid #ffd700; }
+        .alerte-rouge { color: #ff5555; border-left: 4px solid #ff5555; font-weight: bold; }
+        .card-alert {
+            transition: transform 0.2s, box-shadow 0.2s;
+            background-color: #2a2a40;
+        }
+        .card-alert:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.7);
+        }
+        .badge { font-size: 1rem; padding: 0.6em 0.9em; }
+        canvas { background: #121212; border-radius: 8px; padding: 4px; }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand text-success" href="#">🌱 Projet Agricole ML</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link text-light" th:href="@{/}">Accueil</a></li>
+                <li class="nav-item"><a class="nav-link text-light" th:href="@{/dashboard}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link active text-success" th:href="@{/alertes}">Alertes</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenu -->
+<div class="container my-5">
+    <div class="card">
+        <div class="card-header text-center py-3">
+            <h2 class="mb-0 text-success">📊 Dashboard des Alertes</h2>
+        </div>
+        <div class="card-body p-4">
+
+            <!-- Flux en direct -->
+            <h5 class="mb-3 text-light">📡 Flux en direct</h5>
+            <div id="alertes-messages"></div>
+
+            <!-- Alertes -->
+            <div class="row row-cols-1 row-cols-md-2 g-4" id="alertes-container">
+                <div class="col" th:each="a : ${alertes}" th:id="'alerte-' + ${a.id}">
+                    <div class="card card-alert shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${a.reference}">ALERTE-001</h5>
+                            <p class="small text-muted" th:text="${a.message}">Dernier message ML</p>
+
+                            <span class="badge rounded-pill"
+                                  th:classappend="${a.alerte=='🟢'} ? ' bg-success' : (${a.alerte=='🟡'} ? ' bg-warning text-dark' : ' bg-danger')"
+                                  th:text="${a.alerte}">🟢</span>
+
+                            <canvas class="chart-temp mt-3" height="80"></canvas>
+                            <canvas class="chart-humid mt-2" height="80"></canvas>
+                            <canvas class="chart-lumi mt-2" height="80"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script>
+    const charts = {};
+    let stompClient = null;
+
+    function initCharts() {
+        document.querySelectorAll('.card-alert').forEach(card => {
+            const id = card.id.replace('alerte-', '');
+            charts[id] = {
+                temp: new Chart(card.querySelector('.chart-temp').getContext('2d'), {
+                    type:'line', data:{ labels:[], datasets:[{ label:'Temp °C', data:[], borderColor:'#ff5555', tension:0.4 }] },
+                    options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#e0e0e0' } }}, scales:{ x:{ ticks:{color:'#aaa'}}, y:{ ticks:{color:'#aaa'}}}}}),
+                humid: new Chart(card.querySelector('.chart-humid').getContext('2d'), {
+                    type:'line', data:{ labels:[], datasets:[{ label:'Humidité %', data:[], borderColor:'#00bfff', tension:0.4 }] },
+                    options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#e0e0e0' } }}, scales:{ x:{ ticks:{color:'#aaa'}}, y:{ ticks:{color:'#aaa'}}}}}),
+                lumi: new Chart(card.querySelector('.chart-lumi').getContext('2d'), {
+                    type:'line', data:{ labels:[], datasets:[{ label:'Luminosité lux', data:[], borderColor:'#ffaa00', tension:0.4 }] },
+                    options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#e0e0e0' } }}, scales:{ x:{ ticks:{color:'#aaa'}}, y:{ ticks:{color:'#aaa'}}}}})
+            };
+        });
+    }
+
+    function initWebSocket() {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, frame => {
+            console.log("Connecté STOMP version:", frame.headers['version']);
+            stompClient.subscribe('/topic/alertes', msg => {
+                const messagesDiv = document.getElementById('alertes-messages');
+                const text = msg.body;
+
+                let alertClass = '', emoji='❓';
+                if(text.includes('🟢')) { alertClass='alerte-vert'; emoji='🟢'; }
+                else if(text.includes('🟡')) { alertClass='alerte-jaune'; emoji='🟡'; }
+                else if(text.includes('🔴')) { alertClass='alerte-rouge'; emoji='🔴'; }
+
+                const div = document.createElement('div');
+                div.classList.add('message', alertClass);
+                div.innerHTML = `<span class="emoji">${emoji}</span> ${text}`;
+                messagesDiv.prepend(div);
+                requestAnimationFrame(()=> div.classList.add('show'));
+
+                setTimeout(()=> div.remove(), 15000);
+                while(messagesDiv.children.length > 50) messagesDiv.removeChild(messagesDiv.lastChild);
+
+                const idMatch = text.match(/ALERTE-(\d+)/);
+                if(idMatch){
+                    const card = document.getElementById('alerte-' + idMatch[1]);
+                    if(card){
+                        const badge = card.querySelector('.badge');
+                        if(alertClass==='alerte-vert') badge.className='badge rounded-pill bg-success';
+                        else if(alertClass==='alerte-jaune') badge.className='badge rounded-pill bg-warning text-dark';
+                        else badge.className='badge rounded-pill bg-danger';
+                        badge.textContent = emoji;
+                    }
+                }
+            });
+        }, error => {
+            console.error("Erreur de connexion STOMP :", error);
+            setTimeout(initWebSocket, 5000);
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        initCharts();
+        initWebSocket();
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
