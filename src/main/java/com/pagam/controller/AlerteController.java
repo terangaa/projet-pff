@@ -17,7 +17,7 @@ public class AlerteController {
         this.alerteService = alerteService;
     }
 
-    @GetMapping("/alertese")
+    @GetMapping("/alertes")
     public String listeAlertes(Model model) {
         List<Alerte> alertes = alerteService.toutesLesAlertes();
         model.addAttribute("alertes", alertes);

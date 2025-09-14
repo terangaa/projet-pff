@@ -7,59 +7,82 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Hover léger sur les lignes du tableau */
+        .table-hover tbody tr:hover {
+            background-color: #e2f0ff;
+            transition: background-color 0.3s;
+        }
+
+        /* Boutons actions */
+        .btn-action {
+            min-width: 90px;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-light">
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Liste des Capteurs</h1>
-        <div>
-            <a class="btn btn-secondary me-2" th:href="@{/}">
-                <i class="bi bi-house"></i> Accueil
+
+    <!-- Header avec titre et boutons -->
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+        <h1 class="mb-2">📡 Liste des Capteurs</h1>
+        <div class="d-flex gap-2 mb-2">
+            <a class="btn btn-secondary btn-lg d-flex align-items-center" th:href="@{/dashboard}">
+                <i class="bi bi-house fs-5 me-1"></i> Accueil
             </a>
-            <a class="btn btn-primary" th:href="@{/capteurs/ajouter}">
-                <i class="bi bi-plus-circle"></i> Ajouter un capteur
+            <a class="btn btn-primary btn-lg d-flex align-items-center" th:href="@{/capteurs/ajouter}">
+                <i class="bi bi-plus-circle fs-5 me-1"></i> Ajouter un capteur
             </a>
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle text-center">
-            <thead class="table-light">
-            <tr>
-                <th>Nom</th>
-                <th>Référence</th>
-                <th>Type</th>
-                <th>Localisation</th>
-                <th>Moyenne</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="capteur : ${capteurs}">
-                <td>
-                    <i th:class="${capteur.iconClass} + ' me-1'"></i>
-                    <span th:text="${capteur.nom}"></span>
-                </td>
-                <td th:text="${capteur.reference}"></td>
-                <td th:text="${capteur.type}"></td>
-                <td th:text="${capteur.localisation}"></td>
-                <td th:text="${#numbers.formatDecimal(capteur.moyenne, 1, 1, 'POINT')}"></td>
-                <td>
-                    <a th:href="@{/capteurs/modifier/{id}(id=${capteur.id})}" class="btn btn-warning btn-sm me-1">
-                        <i class="bi bi-pencil-square"></i> Modifier
-                    </a>
-                    <a th:href="@{/capteurs/detail/{id}(id=${capteur.id})}" class="btn btn-info btn-sm me-1">
-                        <i class="bi bi-info-circle"></i> Détails
-                    </a>
-                    <a th:href="@{/capteurs/supprimer/{id}(id=${capteur.id})}" class="btn btn-danger btn-sm"
-                       onclick="return confirm('Voulez-vous vraiment supprimer ce capteur ?');">
-                        <i class="bi bi-trash"></i> Supprimer
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <!-- Tableau dans une card -->
+    <div class="card shadow-sm rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 text-center">
+                    <thead class="table-primary">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Référence</th>
+                        <th>Type</th>
+                        <th>Localisation</th>
+                        <th>Moyenne</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="capteur : ${capteurs}">
+                        <td>
+                            <i th:class="${capteur.iconClass} + ' me-1'"></i>
+                            <span th:text="${capteur.nom}"></span>
+                        </td>
+                        <td th:text="${capteur.reference}"></td>
+                        <td th:text="${capteur.type}"></td>
+                        <td th:text="${capteur.localisation}"></td>
+                        <td th:text="${#numbers.formatDecimal(capteur.moyenne, 1, 1, 'POINT')}"></td>
+                        <td class="d-flex justify-content-center gap-1 flex-wrap">
+                            <a th:href="@{/capteurs/modifier/{id}(id=${capteur.id})}"
+                               class="btn btn-warning btn-action btn-md d-flex align-items-center mb-1">
+                                <i class="bi bi-pencil-square fs-5 me-1"></i> Modifier
+                            </a>
+                            <a th:href="@{/capteurs/detail/{id}(id=${capteur.id})}"
+                               class="btn btn-info btn-action btn-md d-flex align-items-center mb-1">
+                                <i class="bi bi-info-circle fs-5 me-1"></i> Détails
+                            </a>
+                            <a th:href="@{/capteurs/supprimer/{id}(id=${capteur.id})}"
+                               class="btn btn-danger btn-action btn-md d-flex align-items-center mb-1"
+                               onclick="return confirm('Voulez-vous vraiment supprimer ce capteur ?');">
+                                <i class="bi bi-trash fs-5 me-1"></i> Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
 </div>
 
 <!-- Bootstrap JS -->

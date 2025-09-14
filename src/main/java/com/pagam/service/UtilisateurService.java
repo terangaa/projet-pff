@@ -29,4 +29,14 @@ public class UtilisateurService {
         public void deleteUtilisateur(Long id) {
             utilisateurRepository.deleteById(id);
         }
+
+    public List<Utilisateur> findAll() {
+        return utilisateurRepository.findAll();
     }
+
+    public Utilisateur getByEmail(String email) {
+        return utilisateurRepository.findByEmail(email)
+                .orElse(null); // retourne null si l'utilisateur n'existe pas
+    }
+
+}

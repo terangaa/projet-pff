@@ -41,4 +41,7 @@ public class AlerteService {
     }
 
 
+    public List<Alerte> getAllAlertes() {
+        return alerteRepository.findAll();
+    }
 }

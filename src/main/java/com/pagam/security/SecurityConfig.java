@@ -21,41 +21,66 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // 1️⃣ Désactiver CSRF (utile pour les API REST)
                 .csrf(csrf -> csrf.disable())
+
+                // 2️⃣ Définir les accès publics et sécuriser les autres routes
                 .authorizeHttpRequests(auth -> auth
-                        // Autoriser le front, ressources statiques, H2 console et endpoints publics
+                        // Accès public
                         .requestMatchers(
                                 "/", "/index.html",
-                                "/templates/fragments/**",
-                                "/alertes",
-                                "/utilisateurs/**","/producteurs/**","/produits/**","/commandes/**",
-                                "/favicon.ico","/capteurs/**","/simulations/**",
+                                "/auth/**",
                                 "/css/**", "/js/**", "/images/**",
-                                "/ws/**",
-                                "/api/capteurs/**", "/api/utilisateurs/**",
-                                "/api/auth/**", "/auth/**",
+                                "/templates/fragments/**",
                                 "/h2-console/**",
-                                "/api/alertes/**", "/api/produits/**",
-                                "/api/producteurs/**", "/api/commandes/**"
+                                "/favicon.ico"
                         ).permitAll()
-                        // Tout le reste nécessite authentification
+                        // API sécurisée par JWT
+                        .requestMatchers("/api/**").authenticated()
+                        // Toutes les autres requêtes nécessitent authentification
                         .anyRequest().authenticated()
                 )
-                // Session stateless pour JWT
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Ajouter le filtre JWT avant UsernamePasswordAuthenticationFilter
+
+                // 3️⃣ Gestion de session
+                // Pour les API REST, on utilise STATELESS pour JWT
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+
+                // 4️⃣ Configuration login formulaire (web)
+                .formLogin(form -> form
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .usernameParameter("email")
+                        .passwordParameter("motDePasse")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .failureUrl("/auth/login?error=true")
+                        .permitAll()
+                )
+
+                // 5️⃣ Déconnexion
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/auth/login?logout")
+                        .permitAll()
+                )
+
+                // 6️⃣ Filtre JWT avant UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                // Autoriser H2 console en mode iframe
+
+                // 7️⃣ H2 console : désactiver frame options pour console H2
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
     }
 
+    // 🔑 Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // 🔑 AuthenticationManager pour login formulaire
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

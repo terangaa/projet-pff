@@ -4,5 +4,5 @@ public enum Role {
     ADMIN,
     AGRICULTEUR,
     ACHETEUR,
-    DECIDEUR
+    VISITEUR, DECIDEUR
 }

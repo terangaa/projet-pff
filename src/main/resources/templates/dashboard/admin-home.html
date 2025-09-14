@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Animation légère des cartes */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease-in-out;
+        }
+        .badge-kpi {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">📊 Dashboard Admin</a>
+        <div class="d-flex align-items-center gap-3">
+            <!-- Dark mode toggle -->
+            <button id="darkModeToggle" class="btn btn-outline-secondary btn-sm">🌙</button>
+
+            <!-- Menu bouton -->
+            <div class="dropdown">
+                <button class="btn btn-light btn-sm" type="button" id="menuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuBtn">
+                    <li><a class="dropdown-item" href="/dashboard"><i class="bi bi-house-door me-2"></i>Accueil</a></li>
+                    <li><a class="dropdown-item" href="/utilisateurs"><i class="bi bi-people me-2"></i>Utilisateurs</a></li>
+                    <li><a class="dropdown-item" href="/capteurs"><i class="bi bi-satellite me-2"></i>Capteurs</a></li>
+                    <li><a class="dropdown-item" href="/produits"><i class="bi bi-box-seam me-2"></i>Produits</a></li>
+                    <li><a class="dropdown-item" href="/commandes"><i class="bi bi-cart me-2"></i>Commandes</a></li>
+                    <li><a class="dropdown-item" href="/alertes"><i class="bi bi-exclamation-triangle me-2"></i>Alertes</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form th:action="@{/auth/logout}" method="post">
+                            <button class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Déconnexion</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenu principal -->
+<main class="container mt-4">
+    <!-- KPI Cards -->
+    <div id="kpiCards" class="row g-4"></div>
+
+    <!-- Graphiques -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Statistiques Globales</h5>
+            <canvas id="mainChart" height="150"></canvas>
+        </div>
+    </div>
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // 🌙 Dark Mode
+    function toggleDarkMode(btn) {
+        const body = document.body;
+        body.classList.toggle("bg-dark");
+        body.classList.toggle("text-light");
+        localStorage.setItem("theme", body.classList.contains("bg-dark") ? "dark" : "light");
+        if(btn) btn.textContent = body.classList.contains("bg-dark") ? "☀️" : "🌙";
+    }
+
+    const toggleBtn = document.getElementById("darkModeToggle");
+    toggleBtn.addEventListener("click", () => toggleDarkMode(toggleBtn));
+
+    if(localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("bg-dark", "text-light");
+        toggleBtn.textContent = "☀️";
+    }
+
+    // 📊 KPI Cards cliquables
+    const kpiData = [
+        { title: 'Utilisateurs', value: 120, color: 'primary', icon: 'people', link: '/utilisateurs' },
+        { title: 'Capteurs', value: 45, color: 'success', icon: 'satellite', link: '/capteurs' },
+        { title: 'Produits', value: 230, color: 'warning', icon: 'box-seam', link: '/produits' },
+        { title: 'Commandes', value: 85, color: 'danger', icon: 'cart', link: '/commandes' },
+        { title: 'Alertes', value: 12, color: 'secondary', icon: 'exclamation-triangle', link: '/alertes' }
+    ];
+
+    const kpiCards = document.getElementById("kpiCards");
+    kpiData.forEach(kpi => {
+        const col = document.createElement("div");
+        col.className = "col-12 col-md-6 col-lg-4";
+
+        // Carte cliquable
+        col.innerHTML = `
+            <a href="${kpi.link}" class="text-decoration-none">
+                <div class="card card-hover shadow-sm text-center border-${kpi.color}">
+                    <div class="card-body">
+                        <i class="bi bi-${kpi.icon} display-4 text-${kpi.color} mb-2"></i>
+                        <h5 class="card-title">${kpi.title}</h5>
+                        <span class="badge bg-${kpi.color} badge-kpi">${kpi.value}</span>
+                    </div>
+                </div>
+            </a>
+        `;
+        kpiCards.appendChild(col);
+    });
+
+    // 📈 Chart
+    const ctx = document.getElementById("mainChart");
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: kpiData.map(k => k.title),
+            datasets: [{
+                label: "Valeurs",
+                data: kpiData.map(k => k.value),
+                backgroundColor: kpiData.map(k => `var(--bs-${k.color})`),
+                borderRadius: 5
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            responsive: true,
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
+</body>
+</html>

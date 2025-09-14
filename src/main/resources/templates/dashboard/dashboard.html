@@ -1,152 +1,105 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenue🌱 PAGAM - Plateforme Agricole © 2025</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil Administrateur</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body { min-height:100vh; transition: background-color 0.3s, color 0.3s; }
-        .navbar { transition: background-color 0.3s; }
-        .card { border-radius:12px; transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s; opacity:0; transform:translateY(20px); }
-        .card.visible { opacity:1; transform:translateY(0); }
-        .card:hover { transform:translateY(-8px); box-shadow:0 12px 25px rgba(0,0,0,0.18); }
-        .icon-circle { width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem; }
-        .badge-counter { font-size:1rem; display:inline-block; }
-        canvas { height:80px !important; margin-top:0.5rem; }
-
-        /* Mode Clair */
-        body.light { background-color:#f4f6f9; color:#212529; }
-        body.light .navbar { background-color:#1e3a8a; }
-        body.light .navbar-brand, body.light .nav-link.active { color:#fff !important; }
-        body.light .card { background-color:#fff; }
-
-        /* Mode Sombre */
-        body.dark { background-color:#121212; color:#e0e0e0; }
-        body.dark .navbar { background-color:#1f1f1f; }
-        body.dark .navbar-brand, body.dark .nav-link.active { color:#00ff88 !important; }
-        body.dark .card { background-color:#1e1e2f; }
-
-        .btn-outline-primary:hover { color:#fff !important; transform:translateY(-2px); }
-        .btn-outline-success:hover { color:#fff !important; transform:translateY(-2px); }
-        .btn-outline-warning:hover { color:#000 !important; transform:translateY(-2px); }
-        .btn-outline-danger:hover { color:#fff !important; transform:translateY(-2px); }
-        .btn-outline-info:hover { color:#000 !important; transform:translateY(-2px); }
+        body {
+            background-color: #f8f9fa;
+        }
+        .card-header h2 {
+            font-weight: bold;
+        }
+        .badge-role {
+            font-size: 0.9rem;
+            padding: 0.5em 0.7em;
+        }
+        .role-icon {
+            margin-right: 0.3rem;
+        }
+        .filter-btns .btn {
+            margin-right: 0.5rem;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
-<body class="light">
+<body>
 
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">🌱 PAGAM Dashboard</a>
-        <button class="btn btn-outline-light me-3" id="toggle-mode"><i class="bi bi-moon-stars-fill"></i></button>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="menu" class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/utilisateurs}"><i class="bi bi-people"></i> Utilisateurs</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/producteurs}"><i class="bi bi-person-badge"></i> Producteurs</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/produits}"><i class="bi bi-box-seam"></i> Produits</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/commandes}"><i class="bi bi-cart4"></i> Commandes</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/capteurs}"><i class="bi bi-cpu"></i> Capteurs</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/alertes}"><i class="bi bi-bell"></i> Alertes</a></li>
-            </ul>
+<div class="container my-5" th:if="${#authentication.principal.role == 'ADMIN'}">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+            <h2 class="mb-0">Liste des Utilisateurs</h2>
+        </div>
+        <div class="card-body">
+            <!-- Boutons de filtrage -->
+            <div class="filter-btns text-center mb-3">
+                <button class="btn btn-outline-primary" onclick="filterRole('ALL')">Tous</button>
+                <button class="btn btn-outline-danger" onclick="filterRole('ADMIN')">Admins</button>
+                <button class="btn btn-outline-success" onclick="filterRole('AGRICULTEUR')">Producteurs</button>
+                <button class="btn btn-outline-primary" onclick="filterRole('ACHETEUR')">Acheteurs</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle" id="usersTable">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="utilisateur : ${utilisateurs}"
+                        th:with="
+                                roleClass = ${utilisateur.role} == 'ADMIN' ? 'badge bg-danger badge-role' :
+                                            ${utilisateur.role} == 'AGRICULTEUR' ? 'badge bg-success badge-role' :
+                                            ${utilisateur.role} == 'ACHETEUR' ? 'badge bg-primary badge-role' :
+                                            'badge bg-secondary badge-role';
+                                roleIcon = ${utilisateur.role} == 'ADMIN' ? 'bi-shield-lock' :
+                                           ${utilisateur.role} == 'AGRICULTEUR' ? 'bi-tree-fill' :
+                                           ${utilisateur.role} == 'ACHETEUR' ? 'bi-cart-fill' :
+                                           'bi-person-fill';
+                            "
+                        th:attr="data-role=${utilisateur.role}">
+                        <td th:text="${utilisateur.nom}">Nom</td>
+                        <td th:text="${utilisateur.email}">Email</td>
+                        <td>
+                                <span th:class="${roleClass}">
+                                    <i th:class="'role-icon bi ' + ${roleIcon}"></i>
+                                    <span th:text="${utilisateur.role}">Role</span>
+                                </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</nav>
+</div>
 
-<div class="container py-5">
-    <h1 class="text-center mb-5 fw-bold">Bienvenue🌱 PAGAM - Plateforme Agricole © 2025</h1>
-    <div class="row g-4" id="dashboard-cards"></div>
+<div class="container my-5" th:if="${#authentication.principal.role != 'ADMIN'}">
+    <div class="alert alert-warning text-center">
+        Vous n'avez pas accès à cette page.
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const toggleBtn = document.getElementById('toggle-mode');
-    toggleBtn.addEventListener('click',()=>{
-        document.body.classList.toggle('light');
-        document.body.classList.toggle('dark');
-        toggleBtn.querySelector('i').className = document.body.classList.contains('dark')?'bi bi-sun-fill':'bi bi-moon-stars-fill';
-    });
-
-    // Données des cartes
-    const cardsData=[
-        {title:'Utilisateurs', icon:'bi-people', count:12, color:'primary', chart:[5,8,10,12,11,13], link:'/utilisateurs'},
-        {title:'Producteurs', icon:'bi-person-badge', count:8, color:'success', chart:[3,4,5,7,8,8], link:'/producteurs'},
-        {title:'Produits', icon:'bi-box-seam', count:20, color:'warning', chart:[10,12,15,18,20,20], link:'/produits'},
-        {title:'Commandes', icon:'bi-cart4', count:15, color:'danger', chart:[2,5,8,12,14,15], link:'/commandes'},
-        {title:'Capteurs', icon:'bi-cpu', count:10, color:'info', chart:[4,6,8,9,10,10], link:'/capteurs'},
-        {title:'Alertes', icon:'bi-bell', count:3, color:'danger', chart:[1,2,1,3,3,3], link:'/alertes'}
-    ];
-
-    const container=document.getElementById('dashboard-cards');
-
-    // Crée les cartes avec animation
-    cardsData.forEach((c,i)=>{
-        container.innerHTML+=`
-    <div class="col-lg-4 col-md-6 col-sm-12">
-        <div class="card shadow-sm h-100 text-center" id="card-${i}">
-            <div class="card-body">
-                <div class="icon-circle bg-${c.color} text-white"><i class="bi ${c.icon}"></i></div>
-                <h5 class="card-title">${c.title} <span class="badge bg-${c.color} badge-counter" id="badge-${i}">0</span></h5>
-                <p class="text-muted">Gérer ${c.title.toLowerCase()}</p>
-                <canvas id="chart-${i}"></canvas>
-                <a href="${c.link}" class="btn btn-outline-${c.color} mt-2">Voir</a>
-            </div>
-        </div>
-    </div>`;
-    });
-
-    // Animate badges
-    function animateBadge(id,finalValue){
-        const badge=document.getElementById(id);
-        let current=0;
-        const step=Math.ceil(finalValue/30);
-        const interval=setInterval(()=>{
-            current+=step;
-            if(current>=finalValue){current=finalValue; clearInterval(interval);}
-            badge.textContent=current;
-        },30);
+    function filterRole(role) {
+        const rows = document.querySelectorAll('#usersTable tbody tr');
+        rows.forEach(row => {
+            const userRole = row.getAttribute('data-role');
+            if(role === 'ALL' || userRole === role) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
     }
-
-    // Observer pour animation entrée
-    const observer=new IntersectionObserver(entries=>{
-        entries.forEach(entry=>{
-            if(entry.isIntersecting){
-                entry.target.classList.add('visible');
-            }
-        });
-    },{threshold:0.3});
-
-    // Générer charts et badges
-    cardsData.forEach((c,i)=>{
-        const card=document.getElementById(`card-${i}`);
-        observer.observe(card);
-
-        const ctx=document.getElementById(`chart-${i}`).getContext('2d');
-        new Chart(ctx,{
-            type:'line',
-            data:{
-                labels:c.chart.map((_,i)=>i+1),
-                datasets:[{
-                    data:c.chart,
-                    borderColor:c.color==='primary'?'#0d6efd':c.color==='success'?'#198754':c.color==='warning'?'#ffc107':'#dc3545',
-                    backgroundColor:'#00000033',
-                    tension:0.3,
-                    fill:true
-                }]
-            },
-            options:{
-                animation:{duration:1500, easing:'easeOutQuart'},
-                plugins:{legend:{display:false}},
-                scales:{y:{display:false},x:{display:false}},
-                elements:{line:{borderWidth:2},point:{radius:3}}
-            }
-        });
-        animateBadge(`badge-${i}`,c.count);
-    });
 </script>
+
 </body>
 </html>

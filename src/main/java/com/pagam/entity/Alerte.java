@@ -26,5 +26,8 @@ public class Alerte {
 
     private double valeur;
 
+    private LocalDateTime dateAlerte;
+
     private LocalDateTime timestamp;
+
 }

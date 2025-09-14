@@ -2,12 +2,20 @@ package com.pagam.controller;
 
 import com.pagam.entity.Produit;
 import com.pagam.entity.Producteur;
+import com.pagam.repository.ProduitRepository;
 import com.pagam.service.ProduitService;
 import com.pagam.service.ProducteurService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Controller
@@ -17,9 +25,12 @@ public class ProduitController {
     private final ProduitService produitService;
     private final ProducteurService producteurService;
 
-    public ProduitController(ProduitService produitService, ProducteurService producteurService) {
+    private final ProduitRepository produitRepository;
+
+    public ProduitController(ProduitService produitService, ProducteurService producteurService, ProduitRepository produitRepository) {
         this.produitService = produitService;
         this.producteurService = producteurService;
+        this.produitRepository = produitRepository;
     }
 
     // 📌 Liste de tous les produits
@@ -57,10 +68,29 @@ public class ProduitController {
 
     // 📌 Enregistrer un nouveau produit
     @PostMapping("/creer")
-    public String creerProduit(@ModelAttribute Produit produit) {
-        produitService.saveProduit(produit);
+    public String creerProduit(@ModelAttribute Produit produit,
+                               @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+
+        if (!imageFile.isEmpty()) {
+            String fileName = imageFile.getOriginalFilename();
+            Path uploadPath = Paths.get("src/main/resources/static/images/produits/");
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            try (InputStream inputStream = imageFile.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            produit.setImage(fileName);
+        }
+
+        produitRepository.save(produit);
         return "redirect:/produits";
     }
+
 
     // 📌 Formulaire de modification
     @GetMapping("/modifier/{id}")

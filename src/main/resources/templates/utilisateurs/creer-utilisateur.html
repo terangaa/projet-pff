@@ -1,30 +1,68 @@
-<!-- src/main/resources/templates/creer-utilisateur.html -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="head :: head"></head>
-<body class="container mt-4">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{head :: head}"></head>
+<body class="bg-light py-4">
 
-<h1 class="mb-4">Créer un nouvel utilisateur</h1>
+<div class="container">
 
-<form th:action="@{/utilisateurs/creer}" th:object="${utilisateur}" method="post">
-    <div class="mb-3">
-        <label for="nom" class="form-label">Nom</label>
-        <input type="text" th:field="*{nom}" class="form-control" id="nom" required>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" th:field="*{email}" class="form-control" id="email" required>
-    </div>
-    <div class="mb-3">
-        <label for="motDePasse" class="form-label">Mot de passe</label>
-        <input type="password" th:field="*{motDePasse}" class="form-control" id="motDePasse" required>
+    <!-- Bouton retour -->
+    <div class="mb-4">
+        <a th:href="@{/utilisateurs}" class="btn btn-outline-secondary shadow-sm">
+            <i class="bi bi-arrow-left"></i> Retour à la liste des utilisateurs
+        </a>
     </div>
 
-    <button type="submit" class="btn btn-success">Créer</button>
-    <a th:href="@{/templates/utilisateurs}" class="btn btn-secondary">Annuler</a>
-</form>
+    <!-- Formulaire de création -->
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-gradient bg-success text-white rounded-top-4">
+            <h4 class="mb-0"><i class="bi bi-plus-circle me-2"></i> Créer un nouvel utilisateur</h4>
+        </div>
+        <div class="card-body p-4">
+            <form th:action="@{/utilisateurs/creer}" th:object="${utilisateur}" method="post">
 
-<footer th:replace="footer :: footer"></footer>
+                <!-- Nom -->
+                <div class="mb-3">
+                    <label for="nom" class="form-label fw-semibold">Nom</label>
+                    <input type="text" th:field="*{nom}" id="nom"
+                           class="form-control shadow-sm"
+                           placeholder="Entrer le nom complet" required>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold">Email</label>
+                    <input type="email" th:field="*{email}" id="email"
+                           class="form-control shadow-sm"
+                           placeholder="exemple@mail.com" required>
+                </div>
+
+                <!-- Rôle -->
+                <div class="mb-4">
+                    <label for="role" class="form-label fw-semibold">Rôle</label>
+                    <select th:field="*{role}" id="role" class="form-select shadow-sm">
+                        <option value="ADMIN">👑 ADMIN</option>
+                        <option value="AGRICULTEUR">🌱 AGRICULTEUR</option>
+                        <option value="ACHETEUR">🛒 ACHETEUR</option>
+                        <option value="DECIDEUR">📊 DECIDEUR</option>
+                    </select>
+                </div>
+
+                <!-- Boutons -->
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/utilisateurs}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Annuler
+                    </a>
+                    <button type="submit" class="btn btn-success shadow-sm">
+                        <i class="bi bi-check-circle"></i> Créer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{footer :: footer}"></div>
 
 </body>
 </html>

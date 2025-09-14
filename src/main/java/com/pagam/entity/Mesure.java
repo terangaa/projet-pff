@@ -43,4 +43,13 @@ public class Mesure {
         return horodatage;
     }
 
+    private boolean alerte; // champ de la classe Mesure
+
+    public boolean isAlerte() {
+        return alerte;
+    }
+
+    public void setAlerte(boolean alerte) {
+        this.alerte = alerte; // ⚠️ c'est ici qu'on stocke la valeur
+    }
 }

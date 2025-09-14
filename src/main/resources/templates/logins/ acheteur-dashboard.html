@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Acheteur</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-info">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Acheteur Dashboard</a>
+        <button class="btn btn-light ms-auto" id="logoutBtn">Se déconnecter</button>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h1>Bienvenue ACHETEUR 🛒</h1>
+    <p>Consultez les produits disponibles et vos commandes.</p>
+
+    <h3 class="mt-4">Liste des Commandes</h3>
+    <table class="table table-striped" id="commandesTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Produit</th>
+            <th>Quantité</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    const API_BASE = "http://localhost:8086/api";
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token || role !== "ACHETEUR") {
+        alert("Accès interdit ! Connectez-vous en tant qu'Acheteur.");
+        window.location.href = "login.html";
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.clear();
+        window.location.href = "login.html";
+    });
+
+    async function fetchWithJWT(url) {
+        const res = await fetch(url, { headers: { "Authorization": "Bearer " + token } });
+        if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+        return res.json();
+    }
+
+    async function loadCommandes() {
+        try {
+            const commandes = await fetchWithJWT(`${API_BASE}/commandes`);
+            const tbody = document.querySelector("#commandesTable tbody");
+            tbody.innerHTML = "";
+            commandes.forEach(c => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${c.id}</td><td>${c.produit.nom}</td><td>${c.quantite}</td>`;
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            console.error(err);
+            alert("Impossible de charger les commandes !");
+        }
+    }
+
+    loadCommandes();
+</script>
+</body>
+</html>

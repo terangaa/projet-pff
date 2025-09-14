@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/utilisateurs")
-@CrossOrigin(origins = "*")
 public class UtilisateurController {
 
     private final UtilisateurRepository utilisateurRepository;
@@ -20,70 +19,57 @@ public class UtilisateurController {
         this.utilisateurRepository = utilisateurRepository;
     }
 
-    // === REST API ===
-    @GetMapping("/api")
-    @ResponseBody
-    public List<Utilisateur> getTousApi() {
-        return utilisateurRepository.findAll();
-    }
-
-    @PostMapping("/api")
-    @ResponseBody
-    public Utilisateur creerUtilisateurApi(@RequestBody Utilisateur utilisateur) {
-        return utilisateurRepository.save(utilisateur);
-    }
-
-    // === HTML / Thymeleaf ===
+    // Liste des utilisateurs
     @GetMapping
-    public String getTousHtml(Model model) {
-        model.addAttribute("utilisateurs", utilisateurRepository.findAll());
-        return "utilisateurs/utilisateur"; // fichier templates/utilisateur.html
+    public String listeUtilisateurs(Model model) {
+        List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
+        model.addAttribute("utilisateurs", utilisateurs);
+        return "utilisateurs/utilisateur"; // fichier template
     }
 
+    // Formulaire création utilisateur
     @GetMapping("/creer")
     public String creerUtilisateurForm(Model model) {
         model.addAttribute("utilisateur", new Utilisateur());
-        return "utilisateurs/creer-utilisateur"; // fichier creer-utilisateur.html
+        return "utilisateurs/creer-utilisateur";
     }
 
     @PostMapping("/creer")
-    public String creerUtilisateurHtml(@ModelAttribute Utilisateur utilisateur) {
+    public String creerUtilisateur(@ModelAttribute Utilisateur utilisateur) {
         utilisateurRepository.save(utilisateur);
         return "redirect:/utilisateurs";
     }
 
-    // === Modifier ===
+    // Formulaire modification utilisateur
     @GetMapping("/modifier/{id}")
     public String modifierUtilisateurForm(@PathVariable Long id, Model model) {
         Utilisateur utilisateur = utilisateurRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé : " + id));
         model.addAttribute("utilisateur", utilisateur);
-        return "utilisateurs/modifier-utilisateur"; // fichier modifier-utilisateur.html
+        return "utilisateurs/modifier-utilisateur";
     }
 
     @PostMapping("/modifier/{id}")
     public String modifierUtilisateur(@PathVariable Long id,
                                       @ModelAttribute Utilisateur utilisateur) {
-        utilisateur.setId(id); // on force l’ID pour éviter la création d’un nouveau
+        utilisateur.setId(id);
         utilisateurRepository.save(utilisateur);
         return "redirect:/utilisateurs";
     }
 
-    // === Supprimer ===
+    // Supprimer utilisateur
     @GetMapping("/supprimer/{id}")
     public String supprimerUtilisateur(@PathVariable Long id) {
         utilisateurRepository.deleteById(id);
         return "redirect:/utilisateurs";
     }
 
-    // === Détail ===
+    // Détail utilisateur
     @GetMapping("/detail/{id}")
     public String detailUtilisateur(@PathVariable Long id, Model model) {
-        Optional<Utilisateur> optionalUtilisateur = utilisateurRepository.findById(id);
-        if (optionalUtilisateur.isEmpty()) {
-            return "redirect:/utilisateurs"; // si non trouvé, retour à la liste
-        }
-        model.addAttribute("utilisateur", optionalUtilisateur.get());
-        return "utilisateurs/detail-utilisateur"; // fichier detail-utilisateur.html
+        Optional<Utilisateur> opt = utilisateurRepository.findById(id);
+        if (opt.isEmpty()) return "redirect:/utilisateurs";
+        model.addAttribute("utilisateur", opt.get());
+        return "utilisateurs/detail-utilisateur";
     }
 }

@@ -23,6 +23,8 @@ public class Produit {
     private String nom;
     private Double prix;
     private int quantite;
+    private String image;
+    private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "producteur_id")
@@ -33,4 +35,5 @@ public class Produit {
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("produit") // évite la boucle infinie Produit → Commande → Produit
     private List<Commande> commandes = new ArrayList<>();
+
 }
