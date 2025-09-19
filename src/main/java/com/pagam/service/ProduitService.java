@@ -1,5 +1,6 @@
 package com.pagam.service;
 
+import com.pagam.entity.Producteur;
 import com.pagam.entity.Produit;
 import com.pagam.repository.ProduitRepository;
 import com.pagam.repository.CommandeRepository;
@@ -72,4 +73,11 @@ public class ProduitService {
         return produit.orElse(null); // ou lancer une exception si non trouvé
     }
 
+    public List<Produit> findAll() {
+        return produitRepository.findAll();
+    }
+
+    public List<Produit> getProduitsParAgriculteur(Producteur producteur) {
+        return produitRepository.findByProducteur(producteur);
+    }
 }

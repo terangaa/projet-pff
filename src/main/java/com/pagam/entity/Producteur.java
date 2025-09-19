@@ -3,16 +3,14 @@ package com.pagam.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"produits"})
-@EqualsAndHashCode(exclude = {"produits"})
 public class Producteur {
 
     @Id
@@ -20,10 +18,13 @@ public class Producteur {
     private Long id;
 
     private String nom;
-    private String prenom;
-    private String email;
-    private String telephone;
 
+    // Relation vers l'utilisateur associé
+    @OneToOne
+    @JoinColumn(name = "utilisateur_id")
+    private Utilisateur utilisateur;
+
+    // Produits liés au producteur
     @OneToMany(mappedBy = "producteur", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Produit> produits;
+    private List<Produit> produits = new ArrayList<>();
 }

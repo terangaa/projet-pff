@@ -17,7 +17,8 @@
         </div>
 
         <div class="card-body p-4">
-            <form th:action="@{/produits/modifier/{id}(id=${produit.id})}" th:object="${produit}" method="post">
+            <form th:action="@{/produits/modifier/{id}(id=${produit.id})}"
+                  th:object="${produit}" method="post" enctype="multipart/form-data">
 
                 <!-- Nom -->
                 <div class="mb-3">
@@ -27,12 +28,39 @@
                            placeholder="Saisir le nom du produit" required>
                 </div>
 
+                <!-- Description -->
+                <div class="mb-3">
+                    <label for="description" class="form-label fw-semibold">Description</label>
+                    <textarea id="description" th:field="*{description}"
+                              class="form-control shadow-sm" rows="3"
+                              placeholder="Ex : Produit bio, sans pesticide..."></textarea>
+                </div>
+
                 <!-- Prix -->
                 <div class="mb-3">
                     <label for="prix" class="form-label fw-semibold">Prix (€)</label>
                     <input type="number" id="prix" th:field="*{prix}" step="0.01"
                            class="form-control shadow-sm"
                            placeholder="Exemple : 19.99" required>
+                </div>
+
+                <!-- Quantité -->
+                <div class="mb-3">
+                    <label for="quantite" class="form-label fw-semibold">Quantité</label>
+                    <input type="number" id="quantite" th:field="*{quantite}"
+                           class="form-control shadow-sm"
+                           placeholder="Exemple : 50" required>
+                </div>
+
+                <!-- Image -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Image actuelle</label><br>
+                    <img th:if="${produit.image}" th:src="@{${produit.image}}"
+                         alt="Image produit" class="img-thumbnail mb-2" style="max-width: 150px;">
+
+                    <label for="image" class="form-label fw-semibold">Changer l’image</label>
+                    <input type="file" id="image" name="imageFile"
+                           class="form-control shadow-sm" accept="image/*">
                 </div>
 
                 <!-- Producteur -->

@@ -11,24 +11,46 @@
 <body class="bg-light">
 
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card shadow-lg p-4 rounded-4" style="max-width: 600px; width: 100%;">
+    <div class="card shadow-lg p-4 rounded-4" style="max-width: 650px; width: 100%;">
         <div class="text-center mb-4">
             <i class="bi bi-box-seam fs-1 text-primary"></i>
             <h2 class="mt-2">Créer un nouveau produit</h2>
             <p class="text-muted">Veuillez remplir les informations ci-dessous</p>
         </div>
 
-        <form th:action="@{/produits/creer}" th:object="${produit}" method="post">
+        <form th:action="@{/produits/creer}" th:object="${produit}" method="post" enctype="multipart/form-data">
+
+            <!-- Nom -->
             <div class="mb-3">
                 <label for="nom" class="form-label fw-semibold">Nom du produit</label>
                 <input type="text" id="nom" th:field="*{nom}" class="form-control" placeholder="Ex : Tomates bio" required/>
             </div>
 
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="description" class="form-label fw-semibold">Description</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="3" placeholder="Ex : Tomates fraîches cultivées sans pesticides"></textarea>
+            </div>
+
+            <!-- Prix -->
             <div class="mb-3">
                 <label for="prix" class="form-label fw-semibold">Prix (€)</label>
                 <input type="number" id="prix" th:field="*{prix}" step="0.01" class="form-control" placeholder="Ex : 12.50" required/>
             </div>
 
+            <!-- Quantité -->
+            <div class="mb-3">
+                <label for="quantite" class="form-label fw-semibold">Quantité</label>
+                <input type="number" id="quantite" th:field="*{quantite}" class="form-control" placeholder="Ex : 50" required/>
+            </div>
+
+            <!-- Image -->
+            <div class="mb-3">
+                <label for="image" class="form-label fw-semibold">Image du produit</label>
+                <input type="file" id="image" name="imageFile" class="form-control" accept="image/*"/>
+            </div>
+
+            <!-- Producteur -->
             <div class="mb-4">
                 <label for="producteur" class="form-label fw-semibold">Sélectionner un producteur</label>
                 <select id="producteur" th:field="*{producteur.id}" class="form-select" required>
@@ -39,6 +61,7 @@
                 </select>
             </div>
 
+            <!-- Boutons -->
             <div class="d-flex justify-content-between">
                 <a th:href="@{/produits}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Retour

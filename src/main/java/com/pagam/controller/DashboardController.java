@@ -23,6 +23,8 @@ public class DashboardController {
     private final UtilisateurService utilisateurService;
     private final ProduitService produitService;
     private final CommandeService commandeService;
+    private final VenteService venteService;
+
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -100,6 +102,22 @@ public class DashboardController {
 
         return "dashboard/dashboard";
     }
+
+    @GetMapping("/admin/ventes")
+    public String ventesAdmin(Model model) {
+        List<Vente> ventes = venteService.findAllVentes(); // Toutes les ventes
+        model.addAttribute("ventes", ventes);
+        return "admin/ventes"; // le JSP/HTML ci-dessus
+    }
+
+    @GetMapping("/admin-home")
+    public String adminHome(Model model) {
+        List<Vente> ventes = venteService.findAll(); // récupère toutes les ventes
+        model.addAttribute("ventes", ventes);        // ⚠️ ajouter au modèle
+        return "dashboard/admin-home";
+    }
+
+
 
 
 }

@@ -2,9 +2,12 @@ package com.pagam.service;
 
 import com.pagam.entity.Utilisateur;
 import com.pagam.repository.UtilisateurRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UtilisateurService {
@@ -37,6 +40,25 @@ public class UtilisateurService {
     public Utilisateur getByEmail(String email) {
         return utilisateurRepository.findByEmail(email)
                 .orElse(null); // retourne null si l'utilisateur n'existe pas
+    }
+
+    // ✅ Récupérer un utilisateur par email
+    // Récupérer un utilisateur par email
+    public Utilisateur getUtilisateurByEmail(String email) {
+        Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findByEmail(email);
+        return utilisateurOpt.orElseThrow(() ->
+                new RuntimeException("Utilisateur introuvable avec l'email : " + email)
+        );
+    }
+
+    public Utilisateur utilisateurConnecte() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getName().equals("anonymousUser")) {
+            return null; // pas connecté
+        }
+        String email = auth.getName(); // normalement l'email ou username
+        return utilisateurRepository.findByEmail(email)
+                .orElse(null); // ou lancer exception si pas trouvé
     }
 
 }
