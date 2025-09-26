@@ -48,7 +48,7 @@ public class MarketplaceService {
         commande.setQuantite(quantite);
         commande.setPrixTotal(produit.getPrix() * quantite); // si produit a un champ prix
         commande.setDateCommande(LocalDateTime.now());
-        commande.setStatut(StatutCommande.PENDING);
+        commande.setStatut(StatutCommande.EN_COURS);
 
 
         return commandeRepository.save(commande);

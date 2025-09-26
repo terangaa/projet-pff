@@ -1,8 +1,8 @@
 package com.pagam.entity;
 
 public enum StatutCommande {
-    PENDING,
-    CONFIRMED,
-    DELIVERED
+    EN_COURS,
+    VALIDEE,
+    ANNULEE
 }
 

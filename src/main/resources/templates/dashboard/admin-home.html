@@ -153,22 +153,19 @@
         </div>
 
         <!-- Ventes -->
-        <div class="col-12 col-md-6 col-lg-4" th:each="vente : ${ventes}">
-            <a th:href="@{'/ventes/modifier/' + ${vente.id}}" class="text-decoration-none">
+        <div class="col-12 col-md-6 col-lg-4">
+            <a href="/agriculteur/ventes" class="text-decoration-none">
                 <div class="card kpi-card card-gradient-warning shadow-sm">
                     <div class="card-body">
-                        <i class="bi bi-cart3 kpi-icon mb-2"></i>
-                        <h5 th:text="${vente.produit.nom}">Produit</h5>
-                        <p class="kpi-description">
-                            Quantité : <span th:text="${vente.quantite}">0</span><br>
-                            Agriculteur : <span th:text="${vente.agriculteur.nom}">Nom</span><br>
-                            Date : <span th:text="${@venteService.formatDate(vente.dateVente)}">dd/MM/yyyy</span>
-                        </p>
-                        <span class="badge badge-kpi" th:text="${vente.id}">ID</span>
+                        <i class="bi bi-cash-coin kpi-icon mb-2"></i>
+                        <h5>Ventes</h5>
+                        <p class="kpi-description">Consulter les ventes validées</p>
+                        <span class="badge badge-kpi" th:text="${nbVentes}">0</span>
                     </div>
                 </div>
             </a>
         </div>
+
     </div>
 
 </main>

@@ -61,4 +61,9 @@ public class UtilisateurService {
                 .orElse(null); // ou lancer exception si pas trouvé
     }
 
+    public Utilisateur findById(Long acheteurId) {
+        return utilisateurRepository.findById(acheteurId)
+                .orElse(null); // retourne null si aucun utilisateur trouvé
+    }
+
 }

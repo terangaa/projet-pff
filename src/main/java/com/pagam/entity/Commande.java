@@ -3,6 +3,7 @@ package com.pagam.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,11 +24,23 @@ public class Commande {
 
     private Integer quantite;
 
-    private double prixTotal;
+    private Double prixTotal;
+
 
     private double prixUnitaire; // ✅ conserver le prix du produit au moment de la commande
 
     private LocalDateTime dateCommande;
+
+    // Relation vers Vente
+
+    @OneToMany(mappedBy = "commande")
+    private List<Vente> ventes;
+
+
+    @ManyToOne()
+    private Vente vente; // liaison vers Vente
+
+
 
     @Enumerated(EnumType.STRING)
     private StatutCommande statut;
@@ -57,4 +70,5 @@ public class Commande {
     public void calculerPrixTotal() {
         this.prixTotal = prixUnitaire * quantite;
     }
+
 }

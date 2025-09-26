@@ -43,11 +43,12 @@ public class ProduitService {
 
         produit.setNom(produitDetails.getNom());
         produit.setPrix(produitDetails.getPrix());
-        produit.setQuantite(produitDetails.getQuantite());
+        produit.setStock(produitDetails.getStock());
         produit.setProducteur(produitDetails.getProducteur());
 
         return produitRepository.save(produit);
     }
+
 
     // 📌 Supprimer un produit en vérifiant les contraintes
     public boolean deleteProduit(Long id) {
@@ -79,5 +80,9 @@ public class ProduitService {
 
     public List<Produit> getProduitsParAgriculteur(Producteur producteur) {
         return produitRepository.findByProducteur(producteur);
+    }
+
+    public void save(Produit produit) {
+        produitRepository.save(produit);
     }
 }

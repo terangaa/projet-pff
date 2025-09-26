@@ -34,7 +34,8 @@
                     <option value="" disabled>-- Sélectionner un produit --</option>
                     <option th:each="produit : ${produits}"
                             th:value="${produit.id}"
-                            th:text="${produit.nom}"
+                            th:text="${produit.nom + ' (Stock : ' + produit.stock + ')'}"
+                            th:data-stock="${produit.stock}"
                             th:selected="${commande.produit != null} ? ${produit.id} == ${commande.produit.id} : false">
                     </option>
                 </select>

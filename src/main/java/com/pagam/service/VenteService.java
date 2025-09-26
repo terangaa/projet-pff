@@ -1,16 +1,19 @@
 package com.pagam.service;
 
-import com.pagam.entity.Producteur;
+import com.pagam.entity.Commande;
 import com.pagam.entity.Produit;
+import com.pagam.entity.Utilisateur;
 import com.pagam.entity.Vente;
 import com.pagam.repository.VenteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,43 +21,52 @@ import java.util.stream.Collectors;
 public class VenteService {
 
     private final VenteRepository venteRepository;
+    private final ProduitService produitService;
+    private final UtilisateurService utilisateurService;
+    private final CommandeService commandeService;
 
-    // Récupérer les ventes par producteur
-    public List<Vente> ventesParAgriculteur(Producteur producteur) {
-        return venteRepository.findByProduit_Producteur(producteur);
+    // Récupérer toutes les ventes triées par date
+    public List<Vente> findAllVentes() {
+        return venteRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Vente::getDateVente, Comparator.nullsLast(Comparator.reverseOrder())))
+                .collect(Collectors.toList());
     }
 
-    // Récupérer les ventes par produit
-    public List<Vente> ventesParProduit(Produit produit) {
-        return venteRepository.findByProduit(produit);
+    public Vente findById(Long id) {
+        return venteRepository.findById(id).orElse(null);
     }
 
-    // Ajouter ou sauvegarder une vente
-    public Vente saveVente(Vente vente){
-        return venteRepository.save(vente);
-    }
-
-    public Vente ajouterVente(Vente vente) {
-        // Vérifie que le produit associé à la vente existe
-        if (vente.getProduit() == null) {
-            throw new IllegalArgumentException("Le produit de la vente ne peut pas être null.");
+    @Transactional
+    public Vente save(Vente vente) {
+        // Récupérer les entités liées depuis la DB pour éviter TransientObjectException
+        if (vente.getProduit() != null && vente.getProduit().getId() != null) {
+            vente.setProduit(produitService.findById(vente.getProduit().getId()));
         }
-        // Tu peux ajouter d'autres validations ici, par ex. quantité > 0, prix > 0, etc.
 
-        // Enregistre la vente en base
+        if (vente.getAcheteur() != null && vente.getAcheteur().getId() != null) {
+            vente.setAcheteur(utilisateurService.findById(vente.getAcheteur().getId()));
+        }
+
+        if (vente.getCommande() != null && vente.getCommande().getId() != null) {
+            vente.setCommande(commandeService.findById(vente.getCommande().getId()));
+        }
+
+        // Calcul du montant total
+        vente.calculerMontantTotal();
         return venteRepository.save(vente);
     }
 
+    @Transactional
     public void deleteById(Long id) {
-         venteRepository.deleteById(id);
-    }
-
-    public List<Vente> findAll() {
-        return venteRepository.findAll();
-    }
-
-    public void save(Vente vente) {
-        venteRepository.save(vente);
+        Vente vente = findById(id);
+        if (vente != null) {
+            // Détacher les relations pour éviter Hibernate exception
+            vente.setAcheteur(null);
+            vente.setProduit(null);
+            vente.setCommande(null);
+            venteRepository.delete(vente);
+        }
     }
 
     public String formatDate(LocalDateTime date) {
@@ -63,11 +75,53 @@ public class VenteService {
         return date.format(formatter);
     }
 
-    public List<Vente> findAllVentes() {
-        return venteRepository.findAll()
-                .stream()
-                .sorted(Comparator.comparing(Vente::getDateVente, Comparator.nullsLast(Comparator.reverseOrder())))
-                .collect(Collectors.toList());
+    public void creerVenteDepuisCommande(Commande commande) {
+        if (commande == null || commande.getId() == null) {
+            throw new IllegalArgumentException("La commande doit être persistée avant de créer une vente.");
+        }
+
+        // Vérifier si une vente existe déjà pour cette commande
+        if (venteRepository.existsByCommande(commande)) {
+            return; // Vente déjà créée
+        }
+
+        // Créer la vente
+        Vente vente = new Vente();
+
+        // Produit
+        if (commande.getProduit() == null || commande.getProduit().getId() == null) {
+            throw new IllegalStateException("Le produit de la commande doit être persisté.");
+        }
+        vente.setProduit(commande.getProduit());
+
+        // Quantité
+        vente.setQuantite(commande.getQuantite() != null ? commande.getQuantite() : 0);
+
+        // Prix unitaire
+        vente.setPrix(commande.getProduit().getPrix() != null ? commande.getProduit().getPrix() : 0.0);
+
+        // Commande liée
+        vente.setCommande(commande);
+
+        // Date de vente
+        vente.setDateVente(LocalDateTime.now());
+
+        // Calcul automatique du montantTotal et montant
+        vente.calculerMontantTotal();
+
+        // Si la commande a un acheteur, on l’associe
+        if (commande.getAcheteur() != null && commande.getAcheteur().getId() != null) {
+            vente.setAcheteur(commande.getAcheteur());
+        }
+
+        // Sauvegarder la vente
+        venteRepository.save(vente);
+
+        // Optionnel : lier la vente à la commande si relation bidirectionnelle
+        commande.setVente(vente);
     }
 
+    public List<Vente> findAll() {
+        return venteRepository.findAll();
+    }
 }

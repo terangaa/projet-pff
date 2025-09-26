@@ -18,7 +18,10 @@ public class Capteur {
     private String nom;
     private String reference; // ex: CAP-001
     private String type; // SOL, HUMIDITE, TEMP
-    private String localisation; // région ou GPS
+    private String localisation;
+    private String ville;
+    private Double latitude;
+    private Double Longitude;// région ou GPS
 
     private Double moyenne; // ← doit être présent
 
@@ -28,5 +31,7 @@ public class Capteur {
     @OneToMany(mappedBy = "capteur", cascade = CascadeType.ALL)
     private List<Mesure> mesures;
 
-
+    @ManyToOne
+    @JoinColumn(name = "agriculteur_id")
+    private Producteur agriculteur;
 }

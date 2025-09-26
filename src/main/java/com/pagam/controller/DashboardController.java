@@ -68,6 +68,10 @@ public class DashboardController {
                         Comparator.nullsLast(String::compareToIgnoreCase)
                 ));
                 model.addAttribute("utilisateurs", utilisateurs);
+
+                // 🔥 ajouter les ventes
+                List<Vente> ventes = venteService.findAll();
+                model.addAttribute("ventes", ventes);
                 return "dashboard/admin-home"; // 🚀 Page spéciale ADMIN
             }
             case AGRICULTEUR -> {
@@ -116,8 +120,4 @@ public class DashboardController {
         model.addAttribute("ventes", ventes);        // ⚠️ ajouter au modèle
         return "dashboard/admin-home";
     }
-
-
-
-
 }

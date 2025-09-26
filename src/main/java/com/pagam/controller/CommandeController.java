@@ -6,6 +6,7 @@ import com.pagam.entity.Utilisateur;
 import com.pagam.service.CommandeService;
 import com.pagam.service.ProduitService;
 import com.pagam.service.UtilisateurService;
+import com.pagam.service.VenteService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +23,16 @@ public class CommandeController {
     private final CommandeService commandeService;
     private final UtilisateurService utilisateurService;
     private final ProduitService produitService;
+    private final VenteService venteService;
 
     public CommandeController(CommandeService commandeService,
                               UtilisateurService utilisateurService,
-                              ProduitService produitService) {
+                              ProduitService produitService,
+                              VenteService venteService) {
         this.commandeService = commandeService;
         this.utilisateurService = utilisateurService;
         this.produitService = produitService;
+        this.venteService = venteService;
     }
 
     // Liste des commandes
@@ -39,64 +43,47 @@ public class CommandeController {
         return "commandes/commande";
     }
 
-    // Formulaire pour ajouter une nouvelle commande
+    // Formulaire pour ajouter une commande
     @GetMapping("/nouvelle")
     public String nouvelleCommande(Model model) {
-        Commande commande = new Commande();
-        model.addAttribute("commande", commande);
+        model.addAttribute("commande", new Commande());
         model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs());
         model.addAttribute("produits", produitService.getAllProduits());
         return "commandes/commande-form";
     }
 
-    // Formulaire pour modifier une commande existante
+    // Afficher formulaire de modification
     @GetMapping("/modifier/{id}")
-    public String modifierCommande(@PathVariable Long id, Model model) {
+    public String afficherFormModifier(@PathVariable Long id, Model model) {
         Commande commande = commandeService.getCommandeById(id);
-
-        // Gestion de la date
-        Date dateCommande = (commande.getDateCommande() != null)
-                ? Date.from(commande.getDateCommande().atZone(ZoneId.systemDefault()).toInstant())
-                : new Date();
-        model.addAttribute("dateCommande", dateCommande);
-
         model.addAttribute("commande", commande);
-        model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs());
         model.addAttribute("produits", produitService.getAllProduits());
+        model.addAttribute("acheteurs", utilisateurService.getAllUtilisateurs());
         return "commandes/commande-form";
     }
-
-    // Enregistrer une commande (nouvelle ou modification)
+    // Enregistrer une commande
     @PostMapping("/enregistrer")
     public String enregistrerCommande(@ModelAttribute Commande commande) {
-
-        // Récupérer le produit complet depuis la base
         if (commande.getProduit() != null && commande.getProduit().getId() != null) {
             Produit produit = produitService.getProduitById(commande.getProduit().getId());
             commande.setProduit(produit);
         }
-
-        // Récupérer l'acheteur complet depuis la base
         if (commande.getAcheteur() != null && commande.getAcheteur().getId() != null) {
             Utilisateur acheteur = utilisateurService.getUtilisateurById(commande.getAcheteur().getId());
             commande.setAcheteur(acheteur);
         }
 
-        // Calculer le prix total en évitant les nulls
         int quantite = (commande.getQuantite() != null) ? commande.getQuantite() : 0;
         double prixProduit = (commande.getProduit() != null && commande.getProduit().getPrix() != null)
                 ? commande.getProduit().getPrix()
                 : 0.0;
         commande.setPrixTotal(prixProduit * quantite);
 
-        // Définir la date si null
         if (commande.getDateCommande() == null) {
             commande.setDateCommande(LocalDateTime.now());
         }
 
-        // Enregistrer la commande
         commandeService.saveCommande(commande);
-
         return "redirect:/commandes";
     }
 
@@ -104,6 +91,16 @@ public class CommandeController {
     @GetMapping("/supprimer/{id}")
     public String supprimerCommande(@PathVariable Long id) {
         commandeService.deleteCommande(id);
+        return "redirect:/commandes";
+    }
+
+    // Valider une commande et créer une vente correspondante
+    @GetMapping("/valider/{id}")
+    public String validerCommande(@PathVariable Long id) {
+        Commande commande = commandeService.getCommandeById(id);
+        if (commande != null && commande.getVente() == null) {
+            venteService.creerVenteDepuisCommande(commande);
+        }
         return "redirect:/commandes";
     }
 }
