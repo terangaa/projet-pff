@@ -1,153 +1,194 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="head :: head"></head>
-<body class="bg-light">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Liste des utilisateurs - Profil Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        body {
+            background: linear-gradient(135deg, #183a1d 0%, #274e13 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
 
-<!-- Bouton Retour -->
-<div class="container mt-4">
-    <a th:href="@{/dashboard}" class="btn btn-secondary d-inline-flex align-items-center gap-2 shadow-sm">
-        <i class="bi bi-arrow-left fs-5"></i>
-        Retour au Dashboard
-    </a>
-</div>
+        .card-user {
+            border-radius: 25px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: linear-gradient(145deg, #223322, #2a3a2a);
+            color: #fff;
+            position: relative;
+            text-align: center;
+        }
 
-<!-- Titre -->
-<h1 class="text-center my-4 display-5 fw-bold text-dark">Liste des utilisateurs</h1>
+        .card-user:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
 
-<!-- Bouton Créer un utilisateur -->
-<div class="container mb-4 text-end">
-    <a th:href="@{/utilisateurs/creer}" class="btn btn-gradient-primary d-flex align-items-center gap-2 shadow-sm">
-        <i class="bi bi-plus-lg fs-5"></i> Créer un nouvel utilisateur
-    </a>
-</div>
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 4px solid #fff;
+            border-radius: 50%;
+            margin-top: -60px;
+            background: #ccc;
+        }
 
-<!-- Cards utilisateurs / Message si vide -->
-<div class="container">
-    <div class="row g-4 justify-content-center">
-        <!-- Message si liste vide -->
-        <div th:if="${#lists.isEmpty(utilisateurs)}" class="col-12">
-            <div class="alert alert-info text-center fw-semibold">
-                Aucun utilisateur trouvé.
-            </div>
+        .badge-role {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.45rem 0.9rem;
+            font-size: 0.85rem;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .badge-admin { background: #b71c1c; }
+        .badge-agriculteur { background: #388e3c; }
+        .badge-acheteur { background: #689f38; }
+        .badge-default { background: #607d8b; }
+
+        .card-body {
+            padding: 2rem 1rem 1.5rem 1rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-subtitle {
+            font-size: 0.95rem;
+            color: #cfd8dc;
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            font-size: 0.85rem;
+            color: #b0bec5;
+            margin-bottom: 15px;
+        }
+
+        .contact-icons a {
+            color: #fff;
+            margin: 0 8px;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .contact-icons a:hover {
+            color: #ffdd57;
+        }
+
+        .btn-card {
+            font-size: 0.85rem;
+            padding: 0.35rem 0.75rem;
+        }
+
+        footer {
+            background: #388e3c;
+        }
+
+        @media (max-width: 576px) {
+            .card-user { margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}">
+            <i class="fas fa-seedling me-2"></i>AgriPlateforme
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}"><i class="fas fa-home"></i> Accueil</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/produits}"><i class="fas fa-carrot"></i> Produits</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/producteurs}"><i class="fas fa-tractor"></i> Producteurs</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/utilisateurs}"><i class="fas fa-users"></i> Utilisateurs</a></li>
+            </ul>
         </div>
+    </div>
+</nav>
 
-        <!-- Cards utilisateurs -->
-        <div class="col-lg-3 col-md-4 col-sm-6 col-12" th:each="u : ${utilisateurs}">
-            <div class="user-card p-3 rounded-4 shadow-sm d-flex flex-column">
-                <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-person-circle fs-1 text-primary me-3 icon-hover"></i>
-                    <div class="text-truncate">
-                        <h5 class="fw-semibold mb-1" th:text="${u.nom}">Nom utilisateur</h5>
-                        <p class="text-muted mb-1" th:text="${u.email}">email@example.com</p>
+<!-- Contenu principal -->
+<main class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h2><i class="fas fa-users me-2"></i>Utilisateurs</h2>
+        <a th:href="@{/utilisateurs/creer}" class="btn btn-success mt-2"><i class="fas fa-user-plus me-1"></i> Ajouter</a>
+    </div>
 
-                        <span class="badge role-badge" th:switch="${u.role}">
-                            <span th:case="'ADMIN'" class="badge-gradient-admin" th:text="${u.role}">ADMIN</span>
-                            <span th:case="'AGRICULTEUR'" class="badge-gradient-agriculteur" th:text="${u.role}">AGRICULTEUR</span>
-                            <span th:case="'ACHETEUR'" class="badge-gradient-acheteur" th:text="${u.role}">ACHETEUR</span>
-                            <span th:case="*" class="badge-gradient-default" th:text="${u.role}">ROLE</span>
-                        </span>
-                    </div>
+    <div th:if="${#lists.isEmpty(utilisateurs)}" class="alert alert-warning text-center">
+        Aucun utilisateur trouvé.
+    </div>
+
+    <div class="row g-4" th:if="${!#lists.isEmpty(utilisateurs)}">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" th:each="u : ${utilisateurs}">
+            <div class="card card-user position-relative">
+                <!-- Badge rôle -->
+                <span class="badge-role"
+                      th:classappend="${u.role == 'ADMIN' ? ' badge-admin' :
+                                       u.role == 'AGRICULTEUR' ? ' badge-agriculteur' :
+                                       u.role == 'ACHETEUR' ? ' badge-acheteur' : ' badge-default'}"
+                      th:text="${u.role}">ROLE</span>
+
+                <!-- Photo -->
+                <div class="d-flex justify-content-center bg-success py-4 position-relative">
+                    <img th:if="${u.photo != null}" th:src="@{'/images/utilisateurs/' + ${u.photo}}" class="profile-photo" alt="Photo"/>
+                    <img th:if="${u.photo == null}" src="/images/default-avatar.png" class="profile-photo" alt="Avatar"/>
                 </div>
 
-                <div class="d-flex flex-column flex-sm-row gap-2 mt-auto flex-wrap">
-                    <a th:href="@{/utilisateurs/detail/{id}(id=${u.id})}" class="btn btn-info d-flex align-items-center justify-content-center gap-1">
-                        <i class="bi bi-eye"></i> Détail
-                    </a>
-                    <a th:href="@{/utilisateurs/modifier/{id}(id=${u.id})}" class="btn btn-warning d-flex align-items-center justify-content-center gap-1">
-                        <i class="bi bi-pencil-square"></i> Modifier
-                    </a>
-                    <a th:href="@{/utilisateurs/supprimer/{id}(id=${u.id})}" class="btn btn-danger d-flex align-items-center justify-content-center gap-1"
-                       onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
-                        <i class="bi bi-trash"></i> Supprimer
-                    </a>
+                <!-- Infos -->
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${u.nom}">Nom</h5>
+                    <p class="card-subtitle" th:text="${u.email}">email@example.com</p>
+                    <p class="card-description">Passionné par l’agriculture et le développement durable.</p>
+
+                    <!-- Icônes de contact -->
+                    <div class="contact-icons mb-3">
+                        <a th:href="'mailto:' + ${u.email}" title="Email"><i class="fas fa-envelope"></i></a>
+                        <a href="#" title="Téléphone"><i class="fas fa-phone"></i></a>
+                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        <a th:href="@{/utilisateurs/detail/{id}(id=${u.id})}" class="btn btn-outline-info btn-card"><i class="fas fa-eye"></i> Voir</a>
+                        <a th:href="@{/utilisateurs/modifier/{id}(id=${u.id})}" class="btn btn-outline-warning btn-card"><i class="fas fa-pen"></i> Modifier</a>
+                        <a th:href="@{/utilisateurs/supprimer/{id}(id=${u.id})}" class="btn btn-outline-danger btn-card" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');"><i class="fas fa-trash"></i> Supprimer</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
-<footer th:replace="footer :: footer"></footer>
+<!-- Footer -->
+<footer class="text-white text-center py-3 mt-auto shadow-sm">
+    <div class="container">
+        <div class="mb-2">
+            <i class="fas fa-seedling"></i> Plateforme Agricole &copy; 2025
+        </div>
+        <div>
+            <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </div>
+</footer>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- CSS personnalisé -->
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(to bottom, #e0f7fa, #f0f4f8);
-    }
-
-    /* Glassmorphism cards */
-    .user-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.25);
-        transition: transform 0.5s ease, box-shadow 0.5s ease;
-        display: flex;
-        flex-direction: column;
-    }
-    .user-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 25px 40px rgba(0,0,0,0.12);
-    }
-
-    /* Icon hover */
-    .icon-hover {
-        transition: transform 0.4s ease, color 0.3s ease;
-    }
-    .icon-hover:hover {
-        transform: scale(1.3) rotate(5deg);
-        color: #6610f2;
-    }
-
-    /* Gradient badges */
-    .badge {
-        font-weight: 600;
-        padding: 0.35em 0.85em;
-        border-radius: 50px;
-        color: #fff;
-        display: inline-block;
-        margin-top: 4px;
-        opacity: 0;
-        transform: translateY(-12px);
-        animation: fadeInUp 0.7s forwards;
-    }
-    .badge-gradient-admin { background: linear-gradient(45deg, #ff4d4d, #ff1a1a); }
-    .badge-gradient-agriculteur { background: linear-gradient(45deg, #28a745, #198754); }
-    .badge-gradient-acheteur { background: linear-gradient(45deg, #0d6efd, #0a58ca); }
-    .badge-gradient-default { background: linear-gradient(45deg, #6c757d, #495057); }
-
-    @keyframes fadeInUp {
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Gradient buttons */
-    .btn-gradient-primary {
-        background: linear-gradient(135deg, #0d6efd, #6610f2);
-        color: #fff;
-        transition: background 0.4s, transform 0.3s;
-    }
-    .btn-gradient-primary:hover {
-        background: linear-gradient(135deg, #6610f2, #0d6efd);
-        transform: translateY(-2px);
-    }
-
-    /* Boutons cards flex */
-    .user-card .btn {
-        min-width: 0;
-        flex: 1 1 calc(33.333% - 0.5rem);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .user-card {
-            padding: 1.5rem;
-        }
-        .user-card .btn {
-            flex: 1 1 100%;
-        }
-    }
-</style>
 </body>
 </html>

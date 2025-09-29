@@ -1,77 +1,89 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="head :: head"></head>
+<head th:replace="head :: head">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
 <body class="bg-light">
-
 <div class="container my-5">
     <div class="card shadow-sm p-4">
-        <h3 class="card-title mb-4 text-primary"
-            th:text="${commande.id != null} ? 'Modifier la commande' : 'Nouvelle commande'">
+        <h3 class="card-title mb-4 text-success"
+            th:text="${commande.id != null} ? '✏️ Modifier la commande' : '🛒 Nouvelle commande'">
             Nouvelle commande
         </h3>
 
         <form th:action="@{/commandes/enregistrer}" th:object="${commande}" method="post" class="row g-3">
-
-            <input type="hidden" th:field="*{id}"/>
+            <input type="hidden" th:field="*{id}" />
 
             <!-- Acheteur -->
             <div class="col-md-6 mb-3">
-                <label class="form-label" for="acheteurSelect">Acheteur</label>
+                <label class="form-label fw-semibold" for="acheteurSelect">
+                    <i class="fas fa-user me-1 text-success"></i>Acheteur
+                </label>
                 <select th:field="*{acheteur.id}" class="form-select" id="acheteurSelect" required>
-                    <option value="" disabled>-- Sélectionner un acheteur --</option>
+                    <option th:if="${commande.acheteur == null}" value="" disabled selected>-- Sélectionner un acheteur --</option>
                     <option th:each="utilisateur : ${utilisateurs}"
                             th:value="${utilisateur.id}"
                             th:text="${utilisateur.nom}"
-                            th:selected="${commande.acheteur != null} ? ${utilisateur.id} == ${commande.acheteur.id} : false">
+                            th:selected="${commande.acheteur != null and commande.acheteur.id == utilisateur.id}">
                     </option>
+
                 </select>
             </div>
 
             <!-- Produit -->
             <div class="col-md-6 mb-3">
-                <label class="form-label" for="produitSelect">Produit</label>
+                <label class="form-label fw-semibold" for="produitSelect">
+                    <i class="fas fa-apple-alt me-1 text-success"></i>Produit
+                </label>
                 <select th:field="*{produit.id}" class="form-select" id="produitSelect" required>
-                    <option value="" disabled>-- Sélectionner un produit --</option>
+                    <option th:if="${commande.produit == null}" value="" disabled selected>-- Sélectionner un produit --</option>
                     <option th:each="produit : ${produits}"
                             th:value="${produit.id}"
-                            th:text="${produit.nom + ' (Stock : ' + produit.stock + ')'}"
-                            th:data-stock="${produit.stock}"
-                            th:selected="${commande.produit != null} ? ${produit.id} == ${commande.produit.id} : false">
+                            th:text="${produit.nom}"
+                            th:selected="${commande.produit != null and commande.produit.id == produit.id}">
                     </option>
                 </select>
             </div>
 
             <!-- Quantité -->
             <div class="col-md-6 mb-3">
-                <label class="form-label" for="quantiteInput">Quantité</label>
-                <input type="number" th:field="*{quantite}" class="form-control" min="1" id="quantiteInput" required/>
+                <label class="form-label fw-semibold" for="quantiteInput">
+                    <i class="fas fa-sort-numeric-up me-1 text-success"></i>Quantité
+                </label>
+                <input type="number" th:field="*{quantite}" class="form-control" min="1" id="quantiteInput" required />
             </div>
 
             <!-- Statut -->
             <div class="col-md-6 mb-3">
-                <label class="form-label" for="statutSelect">Statut</label>
+                <label class="form-label fw-semibold" for="statutSelect">
+                    <i class="fas fa-flag me-1 text-success"></i>Statut
+                </label>
                 <select th:field="*{statut}" class="form-select" id="statutSelect" required>
-                    <option value="" disabled>-- Sélectionner un statut --</option>
+                    <option th:if="${commande.statut == null}" value="" disabled selected>-- Sélectionner un statut --</option>
                     <option th:each="statut : ${T(com.pagam.entity.StatutCommande).values()}"
-                            th:value="${statut}"
-                            th:text="${statut}"
-                            th:selected="${commande.statut} == ${statut}">
+                            th:value="${statut}" th:text="${statut}"
+                            th:selected="${commande.statut != null and commande.statut == statut}">
                     </option>
                 </select>
             </div>
 
             <!-- Prix total -->
             <div class="col-md-6 mb-3">
-                <label class="form-label" for="prixTotalInput">Prix Total</label>
-                <input type="text" th:value="${commande.prixTotal}" class="form-control" id="prixTotalInput" readonly/>
+                <label class="form-label fw-semibold" for="prixTotalInput">
+                    <i class="fas fa-euro-sign me-1 text-success"></i>Prix Total
+                </label>
+                <input type="text" th:value="${commande.prixTotal}" class="form-control" id="prixTotalInput" readonly />
             </div>
 
             <!-- Boutons -->
             <div class="col-12 d-flex justify-content-between mt-4">
-                <a th:href="@{/commandes}" class="btn btn-secondary btn-lg">Retour à la liste</a>
-                <button type="submit" class="btn btn-success btn-lg">Enregistrer</button>
+                <a th:href="@{/commandes}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                </a>
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-check-circle me-1"></i> Enregistrer
+                </button>
             </div>
-
         </form>
     </div>
 </div>
@@ -80,12 +92,12 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     const produits = /*[[${produits}]]*/ [];
-    const produitSelect = document.getElementById('produitSelect');
-    const quantiteInput = document.getElementById('quantiteInput');
-    const prixTotalInput = document.getElementById('prixTotalInput');
+    const produitSelect = document.getElementById("produitSelect");
+    const quantiteInput = document.getElementById("quantiteInput");
+    const prixTotalInput = document.getElementById("prixTotalInput");
 
     function getPrixProduit(id) {
-        const produit = produits.find(p => p.id == id);
+        const produit = produits.find((p) => p.id == id);
         return produit ? produit.prix : 0;
     }
 
@@ -96,10 +108,9 @@
         prixTotalInput.value = (prixProduit * quantite).toFixed(2);
     }
 
-    produitSelect.addEventListener('change', recalculerPrixTotal);
-    quantiteInput.addEventListener('input', recalculerPrixTotal);
-
-    window.addEventListener('load', recalculerPrixTotal);
+    produitSelect.addEventListener("change", recalculerPrixTotal);
+    quantiteInput.addEventListener("input", recalculerPrixTotal);
+    window.addEventListener("load", recalculerPrixTotal);
     /*]]>*/
 </script>
 
@@ -107,10 +118,9 @@
 
 <style>
     .card:hover {
-        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.3);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
         transition: box-shadow 0.3s ease-in-out;
     }
 </style>
-
 </body>
 </html>

@@ -1,195 +1,231 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Alertes</title>
-    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}">
+    <title>Dashboard Alertes Immersif</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/images/favicon.ico}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         body {
-            background-color: #121212;
-            color: #e0e0e0;
-            font-family: "Segoe UI", sans-serif;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(120deg,#0b0b1a,#101030);
+            overflow-x: hidden;
+            color:#e0e0e0;
         }
-        .navbar { background-color: #1f1f1f !important; }
-        .navbar-brand { font-weight: bold; }
-        .card {
-            background-color: #1e1e2f;
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            color: #e0e0e0;
+        @keyframes bgWave{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+        body::before {
+            content:""; position:fixed; top:0; left:0; width:100%; height:100%;
+            background: url('https://i.ibb.co/8KzFh7B/clouds.png') repeat-x;
+            opacity:0.05; animation:bgWave 60s linear infinite; pointer-events:none; z-index:0;
         }
-        .card-header {
-            background: linear-gradient(135deg, #2a2a40, #1e1e2f);
-            border-bottom: none;
+        .navbar{background-color:#1f1f2f !important; z-index:10;}
+        .navbar-brand{font-weight:bold;font-size:1.6rem;}
+        #alertes-ticker{
+            background:rgba(20,20,40,0.85); padding:0.5rem 1rem; border-radius:10px;
+            overflow:hidden; white-space:nowrap; box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
+            display:flex; gap:4rem; font-size:1.2rem; position:relative;
         }
-        .card-title { color: #fff; }
-        #alertes-messages {
-            background: #0f0f1a;
-            padding: 1rem;
-            border-radius: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 2rem;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+        .ticker-item{ display:inline-block; animation: tickerScroll 30s linear infinite;}
+        @keyframes tickerScroll{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
+        .card-alert{
+            background: linear-gradient(135deg,#1a1a2e,#2b2b45);
+            border-left:6px solid transparent; border-radius:16px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.85);
+            position:relative; overflow:hidden; transition: transform 0.3s, box-shadow 0.3s;
         }
-        .message {
-            padding: 0.6rem 0.8rem;
-            border-radius: 6px;
-            margin-bottom: 0.4rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 0.9rem;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: transform 0.4s ease, opacity 0.4s ease;
+        .card-alert:hover{transform:translateY(-5px); box-shadow:0 12px 50px rgba(0,0,0,0.95);}
+        .card-alert::before{
+            content:""; position:absolute; top:0; left:0; width:100%; height:100%;
+            border-radius:16px; z-index:0;
+            background: linear-gradient(120deg,rgba(0,255,136,0.2),rgba(255,85,85,0.15));
+            filter:blur(30px); pointer-events:none;
         }
-        .message.show { opacity: 1; transform: translateY(0); }
-        .alerte-vert { color: #00ff88; border-left: 4px solid #00ff88; }
-        .alerte-jaune { color: #ffd700; border-left: 4px solid #ffd700; }
-        .alerte-rouge { color: #ff5555; border-left: 4px solid #ff5555; font-weight: bold; }
-        .card-alert {
-            transition: transform 0.2s, box-shadow 0.2s;
-            background-color: #2a2a40;
-        }
-        .card-alert:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 25px rgba(0,0,0,0.7);
-        }
-        .badge { font-size: 1rem; padding: 0.6em 0.9em; }
-        canvas { background: #121212; border-radius: 8px; padding: 4px; }
+        .card-alert > *{position:relative; z-index:1;}
+        .card-title{font-weight:bold; font-size:1.2rem;}
+        .badge{font-size:1rem; padding:0.6em 0.9em;}
+        .alerte-vert{border-left:6px solid #00ff88; box-shadow:0 0 25px #00ff88;}
+        .alerte-jaune{border-left:6px solid #ffd700; box-shadow:0 0 25px #ffd700; animation:pulseYellow 1.5s infinite;}
+        .alerte-rouge{border-left:6px solid #ff5555; box-shadow:0 0 30px #ff5555; font-weight:bold; animation:pulseRed 1s infinite;}
+        @keyframes pulseYellow{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+        @keyframes pulseRed{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+        canvas{background:#121212; border-radius:8px; padding:4px;}
+        @media(min-width:1200px){#alertes-container{display:grid; grid-template-columns:repeat(4,1fr); gap:1rem;}}
+        @media(min-width:992px) and (max-width:1199px){#alertes-container{display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;}}
+        @media(max-width:991px){#alertes-container{display:grid; grid-template-columns:1fr; gap:1rem;}}
     </style>
 </head>
 <body>
-
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-success">
     <div class="container-fluid">
-        <a class="navbar-brand text-success" href="#">🌱 Projet Agricole ML</a>
+        <a class="navbar-brand fw-bold text-white" href="#"><i class="fas fa-seedling me-2"></i>Projet Agricole Immersif</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link text-light" th:href="@{/dashboard}">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link text-light" th:href="@{/dashboard}">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link active text-success" th:href="@{/alertes}">Alertes</a></li>
+                <li class="nav-item"><a class="nav-link text-white" th:href="@{/dashboard}"><i class="fas fa-home me-1"></i>Accueil</a></li>
+                <li class="nav-item"><a class="nav-link text-white" th:href="@{/dashboard}"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link active text-warning" th:href="@{/alertes}"><i class="fas fa-exclamation-triangle me-1"></i>Alertes</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- Contenu -->
+<div class="container my-4 text-end">
+    <label for="lang-select" class="form-label text-white me-2">Langue des alertes:</label>
+    <select id="lang-select" class="form-select w-auto d-inline-block">
+        <option value="fr-FR" selected>Français</option>
+        <option value="wo-WO">Wolof</option>
+        <option value="sr-SR">Sérère</option>
+    </select>
+</div>
+
+<!-- 🔊 Son pour alertes -->
+<audio id="alert-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
 <div class="container my-5">
-    <div class="card">
-        <div class="card-header text-center py-3">
-            <h2 class="mb-0 text-success">📊 Dashboard des Alertes</h2>
+    <div class="card shadow-lg border-0">
+        <div class="card-header text-center py-3 bg-success">
+            <h2 class="mb-0 text-white">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Dashboard des Alertes Immersif
+            </h2>
         </div>
-        <div class="card-body p-4">
-
-            <!-- Flux en direct -->
-            <h5 class="mb-3 text-light">📡 Flux en direct</h5>
-            <div id="alertes-messages"></div>
-
-            <!-- Alertes -->
-            <div class="row row-cols-1 row-cols-md-2 g-4" id="alertes-container">
-                <div class="col" th:each="a : ${alertes}" th:id="'alerte-' + ${a.id}">
-                    <div class="card card-alert shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title" th:text="${a.reference}">ALERTE-001</h5>
-                            <p class="small text-muted" th:text="${a.message}">Dernier message ML</p>
-
-                            <span class="badge rounded-pill"
-                                  th:classappend="${a.alerte=='🟢'} ? ' bg-success' : (${a.alerte=='🟡'} ? ' bg-warning text-dark' : ' bg-danger')"
-                                  th:text="${a.alerte}">🟢</span>
-
-                            <canvas class="chart-temp mt-3" height="80"></canvas>
-                            <canvas class="chart-humid mt-2" height="80"></canvas>
-                            <canvas class="chart-lumi mt-2" height="80"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="card-body p-4 bg-dark text-white rounded-bottom">
+            <h5 class="mb-3">📡 Flux en direct (Ticker)</h5>
+            <div id="alertes-ticker" class="mb-3"></div>
+            <div id="alertes-container"></div>
         </div>
     </div>
 </div>
 
-<!-- JS -->
 <script>
-    const charts = {};
     let stompClient = null;
+    const charts = {};
+    const maxPoints = 20;
+    const tickerDiv = document.getElementById("alertes-ticker");
+    const alertSound = document.getElementById("alert-sound");
 
-    function initCharts() {
-        document.querySelectorAll('.card-alert').forEach(card => {
-            const id = card.id.replace('alerte-', '');
-            charts[id] = {
-                temp: new Chart(card.querySelector('.chart-temp').getContext('2d'), {
-                    type:'line', data:{ labels:[], datasets:[{ label:'Temp °C', data:[], borderColor:'#ff5555', tension:0.4 }] },
-                    options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#e0e0e0' } }}, scales:{ x:{ ticks:{color:'#aaa'}}, y:{ ticks:{color:'#aaa'}}}}}),
-                humid: new Chart(card.querySelector('.chart-humid').getContext('2d'), {
-                    type:'line', data:{ labels:[], datasets:[{ label:'Humidité %', data:[], borderColor:'#00bfff', tension:0.4 }] },
-                    options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#e0e0e0' } }}, scales:{ x:{ ticks:{color:'#aaa'}}, y:{ ticks:{color:'#aaa'}}}}}),
-                lumi: new Chart(card.querySelector('.chart-lumi').getContext('2d'), {
-                    type:'line', data:{ labels:[], datasets:[{ label:'Luminosité lux', data:[], borderColor:'#ffaa00', tension:0.4 }] },
-                    options:{ responsive:true, plugins:{ legend:{ labels:{ color:'#e0e0e0' } }}, scales:{ x:{ ticks:{color:'#aaa'}}, y:{ ticks:{color:'#aaa'}}}}})
+    const translations = {
+        "wo-WO": {
+            "Température critique !": "Teemperature bi am solo!",
+            "Humidité élevée !": "Humidité bi am solo!",
+            "Luminosité intense !": "Njaxal bi am solo!",
+            "Alerte rouge": "Alerte bu weex!"
+        },
+        "sr-SR": {
+            "Température critique !": "Teemperature bi jafe na!",
+            "Humidité élevée !": "Humidité bi jafe na!",
+            "Luminosité intense !": "Njaxal bi jafe na!",
+            "Alerte rouge": "Alerte bu góó!"
+        }
+    };
+
+    function parlerAlerte(data) {
+        const synth = window.speechSynthesis;
+        const langue = document.getElementById("lang-select").value;
+
+        let message = "";
+        if (langue === "fr-FR") {
+            message = `Alerte rouge à ${data.ville}. Température ${data.temperature.toFixed(1)} degrés. Humidité ${data.humidite.toFixed(1)}%. Luminosité ${data.luminosite.toFixed(1)} lux. ${data.messageML}`;
+        } else {
+            const msg = translations[langue][data.messageML] || data.messageML;
+            message = `${data.ville} dafa am alerte ! Teemperature: ${data.temperature.toFixed(1)} digrii, Humidité: ${data.humidite.toFixed(1)}%, Njaxal: ${data.luminosite.toFixed(1)} lux. ${msg}`;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(message);
+        utterance.lang = langue;
+        synth.speak(utterance);
+    }
+
+    function creerCarte(data){
+        const container = document.getElementById("alertes-container");
+        let col = document.getElementById("alerte-"+data.id);
+        if(!col){
+            col = document.createElement("div"); col.className="col"; col.id="alerte-"+data.id;
+            col.innerHTML = `<div class="card card-alert shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">${data.ville}</h5>
+                    <p class="small text-muted">${data.messageML}</p>
+                    <span class="badge rounded-pill"></span>
+                    <canvas class="chart-temp mt-3" height="80"></canvas>
+                    <canvas class="chart-humid mt-2" height="80"></canvas>
+                    <canvas class="chart-lumi mt-2" height="80"></canvas>
+                </div></div>`;
+            container.appendChild(col);
+            const card = col.querySelector(".card");
+            charts[data.id] = {
+                temp:new Chart(card.querySelector(".chart-temp").getContext("2d"),{type:"line",data:{labels:[],datasets:[{label:"Temp °C",data:[],borderColor:"rgba(255,85,85,0.9)",backgroundColor:"rgba(255,85,85,0.2)",tension:0.4,fill:true}]},options:{plugins:{legend:{labels:{color:"#e0e0e0"}}},scales:{x:{ticks:{color:"#aaa"}},y:{ticks:{color:"#aaa"}}}}}),
+                humid:new Chart(card.querySelector(".chart-humid").getContext("2d"),{type:"line",data:{labels:[],datasets:[{label:"Humidité %",data:[],borderColor:"rgba(0,191,255,0.9)",backgroundColor:"rgba(0,191,255,0.2)",tension:0.4,fill:true}]},options:{plugins:{legend:{labels:{color:"#e0e0e0"}}},scales:{x:{ticks:{color:"#aaa"}},y:{ticks:{color:"#aaa"}}}}}),
+                lumi:new Chart(card.querySelector(".chart-lumi").getContext("2d"),{type:"line",data:{labels:[],datasets:[{label:"Luminosité lux",data:[],borderColor:"rgba(255,170,0,0.9)",backgroundColor:"rgba(255,170,0,0.2)",tension:0.4,fill:true}]},options:{plugins:{legend:{labels:{color:"#e0e0e0"}}},scales:{x:{ticks:{color:"#aaa"}},y:{ticks:{color:"#aaa"}}}}})
             };
-        });
+        }
+        return col;
     }
 
-    function initWebSocket() {
-        const socket = new SockJS('/ws');
-        stompClient = Stomp.over(socket);
+    function updateCharts(id,temperature,humidite,luminosite){
+        if(!charts[id]) return;
+        const now = new Date().toLocaleTimeString();
+        const addData = (chart,value)=>{chart.data.labels.push(now); chart.data.datasets[0].data.push(value); if(chart.data.labels.length>maxPoints){chart.data.labels.shift(); chart.data.datasets[0].data.shift();} chart.update();};
+        addData(charts[id].temp,temperature); addData(charts[id].humid,humidite); addData(charts[id].lumi,luminosite);
+    }
 
-        stompClient.connect({}, frame => {
-            console.log("Connecté STOMP version:", frame.headers['version']);
-            stompClient.subscribe('/topic/alertes', msg => {
-                const messagesDiv = document.getElementById('alertes-messages');
-                const text = msg.body;
+    function updateBadge(cardCol,alerte,data){
+        const badge = cardCol.querySelector(".badge"); badge.className="badge rounded-pill";
+        cardCol.querySelector(".card").classList.remove("alerte-vert","alerte-jaune","alerte-rouge");
+        if(alerte==="🟢"){ badge.classList.add("bg-success"); cardCol.querySelector(".card").classList.add("alerte-vert"); }
+        else if(alerte==="🟡"){ badge.classList.add("bg-warning","text-dark"); cardCol.querySelector(".card").classList.add("alerte-jaune"); }
+        else {
+            badge.classList.add("bg-danger"); cardCol.querySelector(".card").classList.add("alerte-rouge");
+            if(alertSound){ alertSound.currentTime=0; alertSound.play().catch(err=>console.log("Lecture audio bloquée:",err)); }
+            parlerAlerte(data);
+        }
+        badge.textContent=alerte;
+    }
 
-                let alertClass = '', emoji='❓';
-                if(text.includes('🟢')) { alertClass='alerte-vert'; emoji='🟢'; }
-                else if(text.includes('🟡')) { alertClass='alerte-jaune'; emoji='🟡'; }
-                else if(text.includes('🔴')) { alertClass='alerte-rouge'; emoji='🔴'; }
+    function afficherAlerteTicker(data){
+        const span = document.createElement("span"); span.classList.add("ticker-item");
+        span.textContent = `[${data.alerte}] ${data.ville}: Temp ${data.temperature.toFixed(1)}°C | Hum ${data.humidite.toFixed(1)}% | Lumi ${data.luminosite.toFixed(1)} lux | ${data.messageML}`;
+        tickerDiv.appendChild(span); setTimeout(()=>{tickerDiv.removeChild(span);},30000);
+    }
 
-                const div = document.createElement('div');
-                div.classList.add('message', alertClass);
-                div.innerHTML = `<span class="emoji">${emoji}</span> ${text}`;
-                messagesDiv.prepend(div);
-                requestAnimationFrame(()=> div.classList.add('show'));
-
-                setTimeout(()=> div.remove(), 15000);
-                while(messagesDiv.children.length > 50) messagesDiv.removeChild(messagesDiv.lastChild);
-
-                const idMatch = text.match(/ALERTE-(\d+)/);
-                if(idMatch){
-                    const card = document.getElementById('alerte-' + idMatch[1]);
-                    if(card){
-                        const badge = card.querySelector('.badge');
-                        if(alertClass==='alerte-vert') badge.className='badge rounded-pill bg-success';
-                        else if(alertClass==='alerte-jaune') badge.className='badge rounded-pill bg-warning text-dark';
-                        else badge.className='badge rounded-pill bg-danger';
-                        badge.textContent = emoji;
-                    }
-                }
+    function initWebSocket(){
+        const socket=new SockJS("/ws"); stompClient=Stomp.over(socket);
+        stompClient.connect({},frame=>{
+            console.log("Connecté STOMP version:",frame.headers["version"]);
+            stompClient.subscribe("/topic/alertes/",msg=>{
+                const data=JSON.parse(msg.body);
+                const cardCol=creerCarte(data);
+                updateCharts(data.id,data.temperature,data.humidite,data.luminosite);
+                updateBadge(cardCol,data.alerte,data);
+                afficherAlerteTicker(data);
             });
-        }, error => {
-            console.error("Erreur de connexion STOMP :", error);
-            setTimeout(initWebSocket, 5000);
-        });
+        },error=>{console.error("Erreur STOMP :",error); setTimeout(initWebSocket,5000);});
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        initCharts();
-        initWebSocket();
-    });
+    window.addEventListener("DOMContentLoaded",()=>{ initWebSocket(); });
+
+    // // ✅ Simulation
+    // setTimeout(() => {
+    //     const fakeData = {
+    //         id: 1,
+    //         ville: "Dakar",
+    //         temperature: 34.2,
+    //         humidite: 40,
+    //         luminosite: 200,
+    //         alerte: "🔴",
+    //         messageML: "Température critique !"
+    //     };
+    //     const cardCol=creerCarte(fakeData);
+    //     updateCharts(fakeData.id,fakeData.temperature,fakeData.humidite,fakeData.luminosite);
+    //     updateBadge(cardCol,fakeData.alerte,fakeData);
+    //     afficherAlerteTicker(fakeData);
+    // }, 3000);
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

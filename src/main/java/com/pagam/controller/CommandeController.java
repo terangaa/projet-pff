@@ -44,10 +44,18 @@ public class CommandeController {
     }
 
     // Formulaire pour ajouter une commande
+    // Formulaire pour ajouter une commande
     @GetMapping("/nouvelle")
     public String nouvelleCommande(Model model) {
         model.addAttribute("commande", new Commande());
-        model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs());
+
+        // Filtrer seulement les acheteurs
+        List<Utilisateur> acheteurs = utilisateurService.getAllUtilisateurs()
+                .stream()
+                .filter(u -> "ACHETEUR".equals(u.getRole()))
+                .toList();
+        model.addAttribute("utilisateurs", acheteurs);
+
         model.addAttribute("produits", produitService.getAllProduits());
         return "commandes/commande-form";
     }
@@ -57,8 +65,16 @@ public class CommandeController {
     public String afficherFormModifier(@PathVariable Long id, Model model) {
         Commande commande = commandeService.getCommandeById(id);
         model.addAttribute("commande", commande);
+
         model.addAttribute("produits", produitService.getAllProduits());
-        model.addAttribute("acheteurs", utilisateurService.getAllUtilisateurs());
+
+        // Filtrer seulement les acheteurs
+        List<Utilisateur> acheteurs = utilisateurService.getAllUtilisateurs()
+                .stream()
+                .filter(u -> "ACHETEUR".equals(u.getRole()))
+                .toList();
+        model.addAttribute("utilisateurs", acheteurs);
+
         return "commandes/commande-form";
     }
     // Enregistrer une commande
@@ -98,7 +114,7 @@ public class CommandeController {
     @GetMapping("/valider/{id}")
     public String validerCommande(@PathVariable Long id) {
         Commande commande = commandeService.getCommandeById(id);
-        if (commande != null && commande.getVente() == null) {
+        if (commande != null && (commande.getVentes() == null || commande.getVentes().isEmpty())) {
             venteService.creerVenteDepuisCommande(commande);
         }
         return "redirect:/commandes";

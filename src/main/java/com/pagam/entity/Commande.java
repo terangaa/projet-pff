@@ -3,6 +3,7 @@ package com.pagam.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,49 +27,86 @@ public class Commande {
 
     private Double prixTotal;
 
-
-    private double prixUnitaire; // ✅ conserver le prix du produit au moment de la commande
+    private double prixUnitaire; // prix du produit au moment de la commande
 
     private LocalDateTime dateCommande;
 
-    // Relation vers Vente
-
-    @OneToMany(mappedBy = "commande")
+    @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vente> ventes;
-
-
-    @ManyToOne()
-    private Vente vente; // liaison vers Vente
-
-
 
     @Enumerated(EnumType.STRING)
     private StatutCommande statut;
 
-    // ✅ Avant insertion en base
     @PrePersist
     protected void onCreate() {
         if (dateCommande == null) {
             dateCommande = LocalDateTime.now();
         }
         if (produit != null) {
-            prixUnitaire = produit.getPrix(); // sauvegarde le prix du produit
+            prixUnitaire = produit.getPrix();
         }
         calculerPrixTotal();
     }
 
-    // ✅ Avant mise à jour en base
     @PreUpdate
     protected void onUpdate() {
-        if (dateCommande == null) {
-            dateCommande = LocalDateTime.now();
-        }
         calculerPrixTotal();
     }
 
-    // ✅ Recalcul du prix total
     public void calculerPrixTotal() {
-        this.prixTotal = prixUnitaire * quantite;
+        if (quantite != null) {
+            this.prixTotal = prixUnitaire * quantite;
+        } else {
+            this.prixTotal = 0.0;
+        }
+    }
+
+    /**
+     * Crée une vente à partir de cette commande si elle est validée.
+     * La vente est liée à cette commande et au produit/acheteur correspondants.
+     */
+    public Vente creerVenteDepuisCommande() {
+        if (this.statut != StatutCommande.VALIDEE) {
+            throw new IllegalStateException("La commande doit être validée avant de créer une vente.");
+        }
+
+        Vente vente = Vente.builder()
+                .acheteur(this.acheteur)
+                .produit(this.produit)
+                .quantite(this.quantite != null ? this.quantite : 0)
+                .prix(this.prixUnitaire)
+                .dateVente(LocalDateTime.now())
+                .commande(this)
+                .montantTotal(this.prixTotal != null ? this.prixTotal : 0.0)
+                .montant(this.prixTotal != null ? this.prixTotal : 0.0)
+                .agriculteur(produit.getAgriculteur() != null ? produit.getAgriculteur().getUtilisateur() : null)
+                .build();
+
+        // Ajouter la vente à la liste des ventes de la commande (relation bidirectionnelle)
+        this.ventes.add(vente);
+
+        return vente;
+    }
+
+    public void setVente(Vente savedVente) {
+        if (savedVente != null) {
+            // Assure que la liste des ventes est initialisée
+            if (this.ventes == null) {
+                this.ventes = new ArrayList<>();
+            }
+
+            // Ajoute la vente à la liste si elle n'y est pas déjà
+            if (!this.ventes.contains(savedVente)) {
+                this.ventes.add(savedVente);
+            }
+
+            // Assure que la vente pointe vers cette commande
+            savedVente.setCommande(this);
+        }
+    }
+
+    public boolean getVente() {
+        return ventes != null && !ventes.isEmpty();
     }
 
 }

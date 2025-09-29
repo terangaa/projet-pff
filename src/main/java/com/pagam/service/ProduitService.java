@@ -85,4 +85,11 @@ public class ProduitService {
     public void save(Produit produit) {
         produitRepository.save(produit);
     }
+
+    // Trouver un produit par ID (Optionnel)
+    public Optional<Produit> findByIdOptional(Long id) {
+        return produitRepository.findById(id); // retourne Optional<Produit>
+    }
+
+
 }

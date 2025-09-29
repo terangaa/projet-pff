@@ -41,28 +41,41 @@ public class SimulationService {
         this.mailSender = mailSender;
     }
 
-    @Scheduled(fixedRate = 10000) // toutes les 10 secondes
+    @Scheduled(fixedRate = 10000) // toutes les 60 secondes
     public void simulerDonnees() {
         List<Capteur> capteurs = capteurRepository.findAll();
 
         for (Capteur capteur : capteurs) {
+            try {
+                // Envoi de la mesure pour ce capteur
+                envoyerMesure(capteur);
+
+                // Pause entre deux capteurs pour éviter l'envoi simultané
+                Thread.sleep(2000); // 2 secondes de délai, à ajuster selon le nombre de capteurs
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void envoyerMesure(Capteur capteur) {
+        try {
             double latitude = capteur.getLatitude();
             double longitude = capteur.getLongitude();
+            if (latitude == 0 || longitude == 0) return;
 
-            if (latitude == 0 || longitude == 0) continue; // ignorer capteurs sans coordonnées
-
-            // --- 1️⃣ Données météo réelles via lat/lon ---
+            // --- Données météo réelles ---
             Map<String, Object> meteoMap = meteoService.getMeteoByLatLon(latitude, longitude);
             MeteoData meteo = meteoService.parseMeteo(meteoMap);
 
             double baseTemp = meteo.getTemperature();
             double baseHum = meteo.getHumidite();
 
-            // --- 2️⃣ Ajout de petites variations ---
-            double temperature = baseTemp + (random.nextDouble() * 0.2 - 0.1); // ±0.1°C
-            double humidite = baseHum + (random.nextDouble() * 1 - 0.5);       // ±0.5%
+            double temperature = baseTemp + (random.nextDouble() * 0.2 - 0.1);
+            double humidite = baseHum + (random.nextDouble() * 1 - 0.5);
 
-            // --- 3️⃣ Calcul luminosité ---
+            // --- Calcul luminosité ---
             Map<String, Object> sys = (Map<String, Object>) meteoMap.get("sys");
             Map<String, Object> clouds = (Map<String, Object>) meteoMap.get("clouds");
 
@@ -70,18 +83,18 @@ public class SimulationService {
             long sunset = ((Number) sys.get("sunset")).longValue() * 1000;
             long now = System.currentTimeMillis();
 
-            int cloudiness = (int) clouds.get("all"); // % de nuages
+            int cloudiness = (int) clouds.get("all");
             double luminosite;
 
             if (now < sunrise || now > sunset) {
-                luminosite = 0; // nuit
+                luminosite = 0;
             } else {
                 double baseLum = 1000 * (1 - (cloudiness / 100.0));
-                luminosite = baseLum + (random.nextDouble() * 2 - 1); // ±1 lux
+                luminosite = baseLum + (random.nextDouble() * 2 - 1);
             }
             luminosite = Math.round(luminosite * 10.0) / 10.0;
 
-            // --- 4️⃣ Appel modèle ML Flask ---
+            // --- Appel modèle ML Flask ---
             RestTemplate restTemplate = new RestTemplate();
             String url = "http://localhost:5000/predict";
 
@@ -101,7 +114,6 @@ public class SimulationService {
                 if (response.getBody() != null) {
                     messageML = (String) response.getBody().get("message");
                     int prediction = (Integer) response.getBody().get("prediction");
-
                     niveauAlerte = prediction == 1 ? "🔴" : "🟢";
                     if (messageML.contains("attention") || messageML.contains("risque")) {
                         niveauAlerte = "🟡";
@@ -112,7 +124,7 @@ public class SimulationService {
                 niveauAlerte = "🔴";
             }
 
-            // --- 5️⃣ Enregistrement BDD ---
+            // --- Enregistrement BDD ---
             Mesure mesure = Mesure.builder()
                     .capteur(capteur)
                     .temperature(temperature)
@@ -126,8 +138,9 @@ public class SimulationService {
 
             mesureRepository.save(mesure);
 
-            // --- 6️⃣ Diffusion WebSocket ---
+            // --- Diffusion WebSocket ---
             Map<String, Object> payload = new HashMap<>();
+            payload.put("id", capteur.getId()); // ⚠️ essentiel pour le front
             payload.put("localisation", capteur.getLocalisation());
             payload.put("ville", capteur.getVille());
             payload.put("temperature", temperature);
@@ -138,11 +151,11 @@ public class SimulationService {
 
             messagingTemplate.convertAndSend("/topic/alertes/", payload);
 
-            System.out.println("📡 Mesure météo envoyée pour " + capteur.getVille() + " : " + payload);
+            System.out.println("📡 Mesure envoyée pour " + capteur.getVille() + ": " + payload);
 
-            // --- 7️⃣ Envoi email pour alertes ---
+            // --- Envoi email si alerte ---
             if (!niveauAlerte.equals("🟢")) {
-                String[] emailDest = {"sadikhyade851@gmail.com", "insaseth@gmail.com"}; // tableau des destinataires
+                String[] emailDest = {"sadikhyade851@gmail.com", "papesy302001@gmail.com"};
                 SimpleMailMessage email = new SimpleMailMessage();
                 email.setTo(emailDest);
                 email.setSubject("⚠️ Alerte météo pour " + capteur.getVille());
@@ -154,8 +167,11 @@ public class SimulationService {
                                 "Message ML: " + messageML + "\n" +
                                 "Alerte: " + niveauAlerte
                 );
-                mailSender.send(email);
+               // mailSender.send(email);
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

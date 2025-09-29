@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@google-cloud/text-to-speech": "^6.3.0",
+    "@vitalets/google-translate-api": "^9.2.1"
+  }
+}

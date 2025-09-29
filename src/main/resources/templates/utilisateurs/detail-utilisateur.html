@@ -1,50 +1,77 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head th:replace="~{head :: head}"></head>
+<head th:replace="~{head :: head}">
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+</head>
 <body class="bg-light py-4">
-
 <div class="container">
-
     <!-- Bouton retour -->
     <div class="mb-4">
-        <a th:href="@{/utilisateurs}" class="btn btn-outline-secondary shadow-sm">
-            <i class="bi bi-arrow-left"></i> Retour à la liste des utilisateurs
+        <a
+                th:href="@{/utilisateurs}"
+                class="btn btn-outline-secondary shadow-sm"
+        >
+            <i class="fas fa-arrow-left"></i> Retour à la liste des utilisateurs
         </a>
     </div>
 
     <!-- Carte détails -->
     <div class="card shadow-lg border-0 rounded-4">
-        <div class="card-header bg-gradient bg-info text-white rounded-top-4">
-            <h4 class="mb-0"><i class="bi bi-person-badge me-2"></i> Détails de l’utilisateur</h4>
+        <div
+                class="card-header bg-gradient bg-success text-white rounded-top-4"
+        >
+            <h4 class="mb-0">
+                <i class="fas fa-user-tag me-2"></i> Détails de l’utilisateur
+            </h4>
         </div>
         <div class="card-body p-4">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
-                    <strong>Nom :</strong> <span th:text="${utilisateur.nom}"></span>
+                    <strong
+                    ><i class="fas fa-user me-1 text-success"></i> Nom :</strong
+                    >
+                    <span th:text="${utilisateur.nom}"></span>
                 </li>
                 <li class="list-group-item">
-                    <strong>Email :</strong> <span th:text="${utilisateur.email}"></span>
+                    <strong
+                    ><i class="fas fa-envelope me-1 text-success"></i> Email
+                        :</strong
+                    >
+                    <span th:text="${utilisateur.email}"></span>
                 </li>
                 <li class="list-group-item">
-                    <strong>Rôle :</strong> <span class="badge bg-primary" th:text="${utilisateur.role}"></span>
+                    <strong
+                    ><i class="fas fa-user-shield me-1 text-success"></i> Rôle
+                        :</strong
+                    >
+                    <span
+                            class="badge bg-success"
+                            th:text="${utilisateur.role}"
+                    ></span>
                 </li>
             </ul>
         </div>
         <div class="card-footer text-end">
-            <a th:href="@{/utilisateurs/modifier/{id}(id=${utilisateur.id})}" class="btn btn-warning">
-                <i class="bi bi-pencil-square"></i> Modifier
+            <a
+                    th:href="@{/utilisateurs/modifier/{id}(id=${utilisateur.id})}"
+                    class="btn btn-warning"
+            >
+                <i class="fas fa-pen"></i> Modifier
             </a>
-            <a th:href="@{/utilisateurs/supprimer/{id}(id=${utilisateur.id})}"
-               class="btn btn-danger"
-               onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
-                <i class="bi bi-trash"></i> Supprimer
+            <a
+                    th:href="@{/utilisateurs/supprimer/{id}(id=${utilisateur.id})}"
+                    class="btn btn-danger"
+                    onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');"
+            >
+                <i class="fas fa-trash"></i> Supprimer
             </a>
         </div>
     </div>
-
 </div>
 
 <div th:replace="~{footer :: footer}"></div>
-
 </body>
 </html>

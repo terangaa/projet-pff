@@ -66,4 +66,8 @@ public class UtilisateurService {
                 .orElse(null); // retourne null si aucun utilisateur trouvé
     }
 
+    // Méthode pour récupérer un utilisateur par ID en Optional
+    public Optional<Utilisateur> findByIdOptional(Long id) {
+        return utilisateurRepository.findById(id);
+    }
 }

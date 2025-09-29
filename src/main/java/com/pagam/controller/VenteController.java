@@ -1,5 +1,7 @@
 package com.pagam.controller;
 
+import com.pagam.entity.Produit;
+import com.pagam.entity.Utilisateur;
 import com.pagam.entity.Vente;
 import com.pagam.service.ProduitService;
 import com.pagam.service.UtilisateurService;
@@ -41,7 +43,18 @@ public class VenteController {
     // Ajouter une vente
     @PostMapping("/ajouter")
     public String ajouterVente(@ModelAttribute Vente vente) {
+        // Récupérer le produit et l'acheteur via Optional
+        Produit produit = produitService.findByIdOptional(vente.getProduit().getId())
+                .orElseThrow(() -> new RuntimeException("Produit introuvable"));
+
+        Utilisateur acheteur = utilisateurService.findByIdOptional(vente.getAcheteur().getId())
+                .orElseThrow(() -> new RuntimeException("Acheteur introuvable"));
+
+        // Assigner les objets correctement
+        vente.setProduit(produit);
+        vente.setAcheteur(acheteur);
         vente.setDateVente(LocalDateTime.now());
+
         venteService.save(vente);
         return "redirect:/agriculteur/ventes";
     }
@@ -64,9 +77,13 @@ public class VenteController {
         Vente venteExistante = venteService.findById(id);
         if (venteExistante == null) return "redirect:/agriculteur/ventes";
 
-        // Mettre à jour les champs
-        venteExistante.setProduit(vente.getProduit());
-        venteExistante.setAcheteur(vente.getAcheteur());
+        Produit produit = produitService.findByIdOptional(vente.getProduit().getId())
+                .orElseThrow(() -> new RuntimeException("Produit introuvable"));
+        Utilisateur acheteur = utilisateurService.findByIdOptional(vente.getAcheteur().getId())
+                .orElseThrow(() -> new RuntimeException("Acheteur introuvable"));
+
+        venteExistante.setProduit(produit);
+        venteExistante.setAcheteur(acheteur);
         venteExistante.setQuantite(vente.getQuantite());
         venteExistante.setPrix(vente.getPrix());
         venteExistante.setDateVente(LocalDateTime.now());

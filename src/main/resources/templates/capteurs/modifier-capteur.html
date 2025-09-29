@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Modifier Capteur - PAGAM</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
         body {
             background: linear-gradient(to right, #e0f7fa, #f1f8e9);
@@ -12,7 +18,7 @@
         }
         .card {
             border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             background: linear-gradient(145deg, #ffffff, #f9f9f9);
             opacity: 0;
             transform: translateY(50px);
@@ -25,12 +31,14 @@
                 transform: translateY(0);
             }
         }
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             border-radius: 12px;
             transition: all 0.3s ease;
         }
-        .form-control:focus, .form-select:focus {
-            box-shadow: 0 0 12px rgba(0,123,255,0.5);
+        .form-control:focus,
+        .form-select:focus {
+            box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
             border-color: #007bff;
             transform: scale(1.02);
         }
@@ -38,9 +46,15 @@
             border-radius: 12px;
             transition: all 0.2s ease;
         }
-        .btn-primary:hover { transform: scale(1.05); }
-        .btn-secondary:hover { transform: scale(1.05); }
-        .btn-space { margin-right: 10px; }
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+        .btn-secondary:hover {
+            transform: scale(1.05);
+        }
+        .btn-space {
+            margin-right: 10px;
+        }
         .icon-type {
             font-size: 1.5rem;
             margin-left: 8px;
@@ -54,42 +68,99 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div id="capteurCard" class="card p-4">
-                <h2 class="mb-4 text-center">Modifier le Capteur</h2>
-                <form id="capteurForm" th:action="@{'/capteurs/modifier/' + ${capteur.id}}" th:object="${capteur}" method="post">
+                <h2 class="mb-4 text-center text-success">
+                    <i class="fas fa-seedling me-2"></i>Modifier le Capteur
+                </h2>
+                <form
+                        id="capteurForm"
+                        th:action="@{'/capteurs/modifier/' + ${capteur.id}}"
+                        th:object="${capteur}"
+                        method="post"
+                >
                     <div class="mb-3">
-                        <label for="reference" class="form-label">Référence</label>
-                        <input type="text" th:field="*{reference}" class="form-control" id="reference" placeholder="Ex: CAP-001" required>
+                        <label for="reference" class="form-label fw-semibold"
+                        ><i class="fas fa-barcode me-1 text-success"></i
+                        >Référence</label
+                        >
+                        <input
+                                type="text"
+                                th:field="*{reference}"
+                                class="form-control"
+                                id="reference"
+                                placeholder="Ex: CAP-001"
+                                required
+                        />
                     </div>
 
                     <div class="mb-3">
-                        <label for="type" class="form-label">Type</label>
+                        <label for="type" class="form-label fw-semibold"
+                        ><i class="fas fa-leaf me-1 text-success"></i>Type</label
+                        >
                         <div class="d-flex align-items-center">
-                            <select id="typeSelect" th:field="*{type}" class="form-select" required>
+                            <select
+                                    id="typeSelect"
+                                    th:field="*{type}"
+                                    class="form-select"
+                                    required
+                            >
                                 <option value="">-- Sélectionner --</option>
-                                <option value="TEMP" th:selected="${capteur.type=='TEMP'}">Température</option>
-                                <option value="HUMIDITE" th:selected="${capteur.type=='HUMIDITE'}">Humidité</option>
-                                <option value="SOL" th:selected="${capteur.type=='SOL'}">Sol</option>
+                                <option value="TEMP" th:selected="${capteur.type=='TEMP'}">
+                                    Température
+                                </option>
+                                <option
+                                        value="HUMIDITE"
+                                        th:selected="${capteur.type=='HUMIDITE'}"
+                                >
+                                    Humidité
+                                </option>
+                                <option value="SOL" th:selected="${capteur.type=='SOL'}">
+                                    Sol
+                                </option>
                             </select>
-                            <i id="typeIcon" class="bi bi-question-circle icon-type text-secondary"></i>
+                            <i
+                                    id="typeIcon"
+                                    class="fas fa-question-circle icon-type text-secondary"
+                            ></i>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="localisation" class="form-label">Localisation</label>
-                        <input type="text" th:field="*{localisation}" class="form-control" id="localisation" placeholder="Ex: Dakar" required>
+                        <label for="localisation" class="form-label fw-semibold"
+                        ><i class="fas fa-map-marker-alt me-1 text-success"></i
+                        >Localisation</label
+                        >
+                        <input
+                                type="text"
+                                th:field="*{localisation}"
+                                class="form-control"
+                                id="localisation"
+                                placeholder="Ex: Dakar"
+                                required
+                        />
                     </div>
 
                     <div class="mb-3">
-                        <label for="moyenne" class="form-label">Moyenne</label>
-                        <input type="number" step="0.1" th:field="*{moyenne}" class="form-control" id="moyenne" placeholder="Ex: 23.5" required>
+                        <label for="moyenne" class="form-label fw-semibold"
+                        ><i class="fas fa-chart-line me-1 text-success"></i
+                        >Moyenne</label
+                        >
+                        <input
+                                type="number"
+                                step="0.1"
+                                th:field="*{moyenne}"
+                                class="form-control"
+                                id="moyenne"
+                                placeholder="Ex: 23.5"
+                                required
+                        />
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-primary btn-space">
-                            <i class="bi bi-save me-1"></i> Enregistrer
+                        <button type="submit" class="btn btn-success btn-space">
+                            <i class="fas fa-check-circle me-1"></i> Enregistrer
                         </button>
-                        <a th:href="@{/capteurs}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left-circle me-1"></i> Retour
+                        <a th:href="@{/capteurs}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Retour
                         </a>
                     </div>
                 </form>
@@ -100,40 +171,41 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const typeSelect = document.getElementById('typeSelect');
-    const typeIcon = document.getElementById('typeIcon');
-    const card = document.getElementById('capteurCard');
+    const typeSelect = document.getElementById("typeSelect");
+    const typeIcon = document.getElementById("typeIcon");
+    const card = document.getElementById("capteurCard");
 
     function updateTypeStyle() {
-        let color, gradient;
-        switch(typeSelect.value) {
-            case 'TEMP':
-                typeIcon.className = 'bi bi-thermometer-half icon-type';
-                color = 'orangered';
-                gradient = 'linear-gradient(145deg, #fff5f0, #ffe0d6)';
+        let color, gradient, iconClass;
+        switch (typeSelect.value) {
+            case "TEMP":
+                iconClass = "fas fa-temperature-high icon-type";
+                color = "orangered";
+                gradient = "linear-gradient(145deg, #fff5f0, #ffe0d6)";
                 break;
-            case 'HUMIDITE':
-                typeIcon.className = 'bi bi-droplet icon-type';
-                color = 'deepskyblue';
-                gradient = 'linear-gradient(145deg, #e0f7ff, #c0eaff)';
+            case "HUMIDITE":
+                iconClass = "fas fa-tint icon-type";
+                color = "deepskyblue";
+                gradient = "linear-gradient(145deg, #e0f7ff, #c0eaff)";
                 break;
-            case 'SOL':
-                typeIcon.className = 'bi bi-leaf icon-type';
-                color = 'green';
-                gradient = 'linear-gradient(145deg, #eafbe0, #d4f5c8)';
+            case "SOL":
+                iconClass = "fas fa-leaf icon-type";
+                color = "green";
+                gradient = "linear-gradient(145deg, #eafbe0, #d4f5c8)";
                 break;
             default:
-                typeIcon.className = 'bi bi-question-circle icon-type';
-                color = 'gray';
-                gradient = 'linear-gradient(145deg, #ffffff, #f9f9f9)';
+                iconClass = "fas fa-question-circle icon-type";
+                color = "gray";
+                gradient = "linear-gradient(145deg, #ffffff, #f9f9f9)";
         }
+        typeIcon.className = iconClass;
         typeIcon.style.color = color;
         card.style.background = gradient;
     }
 
     // Initialisation de l'icône au chargement
     updateTypeStyle();
-    typeSelect.addEventListener('change', updateTypeStyle);
+    typeSelect.addEventListener("change", updateTypeStyle);
 </script>
 </body>
 </html>

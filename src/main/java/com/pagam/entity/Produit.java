@@ -19,12 +19,15 @@ public class Produit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nom;
     private Double prix;
     private int stock;
     private String image;
     private String description;
+    private Integer quantite;  // <--- ce champ doit exister
+    @ManyToOne
+    @JoinColumn(name = "agriculteur_id")
+    private Producteur agriculteur;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "producteur_id")

@@ -25,20 +25,20 @@
                 <th>Nom</th>
                 <th>Description</th>
                 <th>Prix (€)</th>
-                <th>Stock</th> <!-- Changement ici -->
+                <th>Quantité</th>
                 <th th:if="${role != 'ACHETEUR'}">Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="p : ${produits}">
                 <td>
-                    <img th:src="@{${p.image}}" alt="Produit" class="img-thumbnail" style="max-width: 80px;">
+                    <img th:src="${p.image}" alt="Produit" class="img-thumbnail" style="max-width: 80px;">
                 </td>
                 <td th:text="${p.nom}"></td>
-                <td th:utext="${p.description}"></td>
+                <td th:text="${p.description}"></td>
                 <td th:text="${p.prix}"></td>
-                <td th:text="${p.stock}"></td> <!-- Ici on affiche bien le stock -->
-                <td th:if="${role != 'ACHETEUR'}">
+                <td th:text="${p.quantite}"></td>
+                <td th:if="${role == null or role != 'ACHETEUR'}">
                     <a th:href="@{/produits/modifier/{id}(id=${p.id})}" class="btn btn-warning btn-sm me-1">
                         <i class="bi bi-pencil-square"></i> Modifier
                     </a>

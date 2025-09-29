@@ -1,47 +1,139 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Liste des Capteurs</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        /* Hover léger sur les lignes du tableau */
-        .table-hover tbody tr:hover {
-            background-color: #e2f0ff;
-            transition: background-color 0.3s;
+        body {
+            background: linear-gradient(135deg, #183a1d 0%, #274e13 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
         }
-
-        /* Boutons actions */
+        .card {
+            background: #223322;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(24, 58, 29, 0.15);
+        }
+        .card-header {
+            background: linear-gradient(90deg, #388e3c 60%, #183a1d 100%);
+            color: #fff;
+            border-radius: 18px 18px 0 0;
+        }
+        .btn-agri {
+            background: linear-gradient(90deg, #43a047 60%, #388e3c 100%);
+            color: #fff;
+            border: none;
+        }
+        .btn-agri:hover {
+            background: linear-gradient(90deg, #388e3c 60%, #43a047 100%);
+            color: #fff;
+        }
+        .table thead {
+            background: #388e3c;
+            color: #fff;
+        }
+        .table tbody tr {
+            background: #223322;
+            color: #e0e0e0;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #2e4d2c;
+            color: #fff;
+        }
         .btn-action {
             min-width: 90px;
         }
     </style>
 </head>
-<body class="bg-light">
-<div class="container mt-4">
-
-    <!-- Header avec titre et boutons -->
-    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-        <h1 class="mb-2">📡 Liste des Capteurs</h1>
-        <div class="d-flex gap-2 mb-2">
-            <a class="btn btn-secondary btn-lg d-flex align-items-center" th:href="@{/dashboard}">
-                <i class="bi bi-house fs-5 me-1"></i> Accueil
-            </a>
-            <a class="btn btn-primary btn-lg d-flex align-items-center" th:href="@{/capteurs/ajouter}">
-                <i class="bi bi-plus-circle fs-5 me-1"></i> Ajouter un capteur
-            </a>
+<body>
+<!-- Header / Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}">
+            <i class="fas fa-seedling me-2"></i>AgriPlateforme
+        </a>
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"
+                    ><i class="fas fa-home"></i> Accueil</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/produits}"
+                    ><i class="fas fa-carrot"></i> Produits</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/capteurs}"
+                    ><i class="fas fa-microchip"></i> Capteurs</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/producteurs}"
+                    ><i class="fas fa-tractor"></i> Producteurs</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/utilisateurs}"
+                    ><i class="fas fa-users"></i> Utilisateurs</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/dashboard}"
+                    ><i class="fas fa-tachometer-alt"></i> Tableau de bord</a
+                    >
+                </li>
+            </ul>
         </div>
     </div>
+</nav>
 
-    <!-- Tableau dans une card -->
-    <div class="card shadow-sm rounded-4">
+<!-- Contenu principal -->
+<main class="container my-5">
+    <div class="card shadow-lg">
+        <div
+                class="card-header d-flex justify-content-between align-items-center"
+        >
+            <h2 class="mb-0">
+                <i class="fas fa-seedling me-2"></i>Liste des Capteurs
+            </h2>
+            <div class="d-flex gap-2">
+                <a
+                        class="btn btn-agri d-flex align-items-center"
+                        th:href="@{/dashboard}"
+                ><i class="fas fa-home fs-5 me-1"></i>Accueil</a
+                >
+                <a
+                        class="btn btn-agri d-flex align-items-center"
+                        th:href="@{/capteurs/ajouter}"
+                ><i class="fas fa-plus-circle fs-5 me-1"></i>Ajouter</a
+                >
+            </div>
+        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 text-center">
-                    <thead class="table-primary">
+                    <thead>
                     <tr>
                         <th>Nom</th>
                         <th>Référence</th>
@@ -60,21 +152,26 @@
                         <td th:text="${capteur.reference}"></td>
                         <td th:text="${capteur.type}"></td>
                         <td th:text="${capteur.localisation}"></td>
-                        <td th:text="${#numbers.formatDecimal(capteur.moyenne, 1, 1, 'POINT')}"></td>
+                        <td
+                                th:text="${#numbers.formatDecimal(capteur.moyenne, 1, 1, 'POINT')}"
+                        ></td>
                         <td class="d-flex justify-content-center gap-1 flex-wrap">
-                            <a th:href="@{/capteurs/modifier/{id}(id=${capteur.id})}"
-                               class="btn btn-warning btn-action btn-md d-flex align-items-center mb-1">
-                                <i class="bi bi-pencil-square fs-5 me-1"></i> Modifier
-                            </a>
-                            <a th:href="@{/capteurs/detail/{id}(id=${capteur.id})}"
-                               class="btn btn-info btn-action btn-md d-flex align-items-center mb-1">
-                                <i class="bi bi-info-circle fs-5 me-1"></i> Détails
-                            </a>
-                            <a th:href="@{/capteurs/supprimer/{id}(id=${capteur.id})}"
-                               class="btn btn-danger btn-action btn-md d-flex align-items-center mb-1"
-                               onclick="return confirm('Voulez-vous vraiment supprimer ce capteur ?');">
-                                <i class="bi bi-trash fs-5 me-1"></i> Supprimer
-                            </a>
+                            <a
+                                    th:href="@{/capteurs/modifier/{id}(id=${capteur.id})}"
+                                    class="btn btn-outline-warning btn-action btn-sm d-flex align-items-center mb-1"
+                            ><i class="fas fa-pen me-1"></i
+                            ></a>
+                            <a
+                                    th:href="@{/capteurs/detail/{id}(id=${capteur.id})}"
+                                    class="btn btn-outline-info btn-action btn-sm d-flex align-items-center mb-1"
+                            ><i class="fas fa-info-circle me-1"></i
+                            ></a>
+                            <a
+                                    th:href="@{/capteurs/supprimer/{id}(id=${capteur.id})}"
+                                    class="btn btn-outline-danger btn-action btn-sm d-flex align-items-center mb-1"
+                                    onclick="return confirm('Voulez-vous vraiment supprimer ce capteur ?');"
+                            ><i class="fas fa-trash me-1"></i
+                            ></a>
                         </td>
                     </tr>
                     </tbody>
@@ -82,10 +179,24 @@
             </div>
         </div>
     </div>
+</main>
 
-</div>
+<!-- Footer -->
+<footer class="bg-success text-white text-center py-3 mt-auto shadow-sm">
+    <div class="container">
+        <div class="mb-2">
+            <i class="fas fa-seedling"></i> Plateforme Agricole &copy; 2025
+        </div>
+        <div>
+            <a href="#" class="text-white me-3"
+            ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </div>
+</footer>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

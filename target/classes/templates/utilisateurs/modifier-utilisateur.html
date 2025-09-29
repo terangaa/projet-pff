@@ -1,70 +1,96 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head th:replace="~{head :: head}"></head>
+<head th:replace="~{head :: head}">
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+</head>
 <body class="bg-light py-4">
-
 <div class="container">
-
     <!-- Bouton retour -->
     <div class="mb-4">
-        <a th:href="@{/utilisateurs}" class="btn btn-outline-secondary shadow-sm">
-            <i class="bi bi-arrow-left"></i> Retour à la liste des utilisateurs
+        <a
+                th:href="@{/utilisateurs}"
+                class="btn btn-outline-secondary shadow-sm"
+        >
+            <i class="fas fa-arrow-left"></i> Retour à la liste des utilisateurs
         </a>
     </div>
 
     <!-- Formulaire de modification -->
     <div class="card shadow-lg border-0 rounded-4">
-        <div class="card-header bg-gradient bg-primary text-white rounded-top-4">
-            <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i> Modifier un utilisateur</h4>
+        <div
+                class="card-header bg-gradient bg-success text-white rounded-top-4"
+        >
+            <h4 class="mb-0">
+                <i class="fas fa-user-edit me-2"></i> Modifier un utilisateur
+            </h4>
         </div>
         <div class="card-body p-4">
-            <form th:action="@{'/utilisateurs/modifier/' + ${utilisateur.id}}"
-                  th:object="${utilisateur}" method="post">
-
+            <form
+                    th:action="@{'/utilisateurs/modifier/' + ${utilisateur.id}}"
+                    th:object="${utilisateur}"
+                    method="post"
+            >
                 <!-- Nom -->
                 <div class="mb-3">
                     <label for="nom" class="form-label fw-semibold">Nom</label>
-                    <input type="text" th:field="*{nom}" id="nom"
-                           class="form-control shadow-sm"
-                           placeholder="Entrer le nom complet" required>
+                    <input
+                            type="text"
+                            th:field="*{nom}"
+                            id="nom"
+                            class="form-control shadow-sm"
+                            placeholder="Entrer le nom complet"
+                            required
+                    />
                 </div>
 
                 <!-- Email -->
                 <div class="mb-3">
                     <label for="email" class="form-label fw-semibold">Email</label>
-                    <input type="email" th:field="*{email}" id="email"
-                           class="form-control shadow-sm"
-                           placeholder="exemple@mail.com" required>
+                    <input
+                            type="email"
+                            th:field="*{email}"
+                            id="email"
+                            class="form-control shadow-sm"
+                            placeholder="exemple@mail.com"
+                            required
+                    />
                 </div>
 
                 <!-- Rôle -->
                 <div class="mb-4">
                     <label for="role" class="form-label fw-semibold">Rôle</label>
-                    <select th:field="*{role}" id="role" class="form-select shadow-sm">
+                    <select
+                            th:field="*{role}"
+                            id="role"
+                            class="form-select shadow-sm"
+                    >
                         <option value="ADMIN">👑 ADMIN</option>
                         <option value="AGRICULTEUR">🌱 AGRICULTEUR</option>
                         <option value="ACHETEUR">🛒 ACHETEUR</option>
-                        <option value="DECIDEUR">📊 DECIDEUR</option>
+                        <option value="DECIDEUR">
+                            <i class="fas fa-chart-bar text-success"></i> DECIDEUR
+                        </option>
                     </select>
                 </div>
 
                 <!-- Boutons -->
                 <div class="d-flex justify-content-between">
                     <a th:href="@{/utilisateurs}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-circle"></i> Annuler
+                        <i class="fas fa-times-circle"></i> Annuler
                     </a>
                     <button type="submit" class="btn btn-success shadow-sm">
-                        <i class="bi bi-check-circle"></i> Enregistrer
+                        <i class="fas fa-check-circle"></i> Enregistrer
                     </button>
                 </div>
             </form>
         </div>
     </div>
-
 </div>
 
 <!-- Footer -->
 <div th:replace="~{footer :: footer}"></div>
-
 </body>
 </html>

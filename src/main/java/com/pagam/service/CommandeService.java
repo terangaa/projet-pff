@@ -86,21 +86,28 @@ public class CommandeService {
     }
 
     public Vente creerVenteDepuisCommande(Commande commande) {
-        if (commande.getVente() != null) {
+        if (commande.getVentes() != null && !commande.getVentes().isEmpty()) {
             throw new RuntimeException("Cette commande a déjà été transformée en vente");
         }
 
         Vente vente = Vente.builder()
-                .commande(commande)
-                .montant(commande.getPrixTotal())
+                .acheteur(commande.getAcheteur())
+                .produit(commande.getProduit())
+                .quantite(commande.getQuantite())
+                .prix(commande.getPrixUnitaire())
                 .dateVente(LocalDateTime.now())
+                .commande(commande)
+                .montantTotal(commande.getPrixTotal())
+                .montant(commande.getPrixTotal())
+                .agriculteur(commande.getProduit().getAgriculteur().getUtilisateur())
                 .build();
 
-        // Lier la vente à la commande
-        commande.setVente(vente);
-        commandeRepository.save(commande); // sauvegarde la relation
+        // Ajouter la vente à la liste de la commande
+        if (commande.getVentes() != null) {
+            commande.getVentes().add(vente);
+        }
 
-        return venteRepository.save(vente);
+        return vente;
     }
 
     public Commande findById(Long id) {

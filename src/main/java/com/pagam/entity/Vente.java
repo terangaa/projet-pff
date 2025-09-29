@@ -35,28 +35,23 @@ public class Vente {
 
     private Double montant;       // montant final (peut être lié à commande)
 
-    // 🔹 Setter sécurisé pour Produit
+    @ManyToOne
+    @JoinColumn(name = "agriculteur_id")
+    private Utilisateur agriculteur;
+
+    // 🔹 Setter pour Produit (compatible Thymeleaf)
     public void setProduit(Produit produit) {
-        if (produit != null && produit.getId() == null) {
-            throw new IllegalStateException("Le produit doit être persisté avant d'être assigné à la vente.");
-        }
         this.produit = produit;
         calculerMontantTotal();
     }
 
-    // 🔹 Setter sécurisé pour Acheteur
+    // 🔹 Setter pour Acheteur (compatible Thymeleaf)
     public void setAcheteur(Utilisateur acheteur) {
-        if (acheteur != null && acheteur.getId() == null) {
-            throw new IllegalStateException("L'utilisateur doit être persisté avant d'être assigné à la vente.");
-        }
         this.acheteur = acheteur;
     }
 
-    // 🔹 Setter sécurisé pour Commande
+    // 🔹 Setter pour Commande
     public void setCommande(Commande commande) {
-        if (commande != null && commande.getId() == null) {
-            throw new IllegalStateException("La commande doit être persistée avant d'être assignée à la vente.");
-        }
         this.commande = commande;
         calculerMontant();
     }

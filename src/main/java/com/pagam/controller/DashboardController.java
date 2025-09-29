@@ -69,11 +69,20 @@ public class DashboardController {
                 ));
                 model.addAttribute("utilisateurs", utilisateurs);
 
+                // Compteurs pour le dashboard
+                model.addAttribute("nbUtilisateurs", utilisateurs.size());
+                model.addAttribute("nbCapteurs", capteurs.size());
+                model.addAttribute("nbProduits", produitService.getAllProduits().size());
+                model.addAttribute("nbCommandes", commandeService.getAllCommandes().size());
+                model.addAttribute("nbAlertes", alertes.size());
+
                 // 🔥 ajouter les ventes
                 List<Vente> ventes = venteService.findAll();
                 model.addAttribute("ventes", ventes);
+
                 return "dashboard/admin-home"; // 🚀 Page spéciale ADMIN
             }
+
             case AGRICULTEUR -> {
                 List<Produit> produits = produitService.getAllProduits();
                 produits.sort(Comparator.comparing(

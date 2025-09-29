@@ -18,17 +18,21 @@
         <th>Produit</th>
         <th>Quantité</th>
         <th>Date de vente</th>
+        <th>Commande</th>
         <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="vente : ${ventes}">
         <td th:text="${vente.id}"></td>
-        <td th:text="${vente.acheteur?.nom} ?: 'Inconnu'"></th:text></td>
-        <td th:text="${vente.produit.nom}"></td>
+        <!-- Sécurisation : si acheteur null -->
+        <td th:text="${vente.acheteur != null ? vente.acheteur.nom : 'Inconnu'}"></td>
+        <td th:text="${vente.produit != null ? vente.produit.nom : 'Inconnu'}"></td>
         <td th:text="${vente.quantite}"></td>
-        <!-- Formattage avec #temporals -->
-        <td th:text="${#temporals.format(vente.dateVente, 'dd/MM/yyyy HH:mm')}"></td>
+        <!-- Formatage de la date -->
+        <td th:text="${vente.dateVente != null ? #temporals.format(vente.dateVente, 'dd/MM/yyyy HH:mm') : '-'}"></td>
+        <!-- Affichage de la commande -->
+        <td th:text="${vente.commande != null ? 'Commande #' + vente.commande.id : 'Aucune'}"></td>
         <td>
             <a th:href="@{/agriculteur/ventes/modifier/{id}(id=${vente.id})}" class="btn btn-sm btn-primary">Modifier</a>
             <a th:href="@{/agriculteur/ventes/supprimer/{id}(id=${vente.id})}"
@@ -36,7 +40,6 @@
                onclick="return confirm('Voulez-vous vraiment supprimer cette vente ?');">
                 Supprimer
             </a>
-
         </td>
     </tr>
     </tbody>
