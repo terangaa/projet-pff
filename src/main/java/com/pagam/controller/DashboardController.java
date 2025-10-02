@@ -25,30 +25,30 @@ public class DashboardController {
     private final CommandeService commandeService;
     private final VenteService venteService;
 
-
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+        // ✅ Si non authentifié, rediriger vers login
         if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
-            model.addAttribute("role", "VISITEUR");
-            return "dashboard/dashboard";
+            return "redirect:/auth/login";
         }
 
+        // Récupérer l'utilisateur connecté
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         String email = userDetails.getUsername();
         Utilisateur user = utilisateurService.getByEmail(email);
 
         if (user == null) {
-            model.addAttribute("role", "VISITEUR");
-            return "dashboard/dashboard";
+            return "redirect:/auth/login";
         }
 
         Role role = user.getRole();
         model.addAttribute("role", role.name());
         model.addAttribute("email", user.getEmail());
 
-        // Capteurs
+        // ✅ Charger les capteurs avec leurs dernières mesures
         List<Capteur> capteurs = capteurService.tousLesCapteurs();
         capteurs.forEach(c -> {
             List<Mesure> mesures = (List<Mesure>) capteurService.getDernieresMesures(c.getId());
@@ -56,10 +56,11 @@ public class DashboardController {
         });
         model.addAttribute("capteurs", capteurs);
 
-        // Alertes
+        // ✅ Charger toutes les alertes
         List<Alerte> alertes = alerteService.getToutes();
         model.addAttribute("alertes", alertes != null ? alertes : Collections.emptyList());
 
+        // 🔹 Redirection par rôle
         switch (role) {
             case ADMIN -> {
                 List<Utilisateur> utilisateurs = utilisateurService.getAllUtilisateurs();
@@ -69,20 +70,17 @@ public class DashboardController {
                 ));
                 model.addAttribute("utilisateurs", utilisateurs);
 
-                // Compteurs pour le dashboard
                 model.addAttribute("nbUtilisateurs", utilisateurs.size());
                 model.addAttribute("nbCapteurs", capteurs.size());
                 model.addAttribute("nbProduits", produitService.getAllProduits().size());
                 model.addAttribute("nbCommandes", commandeService.getAllCommandes().size());
                 model.addAttribute("nbAlertes", alertes.size());
 
-                // 🔥 ajouter les ventes
                 List<Vente> ventes = venteService.findAll();
                 model.addAttribute("ventes", ventes);
 
-                return "dashboard/admin-home"; // 🚀 Page spéciale ADMIN
+                return "dashboard/admin-home";
             }
-
             case AGRICULTEUR -> {
                 List<Produit> produits = produitService.getAllProduits();
                 produits.sort(Comparator.comparing(
@@ -90,7 +88,7 @@ public class DashboardController {
                         Comparator.nullsLast(String::compareToIgnoreCase)
                 ));
                 model.addAttribute("produits", produits);
-                return "dashboard/agriculteur-home"; // 🚀 Page spéciale AGRICULTEUR
+                return "dashboard/agriculteur-home";
             }
             case ACHETEUR -> {
                 List<Commande> commandes = commandeService.getAllCommandes();
@@ -99,7 +97,7 @@ public class DashboardController {
                         Comparator.nullsLast(Comparator.naturalOrder())
                 ));
                 model.addAttribute("commandes", commandes);
-                return "dashboard/acheteur-home"; // 🚀 Page spéciale ACHETEUR
+                return "dashboard/acheteur-home";
             }
             case DECIDEUR -> {
                 if (alertes != null) {
@@ -109,24 +107,27 @@ public class DashboardController {
                     ));
                 }
                 model.addAttribute("alertes", alertes);
-                return "dashboard/decideur-home"; // 🚀 Page spéciale DECIDEUR
+                return "dashboard/decideur-home";
+            }
+            default -> {
+                // Au cas où un rôle non géré
+                return "redirect:/auth/login";
             }
         }
-
-        return "dashboard/dashboard";
     }
 
+    // ---------------------- ADMIN VENTES ----------------------
     @GetMapping("/admin/ventes")
     public String ventesAdmin(Model model) {
-        List<Vente> ventes = venteService.findAllVentes(); // Toutes les ventes
+        List<Vente> ventes = venteService.findAllVentes();
         model.addAttribute("ventes", ventes);
-        return "admin/ventes"; // le JSP/HTML ci-dessus
+        return "admin/ventes";
     }
 
     @GetMapping("/admin-home")
     public String adminHome(Model model) {
-        List<Vente> ventes = venteService.findAll(); // récupère toutes les ventes
-        model.addAttribute("ventes", ventes);        // ⚠️ ajouter au modèle
+        List<Vente> ventes = venteService.findAll();
+        model.addAttribute("ventes", ventes);
         return "dashboard/admin-home";
     }
 }
