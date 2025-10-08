@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat plateforme style WhatsApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <style>
+        body {margin:0; font-family:'Roboto',sans-serif; background:#e5ddd5; height:100vh; display:flex;}
+        #users-list {width:200px; background:#075e54; color:white; display:flex; flex-direction:column; padding:10px; overflow-y:auto;}
+        .user {padding:8px; cursor:pointer; border-radius:5px; margin-bottom:5px; position:relative;}
+        .user.active {background:#128c7e;}
+        .badge {position:absolute; top:5px; right:10px; font-size:0.7rem; background:red; border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center;}
+        #chat-container {flex:1; display:flex; flex-direction:column; background:#ece5dd;}
+        #chat-header {background:#075e54; color:white; padding:10px; font-weight:bold; display:flex; align-items:center;}
+        #chat-messages {flex:1; padding:10px; overflow-y:auto; display:flex; flex-direction:column;}
+        .message {max-width:70%; margin-bottom:8px; padding:8px 12px; border-radius:15px; position:relative; display:inline-block; font-size:0.9rem;}
+        .message.self {align-self:flex-end; background:#dcf8c6;}
+        .message.other {align-self:flex-start; background:white;}
+        .message.private {border-left:4px solid #ffd700;}
+        .timestamp {font-size:0.7rem; color:#999; margin-top:2px; text-align:right;}
+        #chat-input-container {display:flex; padding:10px; background:#f0f0f0;}
+        #chat-input {flex:1; padding:8px; border-radius:20px; border:1px solid #ccc; outline:none;}
+        #send-btn {margin-left:5px; border:none; background:#075e54; color:white; padding:0 15px; border-radius:20px; cursor:pointer;}
+    </style>
+</head>
+<body>
+
+<div id="users-list">
+    <div class="user active" data-username="Sadikh">Sadikh</div>
+    <div class="user" data-username="Modou">Modou</div>
+    <div class="user" data-username="Ali">Ali</div>
+</div>
+
+<div id="chat-container">
+    <div id="chat-header">💬 Chat de la plateforme</div>
+    <div id="chat-messages"></div>
+    <div id="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Écrire un message...">
+        <button id="send-btn">➤</button>
+    </div>
+</div>
+
+<audio id="notif-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
+<script>
+    let stompClient = null;
+    const messagesDiv = document.getElementById("chat-messages");
+    const input = document.getElementById("chat-input");
+    const btn = document.getElementById("send-btn");
+    const notifSound = document.getElementById("notif-sound");
+    let username = prompt("Entrez votre nom d'utilisateur:") || "Anonyme";
+    let selectedReceiver = null;
+    const unread = {}; // compteur messages privés non lus
+
+    // Sélection utilisateur
+    document.querySelectorAll('.user').forEach(el => {
+        el.addEventListener('click', () => {
+            document.querySelectorAll('.user').forEach(u => u.classList.remove('active'));
+            el.classList.add('active');
+            selectedReceiver = el.dataset.username === username ? null : el.dataset.username;
+            // Réinitialiser le badge
+            const badge = el.querySelector('.badge');
+            if(badge) badge.remove();
+            unread[el.dataset.username] = 0;
+        });
+    });
+
+    function connect() {
+        const socket = new SockJS("/ws");
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, frame => {
+            console.log("Connecté:", frame);
+
+            // Messages globaux
+            stompClient.subscribe("/topic/messages", message => {
+                const msg = JSON.parse(message.body);
+                displayMessage(msg);
+            });
+
+            // Messages privés
+            stompClient.subscribe(`/user/${username}/queue/messages`, message => {
+                const msg = JSON.parse(message.body);
+                displayMessage(msg, true);
+            });
+        });
+    }
+
+    function displayMessage(msg, isPrivate=false) {
+        const div = document.createElement("div");
+        const timestamp = new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        if(msg.username === username) div.className="message self";
+        else div.className="message other";
+
+        if(isPrivate || msg.receiver) div.classList.add("private");
+
+        let text = msg.username + ": " + msg.content;
+        if(msg.receiver) text += ` ✉️ → ${msg.receiver}`;
+        div.textContent = text;
+
+        const timeSpan = document.createElement("div");
+        timeSpan.className = "timestamp";
+        timeSpan.textContent = timestamp;
+        div.appendChild(timeSpan);
+
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        // Notification sonore et badge si privé
+        if(isPrivate && msg.username !== username){
+            notifSound.currentTime = 0;
+            notifSound.play().catch(err=>console.log("Son bloqué:",err));
+
+            const userDiv = [...document.querySelectorAll('.user')].find(u => u.dataset.username === msg.username);
+            if(userDiv){
+                unread[msg.username] = (unread[msg.username] || 0) + 1;
+                if(!userDiv.querySelector('.badge')){
+                    const badge = document.createElement('div');
+                    badge.className = 'badge';
+                    badge.textContent = unread[msg.username];
+                    userDiv.appendChild(badge);
+                } else {
+                    userDiv.querySelector('.badge').textContent = unread[msg.username];
+                }
+            }
+        }
+    }
+
+    function sendMessage() {
+        const content = input.value.trim();
+        if(!content) return;
+
+        const msg = {username, content, receiver: selectedReceiver || null};
+
+        if(selectedReceiver){
+            stompClient.send("/app/chat/private", {}, JSON.stringify(msg));
+        } else {
+            stompClient.send("/app/chat", {}, JSON.stringify(msg));
+        }
+
+        input.value="";
+    }
+
+    btn.addEventListener("click", sendMessage);
+    input.addEventListener("keydown", e => { if(e.key==="Enter") sendMessage(); });
+
+    window.addEventListener("DOMContentLoaded", connect);
+</script>
+</body>
+</html>

@@ -11,7 +11,6 @@
             color: #e0e0e0;
             min-height: 100vh;
         }
-
         .card-user {
             border-radius: 25px;
             overflow: hidden;
@@ -21,12 +20,10 @@
             position: relative;
             text-align: center;
         }
-
         .card-user:hover {
             transform: translateY(-10px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
         }
-
         .profile-photo {
             width: 120px;
             height: 120px;
@@ -36,7 +33,6 @@
             margin-top: -60px;
             background: #ccc;
         }
-
         .badge-role {
             position: absolute;
             top: 10px;
@@ -47,64 +43,26 @@
             border-radius: 15px;
             font-weight: bold;
         }
-
         .badge-admin { background: #b71c1c; }
         .badge-agriculteur { background: #388e3c; }
         .badge-acheteur { background: #689f38; }
         .badge-default { background: #607d8b; }
-
-        .card-body {
-            padding: 2rem 1rem 1.5rem 1rem;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .card-subtitle {
-            font-size: 0.95rem;
-            color: #cfd8dc;
-            margin-bottom: 10px;
-        }
-
-        .card-description {
-            font-size: 0.85rem;
-            color: #b0bec5;
-            margin-bottom: 15px;
-        }
-
-        .contact-icons a {
-            color: #fff;
-            margin: 0 8px;
-            font-size: 1rem;
-            transition: color 0.3s;
-        }
-
-        .contact-icons a:hover {
-            color: #ffdd57;
-        }
-
-        .btn-card {
-            font-size: 0.85rem;
-            padding: 0.35rem 0.75rem;
-        }
-
-        footer {
-            background: #388e3c;
-        }
-
-        @media (max-width: 576px) {
-            .card-user { margin-bottom: 20px; }
-        }
+        .card-body { padding: 2rem 1rem 1.5rem 1rem; }
+        .card-title { font-size: 1.2rem; font-weight: bold; }
+        .card-subtitle { font-size: 0.95rem; color: #cfd8dc; margin-bottom: 10px; }
+        .card-description { font-size: 0.85rem; color: #b0bec5; margin-bottom: 15px; }
+        .contact-icons a { color: #fff; margin: 0 8px; font-size: 1rem; transition: color 0.3s; }
+        .contact-icons a:hover { color: #ffdd57; }
+        .btn-card { font-size: 0.85rem; padding: 0.35rem 0.75rem; }
+        footer { background: #388e3c; }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- ✅ Navbar avec Accueil et Déconnexion -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
     <div class="container">
-        <a class="navbar-brand fw-bold" th:href="@{/}">
+        <a class="navbar-brand fw-bold" th:href="@{/dashboard}">
             <i class="fas fa-seedling me-2"></i>AgriPlateforme
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -112,12 +70,21 @@
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}"><i class="fas fa-home"></i> Accueil</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/produits}"><i class="fas fa-carrot"></i> Produits</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/producteurs}"><i class="fas fa-tractor"></i> Producteurs</a></li>
                 <li class="nav-item"><a class="nav-link active" th:href="@{/utilisateurs}"><i class="fas fa-users"></i> Utilisateurs</a></li>
+                <li class="nav-item">
+                    <span class="nav-link text-white">👤 <b th:text="${email}">utilisateur@mail.com</b></span>
+                </li>
+                <li class="nav-item">
+                    <a href="/auth/logout" class="btn btn-outline-light btn-sm ms-2">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

@@ -1,15 +1,22 @@
 package com.pagam.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/api/decideur")
+@Controller
+@RequestMapping("/decideur")
 public class DecideurController {
 
     @GetMapping("/dashboard")
-    public String dashboard() {
-        return "Bienvenue sur le tableau de bord DECIDEUR 📊";
+    public String dashboard(Model model) {
+        model.addAttribute("email", "decideur@exemple.com");
+        return "dashboard/decideur-home";
+    }
+
+    @GetMapping("/statistiques")
+    public String statistiques() {
+        return "dashboard/statistiques";
     }
 }
