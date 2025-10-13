@@ -5,150 +5,244 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Connexion - Plateforme Agricole</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-
     <!-- Bootstrap CSS -->
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    />
-    <!-- Bootstrap Icons -->
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-            rel="stylesheet"
-    />
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
     <style>
         body {
-            background: linear-gradient(120deg, #e8f5e9 0%, #f8f9fa 100%);
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
+            overflow-x: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to top, #a8e6cf, #dcedc1 60%, #ffd3b6 100%);
+            position: relative;
         }
-        .login-card {
-            background-color: #fff;
-            padding: 2.5rem 2rem 2rem 2rem;
-            border-radius: 1.2rem;
-            box-shadow: 0 10px 30px rgba(56, 142, 60, 0.15);
+
+        /* Soleil animé */
+        .sun {
+            position: absolute;
+            top: 10%;
+            left: 75%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #fff176, #ffd600);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #ffd600;
+            animation: rotateSun 60s linear infinite;
+        }
+
+        /* Collines */
+        .hill {
+            position: absolute;
+            width: 200%;
+            height: 200px;
+            bottom: 0;
+            left: -50%;
+            background: radial-gradient(circle at 50% 0, #81c784, #388e3c);
+            border-radius: 50%;
+            animation: hillMove 30s ease-in-out infinite alternate;
+        }
+
+        /* Nuages */
+        .cloud {
+            position: absolute;
+            background: #ffffffcc;
+            border-radius: 50%;
+            width: 120px;
+            height: 60px;
+            animation: cloudMove linear infinite;
+            top: 15%;
+        }
+        .cloud:nth-child(1) { left: -150px; animation-duration: 70s; }
+        .cloud:nth-child(2) { left: -300px; animation-duration: 90s; top: 20%; width: 180px; height: 80px; }
+        .cloud:nth-child(3) { left: -500px; animation-duration: 100s; top: 10%; width: 150px; height: 70px; }
+
+        /* Herbes ondulantes */
+        .grass {
+            position: absolute;
+            bottom: 0;
             width: 100%;
-            max-width: 420px;
+            height: 50px;
+            background: repeating-linear-gradient(
+                    to right,
+                    #388e3c,
+                    #388e3c 2px,
+                    #43a047 2px,
+                    #43a047 4px
+            );
+            animation: grassSway 3s ease-in-out infinite alternate;
+        }
+
+        /* Fleurs animées */
+        .flower {
+            position: absolute;
+            bottom: 40px;
+            width: 15px;
+            height: 15px;
+            background-color: #ff4081;
+            border-radius: 50%;
+            animation: growFlower 4s ease-in-out infinite alternate, swayFlower 3s ease-in-out infinite alternate;
+        }
+        .flower::before, .flower::after {
+            content: '';
+            position: absolute;
+            background-color: inherit;
+            border-radius: 50%;
+        }
+        .flower::before { width: 15px; height: 15px; left: -10px; top: 0; }
+        .flower::after { width: 15px; height: 15px; left: 10px; top: 0; }
+        .flower:nth-child(1) { left: 30%; animation-delay: 0s; }
+        .flower:nth-child(2) { left: 45%; animation-delay: 1s; background-color: #ffeb3b; }
+        .flower:nth-child(3) { left: 60%; animation-delay: 2s; background-color: #ff5722; }
+        .flower:nth-child(4) { left: 75%; animation-delay: 3s; background-color: #e91e63; }
+
+        /* Arbre avec feuilles identique à page d'accueil */
+        .tree {
+            position: absolute;
+            bottom: 50px;
+            left: 10%;
+            width: 40px;
+            height: 150px;
+            background: #6d4c41; /* tronc */
+            border-radius: 10px;
+        }
+        .tree span,
+        .tree::before,
+        .tree::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2e7d32, #388e3c);
+        }
+        .tree::before { width: 120px; height: 120px; bottom: 100%; left: -40px; }
+        .tree::after { width: 80px; height: 80px; bottom: 110%; left: -80px; }
+        .tree span:nth-child(1) { width: 80px; height: 80px; bottom: 110%; left: 40px; }
+        .tree span:nth-child(2) { width: 60px; height: 60px; bottom: 120%; left: -20px; }
+        .tree span:nth-child(3) { width: 70px; height: 70px; bottom: 125%; left: 20px; }
+
+        /* Animations */
+        @keyframes swayLeaves {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(2deg); }
+        }
+        .tree span,
+        .tree::before,
+        .tree::after {
+            animation: swayLeaves 4s ease-in-out infinite alternate;
+            transform-origin: bottom center;
+        }
+
+        /* Carte de connexion */
+        .login-card {
+            position: relative;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 3rem 2.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
             animation: fadeIn 0.8s ease-in-out;
         }
-        .login-card h2 {
-            color: #388e3c;
-            font-weight: 700;
-        }
+        .login-card h2 { color: #2e7d32; font-weight: 800; letter-spacing: 1px; }
         .btn-login {
-            background: linear-gradient(135deg, #388e3c, #8bc34a);
+            background: linear-gradient(135deg, #43a047, #8bc34a);
             border: none;
             font-weight: bold;
             letter-spacing: 1px;
+            transition: all 0.3s ease;
         }
         .btn-login:hover {
-            background: linear-gradient(135deg, #8bc34a, #388e3c);
-            transform: translateY(-2px);
-            transition: 0.3s;
+            background: linear-gradient(135deg, #8bc34a, #43a047);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(56,142,60,0.3);
         }
-        .form-label {
-            font-weight: 600;
-        }
-        .input-group-text {
-            background: #e8f5e9;
-            border: none;
-        }
-        .form-control {
-            border-left: none;
-        }
-        .logo {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(56, 142, 60, 0.15);
-        }
-        a {
-            color: #388e3c;
-        }
-        a:hover {
-            text-decoration: underline;
-            color: #2e7031;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
+        .input-group-text { background: #e8f5e9; border: none; color: #2e7d32; }
+        .form-control:focus { border-color: #8bc34a; box-shadow: 0 0 8px rgba(139,195,74,0.3); }
+        .form-label { font-weight: 600; }
+        .logo { width: 100px; height: 100px; margin-bottom: 20px; animation: bounceIn 1s; }
+        a { color: #2e7d32; }
+        a:hover { text-decoration: underline; color: #1b5e20; }
+        .alert-success, .alert-danger { border-radius: 1rem; font-weight: 500; animation: slideDown 0.5s ease-in-out; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.05); opacity: 1; } 70% { transform: scale(0.9); } 100% { transform: scale(1); } }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes rotateSun { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes hillMove { from { transform: translateX(0); } to { transform: translateX(-50px); } }
+        @keyframes cloudMove { from { transform: translateX(0); } to { transform: translateX(200vw); } }
+        @keyframes grassSway { from { transform: translateX(0); } to { transform: translateX(5px); } }
+        @keyframes growFlower { from { transform: scale(0.2); } to { transform: scale(1); } }
+        @keyframes swayFlower { from { transform: translateX(0); } to { transform: translateX(5px); } }
     </style>
 </head>
 <body>
-<div class="login-card text-center">
-    <!-- Affichage du message d'erreur si la connexion échoue -->
-    <div th:if="${param.error} ? ${param.error} : ${forceError}" class="alert alert-danger">
-        <span th:text="${errorMessage}">Email ou mot de passe incorrect.</span>
-    </div>
-    <div class="text-center mb-4">
-        <img
-                th:src="@{/images/utilisateurs/agriculture.jpeg}"
-                alt="Logo"
-                class="logo rounded-circle shadow-sm border border-success"
-        />
-    </div>
-    <h2 class="mb-4">
-        <i class="fas fa-leaf me-2 text-success"></i>Connexion
-    </h2>
 
-    <!-- Messages d'erreur / succès -->
-    <div
-            th:if="${errorMessage}"
-            class="alert alert-danger"
-            th:text="${errorMessage}"
-    ></div>
-    <div
-            th:if="${successMessage}"
-            class="alert alert-success"
-            th:text="${successMessage}"
-    ></div>
+<!-- Soleil et collines -->
+<div class="sun"></div>
+<div class="hill"></div>
 
-    <div class="alert alert-success mt-4">
-        <form th:action="@{/auth/login}" method="post">
-            <div class="mb-3">
-                <label class="form-label text-start w-100">Email :</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
-                    <input type="text" name="email" class="form-control" placeholder="Entrez votre email" required />
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label text-start w-100">Mot de passe :</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                    <input type="password" name="motDePasse" class="form-control" placeholder="Entrez votre mot de passe" required />
-                </div>
-            </div>
-            <button type="submit" class="btn btn-login w-100 text-white shadow-sm">
-                <i class="fas fa-sign-in-alt me-2"></i> Connexion
-            </button>
-        </form>
+<!-- Nuages -->
+<div class="cloud"></div>
+<div class="cloud"></div>
+<div class="cloud"></div>
 
-        <p class="mt-4">
-            <i class="fas fa-user-plus text-success me-1"></i> Pas encore de compte ?
-            <a th:href="@{/auth/register}">Inscrivez-vous</a>
-        </p>
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Arbre identique page d'accueil -->
+<div class="tree">
+    <span></span>
+    <span></span>
+    <span></span>
 </div>
+
+<!-- Herbes -->
+<div class="grass"></div>
+
+<!-- Fleurs -->
+<div class="flower"></div>
+<div class="flower"></div>
+<div class="flower"></div>
+<div class="flower"></div>
+
+<!-- Carte de connexion -->
+<div class="login-card">
+    <img th:src="@{/images/utilisateurs/agriculture.jpeg}" alt="Logo" class="logo rounded-circle shadow-sm border border-success"/>
+    <h2 class="mb-4"><i class="fas fa-leaf me-2 text-success"></i>Connexion</h2>
+
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+    <form th:action="@{/auth/login}" method="post">
+        <div class="mb-3 text-start">
+            <label class="form-label">Email :</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                <input type="text" name="email" class="form-control" placeholder="Entrez votre email" required />
+            </div>
+        </div>
+        <div class="mb-3 text-start">
+            <label class="form-label">Mot de passe :</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                <input type="password" name="motDePasse" class="form-control" placeholder="Entrez votre mot de passe" required />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-login w-100 text-white shadow-sm mb-3">
+            <i class="fas fa-sign-in-alt me-2"></i> Connexion
+        </button>
+    </form>
+
+    <p class="mt-3">
+        <i class="fas fa-user-plus text-success me-1"></i> Pas encore de compte ?
+        <a th:href="@{/auth/register}">Inscrivez-vous</a>
+    </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

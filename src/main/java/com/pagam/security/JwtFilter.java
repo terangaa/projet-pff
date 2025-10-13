@@ -30,6 +30,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 path.startsWith("/h2-console/") ||
                 path.startsWith("/templates/fragments/") ||
                 path.startsWith("/alertes") ||
+                path.startsWith("/home") ||
+                path.startsWith("/services") ||
+                path.startsWith("/contact") ||
                 path.startsWith("/utilisateurs") ||
                 path.startsWith("/producteurs") ||
                 path.startsWith("/produits") ||
