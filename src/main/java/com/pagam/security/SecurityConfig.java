@@ -34,7 +34,8 @@ public class SecurityConfig {
                 // 2️⃣ Définir les accès publics et sécuriser les autres routes
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/home/**","/services/**","/about/**",         // <-- ajouté
-                                "/contact/**","/auth/**", "/css/**", "/js/**", "/images/**",
+                                "/contact/**","/auth/**","/auth/oublier-password/**",
+                                "/auth/reset-password/**","/css/**", "/js/**", "/images/**",
                                 "/templates/fragments/**", "/h2-console/**", "/favicon.ico").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()

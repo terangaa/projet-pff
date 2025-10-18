@@ -35,7 +35,7 @@ public class MessageContactController {
         // ✅ Envoyer le mail automatiquement à l'administrateur
         try {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo("sadikhyade851@gmail.com","insam621.com@gmail.com"); // <-- mets ton email ici
+            mailMessage.setTo("sadikhyade851@gmail.com","insam621.com@gmail.com","papesy302001@gmail.com"); // <-- mets ton email ici
             mailMessage.setSubject("📩 Nouveau message de contact - PAGAM");
             mailMessage.setText(
                     "Vous avez reçu un nouveau message depuis le formulaire de contact :\n\n" +

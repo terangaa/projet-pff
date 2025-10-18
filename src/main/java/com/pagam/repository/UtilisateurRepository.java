@@ -13,6 +13,8 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
     // Compter par rôle
     long countByRole(Role role);
 
+    Optional<Utilisateur> findByResetToken(String resetToken);
+
 
     // Pour le total des utilisateurs, utilisez count() fourni par JpaRepository
     // Pas besoin de définir countAllUsers()

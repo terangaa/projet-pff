@@ -70,4 +70,23 @@ public class UtilisateurService {
     public Optional<Utilisateur> findByIdOptional(Long id) {
         return utilisateurRepository.findById(id);
     }
+
+    public void updatePassword(Utilisateur utilisateur, String newPassword) {
+    }
+
+    public Utilisateur findByResetToken(String token) {
+        return utilisateurRepository.findByResetToken(token).orElse(null);
+    }
+
+    public Utilisateur findByEmail(String email) {
+        return utilisateurRepository.findByEmail(email).orElse(null);
+    }
+
+    public Utilisateur save(Utilisateur utilisateur) {
+        return utilisateurRepository.save(utilisateur);
+    }
+
+    public boolean existsByEmail(String email) {
+        return utilisateurRepository.findByEmail(email).isPresent();
+    }
 }

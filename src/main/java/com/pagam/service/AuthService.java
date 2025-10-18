@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,17 +26,14 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
-    /**
-     * Inscription d’un utilisateur
-     */
+    // -------------------- Inscription --------------------
     public AuthResponse register(RegisterRequest registerRequest) {
-        // Vérifie si l’email existe déjà
         if (utilisateurRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new RuntimeException("Email déjà utilisé !");
         }
 
-        // Crée un nouvel utilisateur
         Utilisateur user = Utilisateur.builder()
                 .nom(registerRequest.getNom())
                 .email(registerRequest.getEmail())
@@ -44,36 +43,28 @@ public class AuthService {
 
         utilisateurRepository.save(user);
 
-        // Génère un JWT
         String token = jwtService.generateToken(user);
 
-        // Retourne AuthResponse complet avec rôle et expiration
         return AuthResponse.builder()
                 .token(token)
                 .email(user.getEmail())
                 .roles(List.of(user.getRole().name()))
-                .expiresAt(System.currentTimeMillis() + jwtService.getExpiration()) // timestamp expiration
+                .expiresAt(System.currentTimeMillis() + jwtService.getExpiration())
                 .build();
     }
 
-    /**
-     * Connexion d’un utilisateur
-     */
+    // -------------------- Connexion --------------------
     public AuthResponse login(AuthRequest authRequest) {
         try {
-            // Vérifie les identifiants
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getMotDePasse())
             );
 
-            // Charge l’utilisateur
             Utilisateur user = utilisateurRepository.findByEmail(authRequest.getEmail())
                     .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-            // Génère un JWT
             String token = jwtService.generateToken(user);
 
-            // Retourne AuthResponse complet
             return AuthResponse.builder()
                     .token(token)
                     .email(user.getEmail())
@@ -84,5 +75,39 @@ public class AuthService {
         } catch (AuthenticationException e) {
             throw new RuntimeException("Identifiants invalides !");
         }
+    }
+
+    // -------------------- Mot de passe oublié --------------------
+    public void sendResetPasswordEmail(String email) {
+        Optional<Utilisateur> userOpt = utilisateurRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            Utilisateur user = userOpt.get();
+            String token = UUID.randomUUID().toString();
+            user.setResetToken(token);
+            utilisateurRepository.save(user);
+
+            String lien = "http://localhost:8080/auth/reset-password?token=" + token;
+
+            String contenu = "<p>Pour réinitialiser votre mot de passe, cliquez sur ce lien :</p>" +
+                    "<a href='" + lien + "'>Réinitialiser le mot de passe</a>";
+
+            emailService.envoyerAlerteEmail(email, "Réinitialisation mot de passe", contenu);
+        } else {
+            throw new RuntimeException("Aucun utilisateur trouvé avec cet email !");
+        }
+    }
+
+    // -------------------- Validation token --------------------
+    public Utilisateur validateResetToken(String token) {
+        return utilisateurRepository.findByResetToken(token)
+                .orElseThrow(() -> new RuntimeException("Token invalide ou expiré !"));
+    }
+
+    // -------------------- Réinitialisation mot de passe --------------------
+    public void resetPassword(String token, String newPassword) {
+        Utilisateur user = validateResetToken(token);
+        user.setMotDePasse(passwordEncoder.encode(newPassword));
+        user.setResetToken(null); // Supprime le token après usage
+        utilisateurRepository.save(user);
     }
 }
