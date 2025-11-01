@@ -10,26 +10,41 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"producteur", "agriculteur"}) // ✅ empêche les boucles infinies
+@EqualsAndHashCode(exclude = {"producteur", "agriculteur"})
 public class Utilisateur implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String prenom;
     private String nom;
     private String email;
+
+    @Column(nullable = false, length = 60)
     private String motDePasse;
+
+    @Transient
+    private String confirmMotDePasse;
+
     private String photo;
     private String resetToken;
+
+    // Si un utilisateur est rattaché à un autre agriculteur
+    @ManyToOne
+    @JoinColumn(name = "agriculteur_id")
+    private Utilisateur agriculteur;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // Relation vers Producteur (si l'utilisateur est un producteur)
+    // ✅ Relation vers Producteur (si l'utilisateur est un producteur)
     @OneToOne(mappedBy = "utilisateur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Producteur producteur;
 
@@ -61,7 +76,7 @@ public class Utilisateur implements UserDetails {
     @Override
     public boolean isEnabled() { return true; }
 
-    // Méthode pour récupérer les produits si l'utilisateur est producteur
+    // ✅ Méthode utilitaire pour récupérer les produits
     public List<Produit> getProduits() {
         if (this.producteur != null) {
             return this.producteur.getProduits();

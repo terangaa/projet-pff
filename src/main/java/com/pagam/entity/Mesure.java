@@ -22,6 +22,7 @@ public class Mesure {
     private double temperature;
     private double humidite;
     private double luminosite;
+    private double insectes;
     private double valeur; // la mesure réelle
 
     private int besoinEau;

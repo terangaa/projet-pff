@@ -1,6 +1,7 @@
 package com.pagam.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.util.concurrent.atomic.AtomicReference;
 
 @Configuration
@@ -33,17 +33,30 @@ public class SecurityConfig {
 
                 // 2️⃣ Définir les accès publics et sécuriser les autres routes
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/home/**","/services/**","/about/**",         // <-- ajouté
-                                "/contact/**","/auth/**","/auth/oublier-password/**",
-                                "/auth/reset-password/**","/css/**", "/js/**", "/images/**",
-                                "/templates/fragments/**", "/h2-console/**", "/favicon.ico").permitAll()
+                        // accès aux fichiers statiques (CSS, JS, images, webjars, favicon)
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+
+                        // accès public aux pages
+                        .requestMatchers(
+                                "/", "/home/**","/images/**","/css/**","/js/**", "/services/**", "/about/**",
+                                "/contact/**", "/auth/**", "/auth/oublier-password/**",
+                                "/auth/reset-password/**",
+                                "/h2-console/**").permitAll()
+
+                        // accès admin
+                        .requestMatchers(
+                                "/produits/creer-admin/**",
+                                "/produits/modifier/**",
+                                "/produits/supprimer/**")
+                        .hasRole("ADMIN")
+
+                        // accès agriculteur/utilisateur
+                        .requestMatchers("/produits/creer-utilisateur/**")
+                        .hasAnyRole("AGRICULTEUR", "ACHETEUR")
+
+                        // API ou autres requêtes
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
-                )
-
-                // 3️⃣ Gestion de session
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
 
                 // 4️⃣ Formulaire de login avec redirection par rôle
@@ -93,10 +106,10 @@ public class SecurityConfig {
 
             authentication.getAuthorities().forEach(authority -> {
                 switch (authority.getAuthority()) {
-                    case "ADMIN" -> redirectUrl.set("/dashboard"); // ou /admin-home
-                    case "AGRICULTEUR" -> redirectUrl.set("/dashboard"); // ou /agriculteur-home
-                    case "ACHETEUR" -> redirectUrl.set("/dashboard"); // ou /acheteur-home
-                    case "DECIDEUR" -> redirectUrl.set("/dashboard"); // ou /decideur-home
+                    case "ADMIN" -> redirectUrl.set("/dashboard");
+                    case "AGRICULTEUR" -> redirectUrl.set("/dashboard");
+                    case "ACHETEUR" -> redirectUrl.set("/dashboard");
+                    case "DECIDEUR" -> redirectUrl.set("/dashboard");
                 }
             });
 

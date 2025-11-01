@@ -2,6 +2,7 @@ package com.pagam.controller;
 
 import com.pagam.entity.Commande;
 import com.pagam.entity.Produit;
+import com.pagam.entity.Role;
 import com.pagam.entity.Utilisateur;
 import com.pagam.service.CommandeService;
 import com.pagam.service.ProduitService;
@@ -49,10 +50,9 @@ public class CommandeController {
     public String nouvelleCommande(Model model) {
         model.addAttribute("commande", new Commande());
 
-        // Filtrer seulement les acheteurs
         List<Utilisateur> acheteurs = utilisateurService.getAllUtilisateurs()
                 .stream()
-                .filter(u -> "ACHETEUR".equals(u.getRole()))
+                .filter(u -> u.getRole() == Role.ACHETEUR)
                 .toList();
         model.addAttribute("utilisateurs", acheteurs);
 
@@ -60,7 +60,6 @@ public class CommandeController {
         return "commandes/commande-form";
     }
 
-    // Afficher formulaire de modification
     @GetMapping("/modifier/{id}")
     public String afficherFormModifier(@PathVariable Long id, Model model) {
         Commande commande = commandeService.getCommandeById(id);
@@ -68,10 +67,9 @@ public class CommandeController {
 
         model.addAttribute("produits", produitService.getAllProduits());
 
-        // Filtrer seulement les acheteurs
         List<Utilisateur> acheteurs = utilisateurService.getAllUtilisateurs()
                 .stream()
-                .filter(u -> "ACHETEUR".equals(u.getRole()))
+                .filter(u -> u.getRole() == Role.ACHETEUR)
                 .toList();
         model.addAttribute("utilisateurs", acheteurs);
 

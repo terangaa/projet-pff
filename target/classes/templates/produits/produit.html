@@ -3,78 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Produits</title>
+    <title>Produits | Gestion Agricole</title>
 
-    <!-- Bootstrap & Icons -->
+    <!-- Bootstrap + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <meta name="_csrf" content=""/>
+    <meta name="_csrf_header" content="X-CSRF-TOKEN"/>
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f8fafc; }
+        .card { border: none; border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.4s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .card-img-top { height: 220px; object-fit: cover; transition: transform 0.4s ease; }
+        .card:hover .card-img-top { transform: scale(1.05); }
+        .price { color: #0d6efd; font-weight: 700; font-size: 1.1rem; }
+        .badge-stock { position: absolute; top: 12px; left: 12px; background: #0d6efd; font-size: 0.75rem; font-weight: 500; border-radius: 6px; padding: 4px 8px; color: #fff; }
+        .badge-new { position: absolute; top: 12px; right: 12px; background: #ff9800; font-size: 0.75rem; font-weight: 500; border-radius: 6px; padding: 4px 8px; color: #fff; }
+        .stock-input { width: 80px; padding: 0.25rem; font-size: 0.85rem; border-radius: 5px; text-align: right; }
+        .save-stock { padding: 0.25rem 0.5rem; font-size: 0.85rem; border-radius: 5px; }
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-<!-- 🔹 Barre de navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand fw-bold" th:href="@{/dashboard}">🌾 Gestion Agricole</a>
-
-        <div class="d-flex ms-auto">
-            <a class="btn btn-outline-light me-2" th:href="@{/dashboard}">
-                <i class="bi bi-house-door"></i> Accueil
-            </a>
-            <a href="/auth/logout" class="btn btn-outline-light btn-sm rounded-pill">
-                <i class="bi bi-box-arrow-right"></i> Déconnexion
-            </a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top py-3">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand text-success" th:href="@{/dashboard}">🌿 AgriShop</a>
+        <div class="d-flex ms-auto gap-2">
+            <form th:action="@{/produits}" method="get" class="d-flex">
+                <input name="q" th:value="${q}" type="search" class="form-control rounded-pill" placeholder="Rechercher un produit...">
+                <button type="submit" class="btn btn-primary ms-2"><i class="bi bi-search"></i></button>
+            </form>
+            <a class="btn btn-outline-light" th:href="@{/dashboard}"><i class="bi bi-house-door"></i> Accueil</a>
+            <a href="/auth/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
         </div>
     </div>
 </nav>
 
-<!-- 🔹 Contenu principal -->
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Produits disponibles</h1>
-        <a th:if="${role != 'ACHETEUR'}" class="btn btn-primary" th:href="@{/produits/creer}">
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">🛒 Produits disponibles</h2>
+        <a th:if="${role == 'ADMIN' or role == 'AGRICULTEUR'}"
+           class="btn btn-success px-4 py-2" th:href="@{/produits/creer}">
             <i class="bi bi-plus-circle"></i> Ajouter un produit
         </a>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle text-center">
-            <thead class="table-light">
-            <tr>
-                <th>Image</th>
-                <th>Nom</th>
-                <th>Description</th>
-                <th>Prix (€)</th>
-                <th>Quantité</th>
-                <th th:if="${role != 'ACHETEUR'}">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="p : ${produits}">
-                <td>
-                    <img th:src="${p.image}" alt="Produit" class="img-thumbnail" style="max-width: 80px;">
-                </td>
-                <td th:text="${p.nom}"></td>
-                <td th:text="${p.description}"></td>
-                <td th:text="${p.prix}"></td>
-                <td th:text="${p.quantite}"></td>
-                <td th:if="${role == null or role != 'ACHETEUR'}">
-                    <a th:href="@{/produits/modifier/{id}(id=${p.id})}" class="btn btn-warning btn-sm me-1">
-                        <i class="bi bi-pencil-square"></i> Modifier
-                    </a>
-                    <a th:href="@{/produits/supprimer/{id}(id=${p.id})}" class="btn btn-danger btn-sm"
-                       onclick="return confirm('Voulez-vous vraiment supprimer ce produit ?');">
-                        <i class="bi bi-trash"></i> Supprimer
-                    </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        <div class="col" th:each="p : ${produits}">
+            <div class="card h-100 position-relative">
+                <img th:src="${p.image != null ? (p.image.startsWith('/images/') ? p.image : '/images/produits/' + p.image) : '/images/default.png'}"
+                     alt="Produit" class="card-img-top">
+                <!-- Badge Stock pour utilisateur -->
+                <span th:if="${role != 'ADMIN'}" class="badge-stock"
+                      th:text="${p.stock >= 1 ? 'Stock: ' + #numbers.formatDecimal(p.stock,2,'COMMA',2,'POINT') + ' kg'
+                                           : 'Stock: ' + #numbers.formatDecimal(p.stock*1000,0,'COMMA',0,'POINT') + ' g'}">
+                    Stock
+                </span>
+
+                <!-- Input Admin -->
+                <div th:if="${role == 'ADMIN'}" class="d-flex gap-1 position-absolute top-0 start-0 m-2 align-items-center">
+                    <input type="number" min="0" step="0.01" th:value="${p.stock}" class="form-control form-control-sm stock-input" th:data-id="${p.id}">
+                    <span>kg</span>
+                    <button class="btn btn-sm btn-primary save-stock" th:data-id="${p.id}">
+                        <i class="bi bi-save"></i>
+                    </button>
+                </div>
+
+                <span th:if="${p.dateCreation != null and #dates.daysBetween(p.dateCreation, #dates.createNow()) <= 7}" class="badge-new">Nouveau</span>
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" th:text="${p.nom}"></h5>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-person"></i>
+                        <span th:text="${p.agriculteur != null ? p.agriculteur.prenom + ' ' + p.agriculteur.nom : 'Inconnu'}"></span>
+                    </p>
+                    <p class="card-text mb-2" th:text="${p.description}"></p>
+                    <p class="price mb-3" th:text="${#numbers.formatDecimal(p.prix ?: 0, 0, 'COMMA', 0, 'POINT')} + ' FCFA'"></p>
+
+                    <div class="mt-auto d-flex justify-content-between gap-2" th:if="${role == 'ADMIN'}">
+                        <a th:href="@{/produits/modifier/{id}(id=${p.id})}" class="btn btn-warning btn-sm flex-fill">
+                            <i class="bi bi-pencil-square"></i> Modifier
+                        </a>
+                        <a th:href="@{/produits/supprimer/{id}(id=${p.id})}" class="btn btn-danger btn-sm flex-fill"
+                           onclick="return confirm('Voulez-vous vraiment supprimer ce produit ?');">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <nav aria-label="Pagination produits" class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0}? 'disabled'">
+                <a class="page-link" th:href="@{/produits(page=${currentPage - 1}, size=6)}">‹</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage}? 'active'">
+                <a class="page-link" th:href="@{/produits(page=${i}, size=6)}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages}? 'disabled'">
+                <a class="page-link" th:href="@{/produits(page=${currentPage + 1}, size=6)}">›</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
-<!-- Bootstrap JS -->
+<div class="toast-container" id="toastContainer"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<script>
+    let csrfToken = '';
+    let csrfHeader = '';
+
+    fetch('/csrf')
+        .then(res => res.json())
+        .then(data => {
+            csrfToken = data.token;
+            csrfHeader = data.headerName;
+        });
+
+    function showToast(message, type='success') {
+        const container = document.getElementById('toastContainer');
+        const toastEl = document.createElement('div');
+        toastEl.className = `toast align-items-center text-bg-${type} border-0 mb-2`;
+        toastEl.innerHTML = `<div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>`;
+        container.appendChild(toastEl);
+        const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+        toast.show();
+        toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+    }
+
+    document.querySelectorAll('.save-stock').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const input = document.querySelector('.stock-input[data-id="'+id+'"]');
+            let newStock = parseFloat(input.value);
+
+            if (isNaN(newStock) || newStock < 0) {
+                showToast('Le stock doit être positif ❌', 'danger');
+                input.value = Math.max(0, isNaN(newStock)? 0: newStock).toFixed(2).replace('.', ',');
+                return;
+            }
+
+            btn.disabled = true;
+
+            fetch('/stocks/modifier-stock/' + id, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    [csrfHeader]: csrfToken
+                },
+                body: 'stock=' + newStock
+            })
+                .then(res => res.text())
+                .then(res => {
+                    if(res === "OK"){
+                        const badge = btn.closest('.position-relative').querySelector('.badge-stock');
+                        if(badge){
+                            badge.textContent = newStock >= 1 ?
+                                'Stock: ' + newStock.toFixed(2).replace('.', ',') + ' kg' :
+                                'Stock: ' + Math.round(newStock*1000) + ' g';
+                        }
+                        showToast('Stock mis à jour ✅');
+                    } else {
+                        showToast('Erreur lors de la mise à jour ❌', 'danger');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast('Erreur réseau ❌', 'danger');
+                })
+                .finally(() => btn.disabled = false);
+        });
+    });
+</script>
 </body>
 </html>

@@ -11,7 +11,7 @@ public interface VenteRepository extends JpaRepository<Vente, Long> {
     // Récupérer toutes les ventes d'une commande spécifique
     List<Vente> findByCommande(Commande commande);
 
-    List<Vente> findByProduit_Producteur(Producteur producteur);
+    List<Vente> findByProduit_Agriculteur(Producteur agriculteur);
 
     List<Vente> findByProduit(Produit produit);
 

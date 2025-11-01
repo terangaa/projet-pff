@@ -138,6 +138,7 @@
                         <th>Nom</th>
                         <th>Référence</th>
                         <th>Type</th>
+                        <th>Agriculteur</th>
                         <th>Localisation</th>
                         <th>Moyenne</th>
                         <th>Actions</th>
@@ -151,6 +152,7 @@
                         </td>
                         <td th:text="${capteur.reference}"></td>
                         <td th:text="${capteur.type}"></td>
+                        <td th:text="${capteur.agriculteur.prenom} + ' ' + ${capteur.agriculteur.nom}"></td>
                         <td th:text="${capteur.localisation}"></td>
                         <td
                                 th:text="${#numbers.formatDecimal(capteur.moyenne, 1, 1, 'POINT')}"

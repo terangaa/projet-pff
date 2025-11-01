@@ -1,196 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Liste des utilisateurs - Plateforme Agricole</title>
-
-    <!-- Bootstrap & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
     <style>
-        body {
-            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1500&q=80') no-repeat center center fixed;
-            background-size: cover;
-            color: #2e7d32;
-            font-family: "Poppins", sans-serif;
-            position: relative;
-        }
+        body { background: #f3f6f8; font-family: "Poppins", sans-serif; }
 
-        body::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(3px);
-            z-index: -1;
-        }
+        .card-user { border-radius: 10px; overflow: hidden; border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; background: #fff; }
+        .card-user:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-        /* ✅ Navbar */
-        .navbar {
-            background: linear-gradient(90deg, #2e7d32, #43a047);
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.3rem;
-        }
-
-        .navbar .nav-link {
-            color: #f1f8e9 !important;
-            font-weight: 500;
-            margin: 0 6px;
-        }
-
-        .navbar .nav-link:hover,
-        .navbar .nav-link.active {
-            color: #c8e6c9 !important;
-        }
-
-        /* ✅ Carte utilisateur */
-        .card-user {
-            border-radius: 20px;
-            overflow: hidden;
-            border: none;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            background: rgba(255,255,255,0.95);
-            transition: all 0.3s ease;
-        }
-
-        .card-user:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-        }
-
-        /* ✅ Bloc photo */
         .photo-wrapper {
-            position: relative;
-            width: 130px;
-            height: 130px;
-            margin: 0 auto;
-            margin-top: -60px;
-            border-radius: 50%;
-            overflow: hidden;
-            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
-            background: #f1f8e9;
+            position: relative; width: 120px; height: 120px; margin: 0 auto; margin-top: -60px;
+            border-radius: 50%; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); background: #e8f0fe;
+            transition: all 0.2s; cursor: pointer;
         }
-
-        .profile-photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border: 3px solid #4caf50;
-            border-radius: 50%;
-        }
-
-        /* ✅ Bouton caméra */
-        .upload-icon {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: rgba(76, 175, 80, 0.9);
-            color: white;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-        }
-
-        .upload-icon:hover {
-            background: #66bb6a;
-            transform: scale(1.1);
-        }
-
-        /* ✅ Badge rôle */
-        .badge-role {
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 0.4rem 1rem;
-            font-size: 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .badge-admin { background: #c62828; color: #fff; }
-        .badge-agriculteur { background: #2e7d32; color: #fff; }
-        .badge-acheteur { background: #7cb342; color: #fff; }
-        .badge-default { background: #607d8b; color: #fff; }
-
-        .card-body { padding: 1.5rem; text-align: center; }
-        .card-title { font-weight: 600; color: #1b5e20; }
-        .card-subtitle { color: #388e3c; font-size: 0.9rem; margin-bottom: 10px; }
-        .card-description { font-size: 0.85rem; color: #4e342e; }
-
-        .contact-icons a {
-            color: #2e7d32;
-            margin: 0 6px;
-            font-size: 1rem;
-            transition: color 0.3s;
-        }
-
-        .contact-icons a:hover { color: #81c784; }
-
-        .btn-card {
-            font-size: 0.85rem;
-            padding: 0.35rem 0.75rem;
-            border-radius: 15px;
-        }
-
-        footer {
-            background: linear-gradient(90deg, #2e7d32, #43a047);
-        }
-
-        footer a {
-            color: #fff;
-            transition: 0.3s;
-        }
-
-        footer a:hover { color: #ffeb3b; }
-
+        .photo-wrapper.dragover { border: 2px dashed #0a66c2; background-color: rgba(10,102,194,0.1); }
         .photo-wrapper.loading::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(255,255,255,0.6);
-            backdrop-filter: blur(3px);
+            content: ""; position: absolute; inset: 0; background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(2px); z-index: 2;
         }
+        .profile-photo { width: 100%; height: 100%; object-fit: cover; border: 3px solid #0a66c2; border-radius: 50%; }
+        .upload-icon {
+            position: absolute; bottom: 5px; right: 5px; background: #0a66c2;
+            color: white; border-radius: 50%; width: 30px; height: 30px;
+            display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; z-index: 3;
+        }
+        .upload-icon:hover { background: #004182; transform: scale(1.1); }
+
+        .badge.bg-primary { background-color: #0a66c2 !important; }
+        .btn-outline-primary { border: 1px solid #0a66c2; color: #0a66c2; border-radius: 50px; }
+        .btn-outline-primary:hover { background-color: #0a66c2; color: #fff; }
+        .btn-outline-danger { border: 1px solid #d93025; color: #d93025; border-radius: 50px; }
+        .btn-outline-danger:hover { background-color: #d93025; color: #fff; }
+
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
     </style>
 </head>
-
 <body>
 
-<!-- ✅ Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/dashboard}">
-            <i class="fas fa-leaf me-2"></i>AgriPlateforme
+        <a class="navbar-brand text-primary fw-bold" th:href="@{/}">
+            <i class="fas fa-seedling me-1"></i> Plateforme Agricole
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}"><i class="fas fa-home"></i> Accueil</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/produits}"><i class="fas fa-carrot"></i> Produits</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/producteurs}"><i class="fas fa-tractor"></i> Producteurs</a></li>
-                <li class="nav-item"><a class="nav-link active" th:href="@{/utilisateurs}"><i class="fas fa-users"></i> Utilisateurs</a></li>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav align-items-center">
                 <li class="nav-item">
-                    <span class="nav-link text-white">👤 <b th:text="${email}">utilisateur@mail.com</b></span>
+                    <a class="nav-link text-primary" th:href="@{/}">
+                        <i class="fas fa-home me-1"></i> Accueil
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/auth/logout" class="btn btn-outline-light btn-sm ms-2">
-                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    <a class="nav-link text-danger" th:href="@{/logout}">
+                        <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
                     </a>
                 </li>
             </ul>
@@ -198,86 +63,125 @@
     </div>
 </nav>
 
-<!-- 🌿 Contenu principal -->
-<main class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        <h2 class="fw-bold text-success"><i class="fas fa-users me-2"></i>Liste des utilisateurs</h2>
-        <a th:href="@{/utilisateurs/creer}" class="btn btn-success mt-2 shadow-sm">
+<div class="container my-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary"><i class="fas fa-users me-2"></i>Liste des utilisateurs</h2>
+        <a th:href="@{/utilisateurs/creer}" class="btn btn-primary shadow-sm">
             <i class="fas fa-user-plus me-1"></i> Ajouter un utilisateur
         </a>
     </div>
 
-    <div th:if="${#lists.isEmpty(utilisateurs)}" class="alert alert-warning text-center shadow-sm">
-        Aucun utilisateur trouvé.
-    </div>
+    <!-- Recherche -->
+    <form th:action="@{/utilisateurs}" method="get" class="mb-4 d-flex">
+        <input type="text" name="motCle" th:value="${motCle}" class="form-control shadow-sm"
+               placeholder="Rechercher par nom, prénom ou email..." autocomplete="off"/>
+        <button type="submit" class="btn btn-primary ms-2 shadow-sm">
+            <i class="fas fa-search"></i> Rechercher
+        </button>
+    </form>
 
-    <div class="row g-4" th:if="${!#lists.isEmpty(utilisateurs)}">
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3" th:each="u : ${utilisateurs}">
+    <!-- Cartes utilisateurs -->
+    <div class="row g-4" th:if="${!#lists.isEmpty(utilisateursPage.content)}">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" th:each="u : ${utilisateursPage.content}">
             <div class="card card-user position-relative">
-                <span class="badge-role"
-                      th:classappend="${u.role == 'ADMIN' ? ' badge-admin' :
-                                       u.role == 'AGRICULTEUR' ? ' badge-agriculteur' :
-                                       u.role == 'ACHETEUR' ? ' badge-acheteur' : ' badge-default'}"
-                      th:text="${u.role}">ROLE</span>
 
-                <!-- ✅ Bloc photo avec upload -->
-                <div class="photo-wrapper position-relative">
-                    <img th:if="${u.photo != null}" th:src="@{'/images/utilisateurs/' + ${u.photo}}" class="profile-photo" alt="Photo" id="photoPreview"/>
-                    <img th:if="${u.photo == null}" src="/images/default-avatar.png" class="profile-photo" alt="Avatar" id="photoPreview"/>
-
-                    <label class="upload-icon" for="photoInput" title="Changer la photo">
+                <div class="photo-wrapper position-relative"
+                     th:attr="data-user-id=${u.id}"
+                     ondragover="event.preventDefault(); this.classList.add('dragover');"
+                     ondragleave="this.classList.remove('dragover');"
+                     ondrop="handleDrop(event, this)">
+                    <img th:if="${u.photo != null and u.photo != ''}" th:src="@{${u.photo}}"
+                         th:attr="data-old-src=${u.photo}" class="profile-photo" alt="Photo"/>
+                    <img th:if="${u.photo == null or u.photo == ''}" th:src="@{/images/default-avatar.png}"
+                         class="profile-photo" th:attr="data-old-src=@{/images/default-avatar.png}" alt="Avatar"/>
+                    <label class="upload-icon" th:for="'photoInput-' + ${u.id}" title="Changer la photo">
                         <i class="fas fa-camera"></i>
                     </label>
-                    <input type="file" id="photoInput" accept="image/*" hidden
-                           onchange="previewAndUpload(this, [[${u.id}]])">
+                    <input type="file" th:id="'photoInput-' + ${u.id}" accept="image/*" hidden onchange="handleFile(this)">
                 </div>
 
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${u.nom}">Nom</h5>
-                    <p class="card-subtitle" th:text="${u.email}">email@example.com</p>
-                    <p class="card-description">Acteur engagé pour une agriculture durable et connectée.</p>
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-1" th:text="${u.nom} + ' ' + ${u.prenom}">Nom Prénom</h5>
+                    <p class="card-subtitle text-muted mb-2" th:text="${u.email}">email@mail.com</p>
+                    <span class="badge rounded-pill bg-primary mb-2" th:text="${u.role}">ROLE</span>
 
-                    <div class="contact-icons mb-3">
-                        <a th:href="'mailto:' + ${u.email}" title="Email"><i class="fas fa-envelope"></i></a>
-                        <a href="#" title="Téléphone"><i class="fas fa-phone"></i></a>
-                        <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                    </div>
-
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <a th:href="@{/utilisateurs/detail/{id}(id=${u.id})}" class="btn btn-outline-success btn-card"><i class="fas fa-eye"></i> Voir</a>
-                        <a th:href="@{/utilisateurs/modifier/{id}(id=${u.id})}" class="btn btn-outline-warning btn-card"><i class="fas fa-pen"></i> Modifier</a>
-                        <a th:href="@{/utilisateurs/supprimer/{id}(id=${u.id})}" class="btn btn-outline-danger btn-card"
-                           onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');"><i class="fas fa-trash"></i> Supprimer</a>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a th:href="@{'/utilisateurs/modifier/' + ${u.id}}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-edit me-1"></i> Modifier
+                        </a>
+                        <a th:href="@{'/utilisateurs/supprimer/' + ${u.id}}" class="btn btn-outline-danger btn-sm"
+                           onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
+                            <i class="fas fa-trash-alt me-1"></i> Supprimer
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</main>
 
-<!-- ✅ Footer -->
-<footer class="text-white text-center py-3 mt-auto shadow-sm">
-    <div class="container">
-        <div class="mb-2">
-            <i class="fas fa-seedling"></i> Plateforme Agricole &copy; 2025
-        </div>
-        <div>
-            <a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        </div>
+    <!-- Message si aucun utilisateur -->
+    <div th:if="${#lists.isEmpty(utilisateursPage.content)}" class="alert alert-warning text-center">
+        Aucun utilisateur trouvé.
     </div>
-</footer>
 
+    <!-- Pagination -->
+    <nav th:if="${utilisateursPage.totalPages > 1}" aria-label="Pagination">
+        <ul class="pagination justify-content-center mt-4">
+            <li class="page-item" th:classappend="${utilisateursPage.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/utilisateurs(page=${utilisateursPage.number-1}, motCle=${motCle})}">Précédent</a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, utilisateursPage.totalPages-1)}"
+                th:classappend="${i == utilisateursPage.number} ? 'active'">
+                <a class="page-link" th:href="@{/utilisateurs(page=${i}, motCle=${motCle})}" th:text="${i+1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${utilisateursPage.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/utilisateurs(page=${utilisateursPage.number+1}, motCle=${motCle})}">Suivant</a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    async function previewAndUpload(input, userId) {
+    function showToast(message, type='success') {
+        const container = document.getElementById('toastContainer');
+        const toastEl = document.createElement('div');
+        toastEl.className = `toast align-items-center text-bg-${type} border-0 mb-2`;
+        toastEl.innerHTML = `<div class="d-flex">
+            <div class="toast-body">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>`;
+        container.appendChild(toastEl);
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+        toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+    }
+
+    function handleFile(input) {
+        const wrapper = input.closest(".photo-wrapper");
+        const userId = wrapper.getAttribute("data-user-id");
         const file = input.files[0];
         if (!file) return;
+        uploadAndPreview(file, wrapper, userId);
+    }
 
-        const preview = input.closest(".photo-wrapper").querySelector(".profile-photo");
-        const wrapper = preview.closest(".photo-wrapper");
+    function handleDrop(event, wrapper) {
+        event.preventDefault();
+        wrapper.classList.remove('dragover');
+        const userId = wrapper.getAttribute("data-user-id");
+        const file = event.dataTransfer.files[0];
+        if (!file) return;
+        uploadAndPreview(file, wrapper, userId);
+    }
 
-        // 🌄 Prévisualisation immédiate
+    async function uploadAndPreview(file, wrapper, userId) {
+        const preview = wrapper.querySelector(".profile-photo");
+        const oldSrc = preview.getAttribute("data-old-src");
+
         const reader = new FileReader();
         reader.onload = e => preview.src = e.target.result;
         reader.readAsDataURL(file);
@@ -288,26 +192,24 @@
         formData.append("photo", file);
 
         try {
-            const res = await fetch(/utilisateurs/upload-photo/${userId}, {
-                method: "POST",
-                    body: formData
-            });
-
+            const res = await fetch(`/utilisateurs/upload-photo/${userId}`, { method: "POST", body: formData });
             if (res.ok) {
                 const newUrl = await res.text();
                 preview.src = newUrl + "?t=" + new Date().getTime();
+                preview.setAttribute("data-old-src", newUrl);
+                showToast("Photo mise à jour avec succès ✅");
             } else {
-                alert("❌ Erreur lors du téléchargement de la photo.");
+                showToast("Erreur lors du téléchargement ❌", "danger");
+                preview.src = oldSrc;
             }
         } catch (err) {
             console.error(err);
-            alert("⚠ Erreur de connexion au serveur.");
+            showToast("Erreur de connexion au serveur ❌", "danger");
+            preview.src = oldSrc;
         } finally {
             wrapper.classList.remove("loading");
         }
     }
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

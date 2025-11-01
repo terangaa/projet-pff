@@ -21,7 +21,7 @@ public class Capteur {
     private String localisation;
     private String ville;
     private Double latitude;
-    private Double Longitude;// région ou GPS
+    private Double longitude;// région ou GPS
 
     private Double moyenne; // ← doit être présent
 

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un produit existant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 rounded-4 w-100" style="max-width: 700px;">
+        <div class="text-center mb-4">
+            <i class="bi bi-box-seam fs-1 text-primary"></i>
+            <h2 class="mt-2">Ajouter un produit existant</h2>
+            <p class="text-muted">Sélectionnez un produit existant et indiquez la quantité à ajouter au stock</p>
+        </div>
+
+        <!-- Messages -->
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <!-- Formulaire -->
+        <form th:action="@{/produits/creer-utilisateur}" method="post">
+
+            <!-- Sélection produit -->
+            <div class="mb-3">
+                <label for="produitSelect" class="form-label fw-semibold">Sélectionner un produit</label>
+                <select id="produitSelect" name="produitId" class="form-select" required>
+                    <option value="" disabled selected>-- Choisissez un produit --</option>
+                    <option th:each="p : ${produitsDisponibles}"
+                            th:value="${p.id}"
+                            th:text="${p.nom}"
+                            th:data-prix="${p.prix}"
+                            th:data-description="${p.description}"
+                            th:data-stock="${p.stock}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="description" class="form-label fw-semibold">Description</label>
+                <textarea id="description" class="form-control" rows="3" readonly></textarea>
+            </div>
+
+            <!-- Prix unitaire -->
+            <div class="mb-3">
+                <label for="prixUnitaire" class="form-label fw-semibold">Prix unitaire (FCFA)</label>
+                <input type="number" id="prixUnitaire" class="form-control" readonly/>
+            </div>
+
+            <!-- Quantité -->
+            <div class="mb-3">
+                <label for="quantite" class="form-label fw-semibold">Quantité à ajouter</label>
+                <input type="number" id="quantite" name="quantite" class="form-control" min="1" required/>
+                <small id="stockInfo" class="text-muted"></small>
+            </div>
+
+            <!-- Prix total affiché -->
+            <div class="mb-2">
+                <span id="prixAffiche" class="fw-bold text-success"></span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a th:href="@{/produits}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Ajouter au stock
+                </button>
+            </div>
+        </form>
+
+        <!-- Bouton produit manquant -->
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#produitManquantModal">
+                <i class="bi bi-envelope"></i> Produit manquant ?
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal : Demande d’ajout de produit -->
+<div class="modal fade" id="produitManquantModal" tabindex="-1" aria-labelledby="produitManquantLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="produitManquantLabel">
+                    <i class="bi bi-box-seam"></i> Demander l’ajout d’un produit
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/produits/demande-ajout}" method="post">
+                    <div class="mb-3">
+                        <label for="nomProduit" class="form-label fw-semibold">Nom du produit</label>
+                        <input type="text" id="nomProduit" name="nomProduit" class="form-control" required
+                               placeholder="Ex : Riz parfumé, Oignon violet..."/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label fw-semibold">Message (optionnel)</label>
+                        <textarea id="message" name="message" class="form-control" rows="3"
+                                  placeholder="Ex : Bonjour, je ne trouve pas ce produit dans la liste..."></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Envoyer la demande
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const selectProduit = document.getElementById('produitSelect');
+    const inputDescription = document.getElementById('description');
+    const inputPrixUnitaire = document.getElementById('prixUnitaire');
+    const inputQuantite = document.getElementById('quantite');
+    const prixAffiche = document.getElementById('prixAffiche');
+    const stockInfo = document.getElementById('stockInfo');
+
+    function mettreAJourProduit() {
+        const option = selectProduit.selectedOptions[0];
+        if (!option) return;
+
+        const stock = parseFloat(option.getAttribute('data-stock')) || 0;
+        const prix = parseFloat(option.getAttribute('data-prix')) || 0;
+
+        inputDescription.value = option.getAttribute('data-description');
+        inputPrixUnitaire.value = prix;
+        stockInfo.textContent = `Stock disponible actuel : ${stock.toFixed(2)} unités`;
+
+        calculerPrix();
+    }
+
+    function calculerPrix() {
+        const prixUnit = parseFloat(inputPrixUnitaire.value) || 0;
+        const quantite = parseFloat(inputQuantite.value) || 0;
+        const total = prixUnit * quantite;
+        prixAffiche.textContent = quantite > 0 ? `Total : ${total.toLocaleString('fr-FR')} FCFA` : '';
+    }
+
+    selectProduit?.addEventListener('change', mettreAJourProduit);
+    inputQuantite?.addEventListener('input', calculerPrix);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (selectProduit?.value) mettreAJourProduit();
+    });
+</script>
+</body>
+</html>

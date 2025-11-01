@@ -23,7 +23,7 @@
                     <option th:if="${commande.acheteur == null}" value="" disabled selected>-- Sélectionner un acheteur --</option>
                     <option th:each="utilisateur : ${utilisateurs}"
                             th:value="${utilisateur.id}"
-                            th:text="${utilisateur.nom}"
+                            th:text="${utilisateur.prenom} + ' ' + ${utilisateur.nom}"
                             th:selected="${commande.acheteur != null and commande.acheteur.id == utilisateur.id}">
                     </option>
 

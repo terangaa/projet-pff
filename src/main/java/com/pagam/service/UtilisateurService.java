@@ -1,9 +1,11 @@
 package com.pagam.service;
 
+import com.pagam.entity.Role;
 import com.pagam.entity.Utilisateur;
 import com.pagam.repository.UtilisateurRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,12 +13,21 @@ import java.util.Optional;
 
 @Service
 public class UtilisateurService {
-        private final UtilisateurRepository utilisateurRepository;
+        private  final UtilisateurRepository utilisateurRepository;
 
         public UtilisateurService(UtilisateurRepository utilisateurRepository) {
             this.utilisateurRepository = utilisateurRepository;
         }
-        public Utilisateur saveUtilisateur(Utilisateur utilisateur) {
+
+    public boolean isAdmin(String username) {
+        Optional<Utilisateur> optionalUtilisateur = utilisateurRepository.findByEmail(username);
+        if (optionalUtilisateur.isEmpty()) return false;
+
+        Utilisateur utilisateur = optionalUtilisateur.get();
+        return utilisateur.getRole() == Role.ADMIN;
+    }
+
+    public Utilisateur saveUtilisateur(Utilisateur utilisateur) {
             return utilisateurRepository.save(utilisateur);
         }
         public List<Utilisateur> getAllUtilisateur() {

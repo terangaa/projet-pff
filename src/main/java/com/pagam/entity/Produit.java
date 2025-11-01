@@ -3,6 +3,8 @@ package com.pagam.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,17 +24,17 @@ public class Produit {
     private String nom;
     private Double prix;
     private int stock;
+    private LocalDateTime dateCreation;
     private String image;
     private String description;
-    private Integer quantite;  // <--- ce champ doit exister
+    private Integer quantite;
+    private boolean nouveau;
+    private String noteHtml;
+
+
     @ManyToOne
     @JoinColumn(name = "agriculteur_id")
     private Producteur agriculteur;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "producteur_id")
-    @JsonIgnoreProperties("produits") // évite la sérialisation infinie JSON
-    private Producteur producteur;
 
     // ✅ Ajout relation avec Commande
     @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)

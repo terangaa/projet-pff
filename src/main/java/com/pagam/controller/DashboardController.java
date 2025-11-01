@@ -3,12 +3,16 @@ package com.pagam.controller;
 import com.pagam.entity.*;
 import com.pagam.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -130,4 +134,15 @@ public class DashboardController {
         model.addAttribute("ventes", ventes);
         return "dashboard/admin-home";
     }
+
+    // Formulaire pour modifier le stock
+    @GetMapping("/produits/modifier-stock/{id}")
+    @Secured("ROLE_ADMIN")
+    public String formModifierStock(@PathVariable Long id, Model model) {
+        Produit produit = produitService.getProduitById(id);
+        model.addAttribute("produit", produit);
+        return "produits/modifier-stock";
+    }
+
+    // Enregistrer le nouveau stock
 }
