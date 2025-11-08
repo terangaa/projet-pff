@@ -38,8 +38,8 @@ public class SecurityConfig {
 
                         // accès public aux pages
                         .requestMatchers(
-                                "/", "/home/**","/images/**","/css/**","/js/**", "/services/**", "/about/**",
-                                "/contact/**", "/auth/**", "/auth/oublier-password/**",
+                                "/", "/home/**","/images/**","/css/**","/js/**", "/services/**",
+                                "/about","/about/**","/contact/**", "/auth/**", "/auth/oublier-password/**",
                                 "/auth/reset-password/**",
                                 "/h2-console/**").permitAll()
 

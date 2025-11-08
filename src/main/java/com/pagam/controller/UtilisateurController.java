@@ -19,7 +19,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/utilisateurs")
 public class UtilisateurController {
-
     private final UtilisateurRepository utilisateurRepository;
     private final StockageService stockageService;
     private final PasswordEncoder passwordEncoder;

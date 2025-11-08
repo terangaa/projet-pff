@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Layout général */
         html, body {
             height: 100%;
             margin: 0;
@@ -19,114 +18,84 @@
             background: linear-gradient(135deg, #e0f7fa, #a5d6a7);
         }
 
-        /* Navbar */
         .navbar-brand { font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: 1px; font-size: 1.4rem; }
 
-        /* Contenu principal */
-        .main-content {
-            flex: 1 0 auto;
-            padding: 40px 20px;
-        }
+        .content-wrapper { display: flex; flex: 1 0 auto; min-height: calc(100vh - 70px); }
 
-        /* Heading */
-        h2 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            color: #2e7d32;
-            margin-bottom: 40px;
-            text-align: center;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-        }
-
-        /* Cartes KPI */
-        .kpis {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-            gap: 25px;
-        }
-
-        .kpi-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 25px;
-            position: relative;
-            color: #333;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-            text-align: center;
-            cursor: pointer;
-        }
-        .kpi-card:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
-            background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-        }
-
-        /* Icônes animées */
-        .kpi-icon {
-            font-size: 50px;
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            background: linear-gradient(135deg, #43a047, #2e7d32);
-            color: #fff;
-            transition: transform 0.3s;
-        }
-        .kpi-card:hover .kpi-icon {
-            transform: translateY(-5px) scale(1.1);
-        }
-
-        /* Titres et descriptions */
-        .kpi-title {
-            font-family: 'Playfair Display', serif;
-            font-weight: 600;
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-            letter-spacing: 0.5px;
-        }
-        .kpi-desc {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            color: #555;
-            margin-bottom: 10px;
-        }
-
-        /* Badge animé */
-        .kpi-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #43a047;
-            color: #fff;
-            font-weight: 700;
-            font-family: 'Playfair Display', serif;
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            animation: pulse 2s infinite;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        /* Boutons */
-        .btn-primary { background: linear-gradient(135deg,#43a047,#2e7d32); border:none; }
-        .btn-success { background: linear-gradient(135deg,#66bb6a,#388e3c); border:none; }
-
-        /* Footer */
-        footer {
-            flex-shrink: 0;
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
             background: linear-gradient(135deg,#43a047,#2e7d32);
             color: #fff;
-            text-align: center;
-            padding: 15px 0;
-            font-family: 'Playfair Display', serif;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover { background: rgba(255,255,255,0.15); }
+        .sidebar a i { font-size: 1.2rem; }
+
+        /* Submenu animé */
+        .submenu-items {
+            max-height: 0;
+            overflow: hidden;
+            flex-direction: column;
+            gap: 5px;
+            padding-left: 20px;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        .submenu-items.open {
+            max-height: 500px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .submenu-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .submenu-toggle:hover { background: rgba(255,255,255,0.15); }
+
+        /* Content */
+        .main-content { flex: 1; padding: 40px 20px; }
+        h2 { font-family: 'Playfair Display', serif; font-weight: 700; color: #2e7d32; margin-bottom: 40px; text-align: center; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+
+        /* KPI cards */
+        .kpis { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 25px; }
+        .kpi-card { background: #fff; border-radius: 20px; padding: 25px; position: relative; color: #333; box-shadow: 0 8px 25px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s, background 0.3s; text-align: center; cursor: pointer; }
+        .kpi-card:hover { transform: translateY(-12px) scale(1.02); box-shadow: 0 25px 45px rgba(0,0,0,0.2); background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05)); }
+        .kpi-icon { font-size: 50px; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 15px; background: linear-gradient(135deg, #43a047, #2e7d32); color: #fff; transition: transform 0.3s; }
+        .kpi-card:hover .kpi-icon { transform: translateY(-5px) scale(1.1); }
+        .kpi-title { font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.2rem; margin-bottom: 5px; letter-spacing: 0.5px; }
+        .kpi-desc { font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: #555; margin-bottom: 10px; }
+        .kpi-badge { position: absolute; top: 15px; right: 15px; background: #43a047; color: #fff; font-weight: 700; font-family: 'Playfair Display', serif; padding: 5px 10px; border-radius: 12px; font-size: 0.85rem; animation: pulse 2s infinite; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        @keyframes pulse { 0%,100%{transform:scale(1);}50%{transform:scale(1.2);} }
+
+        footer { flex-shrink: 0; background: linear-gradient(135deg,#43a047,#2e7d32); color: #fff; text-align: center; padding: 15px 0; font-family: 'Playfair Display', serif; }
+
+        /* Responsive */
+        #sidebarToggle { display: none; cursor: pointer; font-size: 1.5rem; color: #fff; margin-right: 10px; }
+        .navbar .d-flex { flex-wrap: wrap; } /* Pour éviter le débordement du bouton logout */
+        @media (max-width: 991px) {
+            .content-wrapper { flex-direction: column; }
+            .sidebar { position: fixed; top: 0; left: -250px; height: 100%; z-index: 999; transform: translateX(0); width: 220px; padding-top: 70px; }
+            .sidebar.show { left: 0; transition: left 0.3s ease-in-out; }
+            .main-content { padding: 80px 20px 20px 20px; }
+            #sidebarToggle { display: block; }
         }
     </style>
 </head>
@@ -135,66 +104,103 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background: linear-gradient(135deg,#43a047,#2e7d32);">
     <div class="container-fluid">
+        <span id="sidebarToggle"><i class="ri-menu-line"></i></span>
         <a class="navbar-brand fw-bold" href="#">Espace Acheteur</a>
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center ms-auto flex-wrap">
             <span class="text-white me-3">Connecté : <b th:text="${email}"></b></span>
-            <a href="/auth/logout" class="btn btn-outline-light btn-sm">Déconnexion</a>
+            <a href="/auth/logout" class="btn btn-outline-light btn-sm mt-1 mt-lg-0">Déconnexion</a>
         </div>
     </div>
 </nav>
 
-<!-- Contenu principal -->
-<div class="container main-content">
-    <h2>🛒 Tableau de bord Acheteur</h2>
-
-    <div class="kpis">
-        <!-- Produits -->
-        <a href="/achats" class="text-decoration-none">
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="ri-store-line"></i></div>
-                <div class="kpi-title">Produits</div>
-                <div class="kpi-desc">Découvrez et achetez les produits</div>
-                <div class="kpi-badge" th:text="${nbProduits}">0</div>
+<div class="content-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="/achats"><i class="ri-store-line"></i> Produits</a>
+        <a href="/achats/mes"><i class="ri-shopping-basket-line"></i> Mes Commandes</a>
+        <a href="/panier"><i class="ri-shopping-cart-line"></i> Panier</a>
+        <a href="/achats/historique"><i class="ri-time-line"></i> Historique</a>
+        <hr style="border-color: rgba(255,255,255,0.3); margin: 10px 0;">
+        <div class="submenu">
+            <a class="submenu-toggle"><i class="ri-settings-3-line"></i> Paramètres <i class="ri-arrow-down-s-line ms-auto"></i></a>
+            <div class="submenu-items">
+                <a href="/parametres/profil"><i class="ri-user-line"></i> Profil</a>
+                <a href="/parametres/securite"><i class="ri-shield-keyhole-line"></i> Sécurité</a>
             </div>
-        </a>
+        </div>
+        <a href="/parametres/about"><i class="ri-information-line"></i> À propos</a>
+    </div>
 
-        <!-- Commandes -->
-        <a href="/achats/mes" class="text-decoration-none">
-            <div class="kpi-card" style="background: linear-gradient(180deg,#66bb6a,#388e3c); color:#fff;">
-                <div class="kpi-icon" style="background: linear-gradient(135deg,#81c784,#2e7d32);"><i class="ri-shopping-basket-line"></i></div>
-                <div class="kpi-title">Mes Commandes</div>
-                <div class="kpi-desc">Suivi de vos commandes</div>
-                <div class="kpi-badge" th:text="${nbCommandes}">0</div>
-            </div>
-        </a>
-
-        <!-- Panier -->
-        <a href="/panier" class="text-decoration-none">
-            <div class="kpi-card" style="background: linear-gradient(180deg,#ffc107,#ff9800); color:#fff;">
-                <div class="kpi-icon" style="background: linear-gradient(135deg,#ffca28,#ffa000);"><i class="ri-shopping-cart-line"></i></div>
-                <div class="kpi-title">Panier</div>
-                <div class="kpi-desc">Articles en attente d’achat</div>
-                <div class="kpi-badge" th:text="${nbPanier}">0</div>
-            </div>
-        </a>
-
-        <!-- Historique -->
-        <a href="/achats/historique" class="text-decoration-none">
-            <div class="kpi-card" style="background: linear-gradient(180deg,#1e88e5,#1565c0); color:#fff;">
-                <div class="kpi-icon" style="background: linear-gradient(135deg,#42a5f5,#1565c0);"><i class="ri-time-line"></i></div>
-                <div class="kpi-title">Historique</div>
-                <div class="kpi-desc">Vos achats passés</div>
-                <div class="kpi-badge" th:text="${nbHistorique}">0</div>
-            </div>
-        </a>
+    <!-- Main content -->
+    <div class="main-content">
+        <h2>🛒 Tableau de bord Acheteur</h2>
+        <div class="kpis">
+            <a href="/achats" class="text-decoration-none">
+                <div class="kpi-card">
+                    <div class="kpi-icon"><i class="ri-store-line"></i></div>
+                    <div class="kpi-title">Produits</div>
+                    <div class="kpi-desc">Découvrez et achetez les produits</div>
+                    <div class="kpi-badge" th:text="${nbProduits}">0</div>
+                </div>
+            </a>
+            <a href="/achats/mes" class="text-decoration-none">
+                <div class="kpi-card" style="background: linear-gradient(180deg,#66bb6a,#388e3c); color:#fff;">
+                    <div class="kpi-icon" style="background: linear-gradient(135deg,#81c784,#2e7d32);"><i class="ri-shopping-basket-line"></i></div>
+                    <div class="kpi-title">Mes Commandes</div>
+                    <div class="kpi-desc">Suivi de vos commandes</div>
+                    <div class="kpi-badge" th:text="${nbCommandes}">0</div>
+                </div>
+            </a>
+            <a href="/panier" class="text-decoration-none">
+                <div class="kpi-card" style="background: linear-gradient(180deg,#ffc107,#ff9800); color:#fff;">
+                    <div class="kpi-icon" style="background: linear-gradient(135deg,#ffca28,#ffa000);"><i class="ri-shopping-cart-line"></i></div>
+                    <div class="kpi-title">Panier</div>
+                    <div class="kpi-desc">Articles en attente d’achat</div>
+                    <div class="kpi-badge" th:text="${nbPanier}">0</div>
+                </div>
+            </a>
+            <a href="/achats/historique" class="text-decoration-none">
+                <div class="kpi-card" style="background: linear-gradient(180deg,#1e88e5,#1565c0); color:#fff;">
+                    <div class="kpi-icon" style="background: linear-gradient(135deg,#42a5f5,#1565c0);"><i class="ri-time-line"></i></div>
+                    <div class="kpi-title">Historique</div>
+                    <div class="kpi-desc">Vos achats passés</div>
+                    <div class="kpi-badge" th:text="${nbHistorique}">0</div>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
 
-<!-- Footer -->
 <footer>
     <p class="mb-0">© 2025 - Plateforme Agricole - Espace Acheteur</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Submenu toggle
+    document.querySelectorAll('.submenu-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function() {
+            const submenu = this.nextElementSibling;
+            submenu.classList.toggle('open');
+        });
+    });
+
+    // Sidebar toggle mobile
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('show');
+    });
+
+    // Fermer sidebar si clic en dehors (mobile)
+    document.addEventListener('click', (e) => {
+        const isClickInside = sidebar.contains(e.target) || toggleBtn.contains(e.target);
+        if (!isClickInside && sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+        }
+    });
+</script>
+
 </body>
 </html>

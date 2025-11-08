@@ -5,112 +5,74 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="820025a4-2ed6-4e4a-81b6-fb6066a9486e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/config/CreationAdmin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/config/WebConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/DemandeProduitController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/StockController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/DemandeProduit.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/repository/ArticleRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/repository/DemandeProduitRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/DemandeProduitService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/StockageService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/default-avatar.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/demandes/demandes.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/creer-produit-utilisateur.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/modifier-produit-utilisateur.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/panier.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/stock.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/PanierController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/ParametreController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/LigneCommande.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/LignePanier.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/ModifierProfileRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Panier.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/repository/LignePanierRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/repository/PanierRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/PanierService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/arriere-plan.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/panier/panier.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/parametres/modifier-mot-de-passe.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/parametres/modifier-profil.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/parametres/parametre-profil.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/parametres/parametre-securite.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/AuthController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/CommandeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/CommandeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/DemandeProduitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/DemandeProduitController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/ProduitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/ProduitController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/StockController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/StockController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/UtilisateurController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/UtilisateurController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Capteur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Capteur.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Mesure.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Mesure.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Producteur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Producteur.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/VenteController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/VenteController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Commande.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Commande.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Produit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Produit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Utilisateur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Utilisateur.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/repository/ProducteurRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/repository/ProducteurRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/repository/ProduitRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/repository/ProduitRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/repository/UtilisateurRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/repository/UtilisateurRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Vente.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Vente.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/repository/VenteRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/repository/VenteRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/service/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/EmailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/service/ProducteurService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/ProducteurService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/service/ProduitService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/ProduitService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/service/SimulationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/SimulationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/service/UtilisateurService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/UtilisateurService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/service/CommandeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/CommandeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/service/DemandeProduitService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/DemandeProduitService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/service/VenteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/service/VenteService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/agriculture.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/produits/téléchargement (1).jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/agriculture.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/agriculture1.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/femme01.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/femme1.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/femme2.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/femme3.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/femme5.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme1.jpge.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme2jpeg.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme3.jgep.jfif" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme3.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme4.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme5.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme6.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme6.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme7.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme8.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/homme9.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/utilisateurs/images.jpeg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/achats/achat.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/achats/achat.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/achats/mes-commandes.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/achats/mes-commandes.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/capteurs/capteur.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/capteurs/capteur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/commandes/commande-form.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/commandes/commande-form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/alertes/alerte.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/alertes/alerte.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/commandes/commande.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/commandes/commande.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/dashboard/acheteur-home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/dashboard/acheteur-home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/dashboard/admin-home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/dashboard/admin-home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/dashboard/agriculteur-home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/dashboard/agriculteur-home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/produits/creer-produit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/creer-produit-admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/produits/modifier-produit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/modifier-produit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/dashboard/decideur-home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/dashboard/decideur-home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/homes/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/homes/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/homes/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/homes/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/homes/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/homes/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/homes/service.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/homes/service.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/menu/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/menu/sidebar.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/produits/produit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/produit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/creer-utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/creer-utilisateur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/modifier-utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/modifier-utilisateur.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/produits/stock.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/stock.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/utilisateur.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/ventes/ajout-vente.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/ventes/ajout-vente.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/ventes/liste-vente.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/ventes/liste-vente.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/ventes/modifier-vente.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/ventes/modifier-vente.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/AuthController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/CommandeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/CommandeController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/DashboardController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/DashboardController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/ProduitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/ProduitController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/UtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/UtilisateurController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Capteur$CapteurBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Capteur$CapteurBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Capteur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Capteur.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Mesure$MesureBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Mesure$MesureBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Mesure.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Mesure.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Producteur$ProducteurBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Producteur$ProducteurBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Producteur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Producteur.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Commande$CommandeBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Commande$CommandeBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Commande.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Commande.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Produit$ProduitBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Produit$ProduitBuilder.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Produit.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Produit.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Utilisateur$UtilisateurBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Utilisateur$UtilisateurBuilder.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Utilisateur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Utilisateur.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/ProducteurRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/ProducteurRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/ProduitRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/ProduitRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/UtilisateurRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/UtilisateurRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/security/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/security/SecurityConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/EmailService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/EmailService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/ProducteurService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/ProducteurService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/ProduitService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/ProduitService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/SimulationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/SimulationService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/UtilisateurService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/UtilisateurService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/capteurs/capteur.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/capteurs/capteur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/commandes/commande-form.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/commandes/commande-form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/produits/creer-produit.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/produits/modifier-produit.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/produits/modifier-produit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/CommandeService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/CommandeService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/alertes/alerte.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/alertes/alerte.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/commandes/commande.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/commandes/commande.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/templates/produits/produit.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/produits/produit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/utilisateurs/creer-utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/utilisateurs/creer-utilisateur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/utilisateurs/modifier-utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/utilisateurs/modifier-utilisateur.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/templates/utilisateurs/utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/utilisateurs/utilisateur.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -162,36 +124,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.PagamApplication.executor": "Run",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/projet-pff-master/src/main/resources/static/images/utilisateurs",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "show.migrate.to.gradle.popup": "false",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.PagamApplication.executor&quot;: &quot;Run&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/projet-pff-master/src/main/resources/static/images&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="com.pagam.controller" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\projet-pff-master\src\main\resources\static\images\utilisateurs" />
       <recent name="C:\projet-pff-master\src\main\resources\static\images" />
+      <recent name="C:\projet-pff-master\src\main\resources\static\images\utilisateurs" />
       <recent name="C:\projet-pff-master\src\main\resources\static\imges" />
       <recent name="C:\projet-pff-master\src\main\resources\static" />
       <recent name="C:\projet-pff-master\src\main\resources\templates\static" />
@@ -217,8 +179,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26094.121" />
-        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-IU-251.26094.121" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.23774.435" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-IU-251.23774.435" />
       </set>
     </attachedChunks>
   </component>
@@ -270,7 +232,15 @@
       <workItem from="1761652028196" duration="28157000" />
       <workItem from="1761739066951" duration="29004000" />
       <workItem from="1761852086022" duration="1264000" />
-      <workItem from="1761908575077" duration="38102000" />
+      <workItem from="1761908575077" duration="38519000" />
+      <workItem from="1761998594275" duration="1698000" />
+      <workItem from="1762005167944" duration="6070000" />
+      <workItem from="1762039965115" duration="7388000" />
+      <workItem from="1762170791480" duration="33945000" />
+      <workItem from="1762217081533" duration="1080000" />
+      <workItem from="1762263410259" duration="20073000" />
+      <workItem from="1762349258964" duration="25914000" />
+      <workItem from="1762424447525" duration="19631000" />
     </task>
     <servers />
   </component>

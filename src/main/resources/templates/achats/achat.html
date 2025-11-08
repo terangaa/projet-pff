@@ -31,18 +31,28 @@
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.4s ease, box-shadow 0.4s ease;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08), 0 0 10px rgba(255,193,7,0.1);
         }
-        .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-        .product-card img { width: 100%; height: 220px; object-fit: cover; transition: transform 0.5s ease; }
-        .product-card:hover img { transform: scale(1.1); }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 0 15px rgba(255,193,7,0.25);
+        }
+        .product-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.3s ease;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .product-card:hover img { transform: scale(1.05); filter: brightness(1.1); }
 
         /* Overlay description */
         .product-overlay {
             position: absolute;
             bottom: -100%;
             width: 100%;
-            background: rgba(0,0,0,0.75);
+            background: rgba(0,0,0,0.8);
             color: #fff;
             padding: 15px;
             display: flex;
@@ -65,11 +75,14 @@
             border-radius: 8px;
             font-weight: 600;
             color: #fff;
-            animation: pulse 1.5s infinite;
+            animation: pulseBadge 1.8s infinite ease-in-out;
         }
         .badge-stock { background-color: #dc3545; left: 12px; }
         .badge-new { background-color: #198754; right: 12px; }
-        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1);} 100% {transform: scale(1);} }
+        @keyframes pulseBadge {
+            0%,100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.85; }
+        }
 
         /* Card body */
         .card-body { padding: 12px; text-align: center; }
@@ -79,9 +92,8 @@
         /* Boutons flottants */
         .btn-float {
             position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
+            top: 12px;
+            right: 12px;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -101,13 +113,18 @@
         .product-overlay .btn-cart {
             width: 100%;
             border-radius: 50px;
-            background-color: #ffc107;
+            background: linear-gradient(90deg, #ffc107, #ffca2c);
             border: none;
             color: #212529;
-            font-weight: 500;
-            transition: transform 0.2s, background 0.3s;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
         }
-        .product-overlay .btn-cart:hover { transform: scale(1.05); background-color: #e0a800; }
+        .product-overlay .btn-cart:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #e0a800, #ffc107);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+        }
 
         /* Pagination arrondie */
         .pagination .page-item .page-link {
@@ -126,6 +143,20 @@
         /* Animation d'apparition */
         .product-item { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
         .product-item.visible { opacity: 1; transform: translateY(0); }
+
+        /* Overlay mini-images */
+        .overlay-images {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .overlay-images img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
     </style>
 </head>
 <body>
@@ -151,9 +182,14 @@
 
     <!-- Grille produits -->
     <div class="row g-4" id="productGrid" th:if="${!#lists.isEmpty(produits)}">
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 product-item" th:each="produit : ${produits}" th:data-name="${produit.nom.toLowerCase()}">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 product-item"
+             th:each="produit : ${produits}"
+             th:data-name="${produit.nom.toLowerCase()}">
+
             <div class="product-card shadow-sm h-100 position-relative">
-                <img th:if="${produit.image != null}" th:src="@{'/images/produits/' + ${produit.image}}" alt="Produit">
+
+                <!-- Image principale -->
+                <img th:if="${produit.image != null}" th:src="@{${produit.image}}" alt="Produit">
 
                 <!-- Badges -->
                 <span th:if="${produit.stock == 0}" class="badge-stock">Rupture</span>
@@ -164,6 +200,9 @@
 
                 <!-- Overlay -->
                 <div class="product-overlay">
+                    <div class="overlay-images" th:if="${produit.image != null}">
+                        <img th:src="@{${produit.image}}" alt="Aperçu">
+                    </div>
                     <p th:text="${produit.description}"></p>
                     <span class="price mb-2" th:text="${produit.prix + ' FCFA'}"></span>
                     <form th:action="@{/achats/ajouter}" method="post" class="w-100">

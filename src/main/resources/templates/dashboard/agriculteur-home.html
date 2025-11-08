@@ -9,149 +9,142 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            flex-direction: column;
-            background: linear-gradient(135deg, #e0f7fa, #a5d6a7);
-        }
-
-        /* Navbar */
+        html, body { height: 100%; margin: 0; font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; background: linear-gradient(135deg, #e0f7fa, #a5d6a7); }
         .navbar-brand { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.5rem; }
-
-        /* Heading */
-        h2 { font-family: 'Playfair Display', serif; font-weight: 700; color: #2e7d32; margin-bottom: 40px; text-align: center; text-shadow: 1px 1px 2px rgba(0,0,0,0.15); }
-
-        /* Cartes */
-        .card {
-            border-radius: 20px;
-            border: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        .kpi-icon {
-            font-size: 50px;
-            width: 70px; height: 70px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            background: linear-gradient(135deg,#43a047,#2e7d32);
-            color: #fff;
-            transition: transform 0.3s;
-        }
-        .card:hover .kpi-icon { transform: translateY(-5px) scale(1.1); }
-
-        .kpi-badge {
-            position: absolute;
-            top: 15px; right: 15px;
-            background: #43a047; color: #fff; font-weight: 700;
-            padding: 5px 10px; border-radius: 12px;
-            animation: pulse 2s infinite;
-            font-family: 'Playfair Display', serif;
-        }
-        @keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.2);} }
-
-        .btn-success, .btn-info, .btn-danger {
-            border-radius: 30px;
-            padding: 8px 16px;
-            font-weight: 500;
-        }
-
-        /* Footer */
-        footer {
-            flex-shrink: 0;
-            background: linear-gradient(90deg, #2e7d32, #388e3c);
-            color: #fff;
-            text-align: center;
-            padding: 15px 0;
-            font-family: 'Playfair Display', serif;
-        }
+        .content-wrapper { display: flex; flex: 1 0 auto; min-height: calc(100vh - 70px); }
+        .sidebar { width: 220px; background: linear-gradient(135deg,#43a047,#2e7d32); color:#fff; padding-top:20px; display:flex; flex-direction:column; gap:10px; transition: transform 0.3s ease-in-out; }
+        .sidebar a { color:#fff; text-decoration:none; padding:12px 20px; font-weight:500; display:flex; align-items:center; gap:10px; border-radius:10px; transition: background 0.3s; }
+        .sidebar a:hover { background: rgba(255,255,255,0.15); }
+        .sidebar a i { font-size:1.2rem; }
+        .submenu-items { max-height:0; overflow:hidden; flex-direction:column; gap:5px; padding-left:20px; transition:max-height 0.3s ease, padding 0.3s ease; }
+        .submenu-items.open { max-height:500px; padding-top:5px; padding-bottom:5px; }
+        .submenu-toggle { cursor:pointer; display:flex; align-items:center; justify-content:space-between; }
+        .submenu-toggle:hover { background: rgba(255,255,255,0.15); }
+        .main-content { flex:1; padding:40px 20px; }
+        h2 { font-family: 'Playfair Display', serif; font-weight:700; color:#2e7d32; margin-bottom:40px; text-align:center; text-shadow:1px 1px 2px rgba(0,0,0,0.15); }
+        .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:25px; }
+        .kpi-card { background:#fff; border-radius:20px; padding:25px; position:relative; color:#333; box-shadow:0 8px 25px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s, background 0.3s; text-align:center; cursor:pointer; }
+        .kpi-card:hover { transform: translateY(-12px) scale(1.02); box-shadow: 0 25px 45px rgba(0,0,0,0.2); background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05)); }
+        .kpi-icon { font-size:50px; width:70px; height:70px; display:flex; align-items:center; justify-content:center; border-radius:50%; margin:0 auto 15px; background:linear-gradient(135deg,#43a047,#2e7d32); color:#fff; transition: transform 0.3s; }
+        .kpi-card:hover .kpi-icon { transform: translateY(-5px) scale(1.1); }
+        .kpi-title { font-family: 'Playfair Display', serif; font-weight:600; font-size:1.2rem; margin-bottom:5px; letter-spacing:0.5px; }
+        .kpi-desc { font-family: 'Poppins', sans-serif; font-size:0.9rem; color:#555; margin-bottom:10px; }
+        .kpi-badge { position:absolute; top:15px; right:15px; background:#43a047; color:#fff; font-weight:700; font-family:'Playfair Display', serif; padding:5px 10px; border-radius:12px; font-size:0.85rem; animation:pulse 2s infinite; text-shadow:1px 1px 2px rgba(0,0,0,0.3); }
+        @keyframes pulse {0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+        footer { flex-shrink:0; background:linear-gradient(135deg,#43a047,#2e7d32); color:#fff; text-align:center; padding:15px 0; font-family:'Playfair Display', serif; }
+        #sidebarToggle { display:none; cursor:pointer; font-size:1.5rem; color:#fff; margin-right:10px; }
+        @media(max-width:991px){.content-wrapper{flex-direction:column;}.sidebar{position:fixed;top:0;left:-250px;height:100%;z-index:999;width:220px;padding-top:70px;}.sidebar.show{left:0;transition:left 0.3s ease-in-out;}.main-content{padding:80px 20px 20px 20px;}#sidebarToggle{display:block;}}
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark shadow" style="background: linear-gradient(90deg, #2e7d32, #388e3c);">
+<nav class="navbar navbar-expand-lg navbar-dark shadow" style="background: linear-gradient(135deg,#43a047,#2e7d32);">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">🌱 Espace Producteur</a>
-        <div class="d-flex align-items-center">
+        <span id="sidebarToggle"><i class="bi bi-list"></i></span>
+        <a class="navbar-brand" href="#">🌱 Espace Agriculteur</a>
+        <div class="d-flex align-items-center ms-auto flex-wrap">
             <span class="text-white me-3">Connecté : <b th:text="${email}"></b></span>
-            <a href="/auth/logout" class="btn btn-outline-light btn-sm rounded-pill">
-                <i class="bi bi-box-arrow-right"></i> Déconnexion
-            </a>
+            <a href="/auth/logout" class="btn btn-outline-light btn-sm mt-1 mt-lg-0">Déconnexion</a>
         </div>
     </div>
 </nav>
 
-<div class="container mt-5">
-    <h2>Bienvenue 👋, cher Producteur</h2>
-
-    <div class="row g-4">
-        <!-- Produits -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100 text-center">
-                <div class="kpi-icon"><i class="bi bi-box-seam"></i></div>
-                <h5 class="card-title mt-3">Mes Produits</h5>
-                <p class="card-text">Ajoutez, mettez à jour ou supprimez vos produits agricoles.</p>
-                <div class="kpi-badge" th:text="${nbProduits}">0</div>
-                <a href="/produits" class="btn btn-success mt-2"><i class="bi bi-eye"></i> Voir mes produits</a>
+<div class="content-wrapper">
+    <div class="sidebar">
+        <a href="/produits"><i class="bi bi-box-seam"></i> Mes Produits</a>
+        <a href="/commandes"><i class="bi bi-cart-check"></i> Commandes</a>
+        <a href="/capteurs"><i class="bi bi-cpu"></i> Capteurs</a>
+        <a href="/alertes"><i class="bi bi-exclamation-triangle"></i> Alertes</a>
+        <a href="/ventes"><i class="bi bi-cash-stack"></i> Ventes</a>
+        <hr style="border-color: rgba(255,255,255,0.3); margin:10px 0;">
+        <div class="submenu">
+            <a class="submenu-toggle"><i class="bi bi-gear"></i> Paramètres <i class="bi bi-chevron-down ms-auto"></i></a>
+            <div class="submenu-items">
+                <a href="/parametres/profil"><i class="bi bi-person"></i> Profil</a>
+                <a href="/parametres/securite"><i class="bi bi-shield-lock"></i> Sécurité</a>
             </div>
         </div>
+        <a href="/parametres/about"><i class="bi bi-info-circle"></i> À propos</a>
+    </div>
 
-        <!-- Commandes -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100 text-center">
-                <div class="kpi-icon" style="background: linear-gradient(135deg,#66bb6a,#388e3c);"><i class="bi bi-cart-check"></i></div>
-                <h5 class="card-title mt-3">Commandes</h5>
-                <p class="card-text">Consultez et gérez les commandes reçues.</p>
-                <div class="kpi-badge" th:text="${nbCommandes}">0</div>
-                <a href="/commandes" class="btn btn-success mt-2"><i class="bi bi-eye"></i> Voir mes commandes</a>
-            </div>
-        </div>
+    <div class="main-content">
+        <h2>Bienvenue 👋, cher Agriculteur</h2>
+        <div class="kpis">
+            <!-- KPI Produits -->
+            <a href="/produits" class="text-decoration-none">
+                <div class="kpi-card">
+                    <div class="kpi-icon"><i class="bi bi-box-seam"></i></div>
+                    <div class="kpi-title">Mes Produits</div>
+                    <div class="kpi-desc">Ajoutez, mettez à jour ou supprimez vos produits agricoles.</div>
+                    <div class="kpi-badge" th:text="${nbProduits != null ? nbProduits : 0}">0</div>
+                </div>
+            </a>
 
-        <!-- Capteurs -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100 text-center">
-                <div class="kpi-icon"><i class="bi bi-cpu"></i></div>
-                <h5 class="card-title mt-3">Mes Capteurs</h5>
-                <p class="card-text">Surveillez vos parcelles et cultures grâce aux capteurs IoT.</p>
-                <a href="/capteurs" class="btn btn-success mt-2"><i class="bi bi-eye"></i> Voir mes capteurs</a>
-            </div>
-        </div>
+            <!-- KPI Commandes -->
+            <a href="/commandes" class="text-decoration-none">
+                <div class="kpi-card" style="background: linear-gradient(180deg,#66bb6a,#388e3c); color:#fff;">
+                    <div class="kpi-icon" style="background: linear-gradient(135deg,#81c784,#2e7d32);"><i class="bi bi-cart-check"></i></div>
+                    <div class="kpi-title">Commandes</div>
+                    <div class="kpi-desc">Consultez et gérez les commandes reçues.</div>
+                    <div class="kpi-badge" th:text="${nbCommandes != null ? nbCommandes : 0}">0</div>
+                </div>
+            </a>
 
-        <!-- Alertes -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100 text-center">
-                <div class="kpi-icon bg-danger"><i class="bi bi-exclamation-triangle"></i></div>
-                <h5 class="card-title text-danger mt-3">Alertes</h5>
-                <p class="card-text">Soyez informé en temps réel des incidents critiques.</p>
-                <a href="/alertes" class="btn btn-danger mt-2"><i class="bi bi-eye"></i> Voir mes alertes</a>
-            </div>
-        </div>
+            <!-- KPI Capteurs -->
+            <a href="/capteurs" class="text-decoration-none">
+                <div class="kpi-card">
+                    <div class="kpi-icon"><i class="bi bi-cpu"></i></div>
+                    <div class="kpi-title">Mes Capteurs</div>
+                    <div class="kpi-desc">Surveillez vos parcelles et cultures grâce aux capteurs IoT.</div>
+                </div>
+            </a>
 
-        <!-- Ventes -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm h-100 text-center">
-                <div class="kpi-icon" style="background: linear-gradient(135deg,#ffc107,#ff9800);"><i class="bi bi-cash-stack"></i></div>
-                <h5 class="card-title mt-3">Suivi des Ventes</h5>
-                <p class="card-text">Consultez vos ventes, revenus et statistiques.</p>
-                <a href="/agriculteur/ventes" class="btn btn-info text-white mt-2"><i class="bi bi-eye"></i> Voir mes ventes</a>
-                <a href="/agriculteur/ventes/ajouter" class="btn btn-success mt-2"><i class="bi bi-plus-circle"></i> Ajouter une vente</a>
-            </div>
+            <!-- KPI Alertes -->
+            <a href="/alertes" class="text-decoration-none">
+                <div class="kpi-card" style="background:#f44336; color:#fff;">
+                    <div class="kpi-icon bg-danger"><i class="bi bi-exclamation-triangle"></i></div>
+                    <div class="kpi-title">Alertes</div>
+                    <div class="kpi-desc">Soyez informé en temps réel des incidents critiques.</div>
+                    <div class="kpi-badge" th:text="${alertes != null ? alertes.size() : 0}">0</div>
+                </div>
+            </a>
+
+            <!-- KPI Ventes -->
+            <a href="/ventes" class="text-decoration-none">
+                <div class="kpi-card" style="background: linear-gradient(180deg,#ffc107,#ff9800); color:#fff;">
+                    <div class="kpi-icon"><i class="bi bi-cash-stack"></i></div>
+                    <div class="kpi-title">Ventes</div>
+                    <div class="kpi-desc">Consultez vos ventes et revenus.</div>
+                    <div class="kpi-badge" th:text="${ventes != null ? ventes.size() : 0}">0</div>
+                </div>
+            </a>
         </div>
     </div>
 </div>
 
-<footer class="text-white text-center py-3 mt-5 shadow">
-    <p class="mb-0">© 2025 - Plateforme Agricole - Espace Producteur</p>
+<footer>
+    <p class="mb-0">© 2025 - Plateforme Agricole - Espace Agriculteur</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Submenu toggle
+    document.querySelectorAll('.submenu-toggle').forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            this.nextElementSibling.classList.toggle('open');
+        });
+    });
+
+    // Sidebar toggle mobile
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    toggleBtn.addEventListener('click', () => sidebar.classList.toggle('show'));
+
+    // Fermer sidebar si clic en dehors (mobile)
+    document.addEventListener('click', e => {
+        const isClickInside = sidebar.contains(e.target) || toggleBtn.contains(e.target);
+        if (!isClickInside && sidebar.classList.contains('show')) sidebar.classList.remove('show');
+    });
+</script>
 </body>
 </html>

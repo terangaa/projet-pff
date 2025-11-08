@@ -35,8 +35,11 @@ public class CommandeService {
         produit.setStock(produit.getStock() - commande.getQuantite());
         produitRepository.save(produit);
 
-        // Calculer le prix total
-        commande.setPrixTotal(produit.getPrix() * commande.getQuantite());
+        // Calculer les prix
+        double prixUnitaire = produit.getPrix();
+        double prixTotal = prixUnitaire * commande.getQuantite();
+        commande.setPrixUnitaire(prixUnitaire);  // ⚡ Ajouter cette ligne
+        commande.setPrixTotal(prixTotal);
 
         // Ajouter la date de commande
         commande.setDateCommande(LocalDateTime.now());
@@ -44,7 +47,6 @@ public class CommandeService {
         // Sauvegarder la commande
         return commandeRepository.save(commande);
     }
-
     // Toutes les commandes (admin)
     public List<Commande> getAllCommandes() {
         List<Commande> commandes = commandeRepository.findAll();
@@ -98,7 +100,8 @@ public class CommandeService {
                 .dateVente(LocalDateTime.now())
                 .commande(commande)
                 .montantTotal(commande.getPrixTotal())
-                .montant(commande.getPrixTotal())
+                .montantTotal
+                        (commande.getPrixTotal())
                 .agriculteur(commande.getProduit().getAgriculteur().getUtilisateur())
                 .build();
 

@@ -27,7 +27,6 @@ public class AuthController {
         model.addAttribute("registerRequest", new RegisterRequest());
         return "register";
     }
-
     @PostMapping("/register")
     public String register(@ModelAttribute RegisterRequest registerRequest, Model model) {
         try {

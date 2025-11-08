@@ -1,5 +1,7 @@
 package com.pagam.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"producteur", "agriculteur"}) // ✅ empêche les boucles infinies
+@ToString(exclude = {"producteur", "agriculteur"})
 @EqualsAndHashCode(exclude = {"producteur", "agriculteur"})
 public class Utilisateur implements UserDetails {
 
@@ -26,6 +28,7 @@ public class Utilisateur implements UserDetails {
     private String prenom;
     private String nom;
     private String email;
+    private String localite;
 
     @Column(nullable = false, length = 60)
     private String motDePasse;
@@ -39,13 +42,15 @@ public class Utilisateur implements UserDetails {
     // Si un utilisateur est rattaché à un autre agriculteur
     @ManyToOne
     @JoinColumn(name = "agriculteur_id")
+    @JsonIgnore
     private Utilisateur agriculteur;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // ✅ Relation vers Producteur (si l'utilisateur est un producteur)
+    // Relation vers Producteur (si l'utilisateur est un producteur)
     @OneToOne(mappedBy = "utilisateur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Producteur producteur;
 
     // ---------------- UserDetails ----------------
@@ -76,7 +81,7 @@ public class Utilisateur implements UserDetails {
     @Override
     public boolean isEnabled() { return true; }
 
-    // ✅ Méthode utilitaire pour récupérer les produits
+    // Méthode utilitaire pour récupérer les produits
     public List<Produit> getProduits() {
         if (this.producteur != null) {
             return this.producteur.getProduits();
@@ -84,3 +89,4 @@ public class Utilisateur implements UserDetails {
         return Collections.emptyList();
     }
 }
+

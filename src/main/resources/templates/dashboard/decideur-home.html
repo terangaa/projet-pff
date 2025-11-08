@@ -3,22 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Décideur</title>
+    <title>Espace Décideur 🌿</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
             background: linear-gradient(to right, #e6f2e6, #ccf0cc);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            position: relative;
             overflow-x: hidden;
         }
 
+        /* Navbar */
         nav.navbar {
             background-color: #2d6a4f;
         }
         nav.navbar a.navbar-brand, nav.navbar span {
             color: #fff;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100%;
+            background: linear-gradient(135deg,#2d6a4f,#52b788);
+            padding-top: 70px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 10px;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .sidebar a:hover { background: rgba(255,255,255,0.15); transform: translateX(5px); }
+        .sidebar a i { font-size: 1.2rem; }
+
+        /* Submenu */
+        .submenu-items { max-height: 0; overflow: hidden; flex-direction: column; padding-left: 20px; transition: max-height 0.3s ease; }
+        .submenu-items.open { max-height: 200px; }
+        .submenu-toggle { cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-radius: 10px; transition: background 0.3s; }
+        .submenu-toggle:hover { background: rgba(255,255,255,0.15); }
+        .submenu-toggle.open i:last-child { transform: rotate(180deg); }
+
+        /* Main content */
+        .main-content {
+            margin-left: 240px;
+            padding: 40px 20px;
+            min-height: calc(100vh - 70px);
+            z-index: 1;
+            position: relative;
         }
 
         h2 {
@@ -28,39 +73,16 @@
             margin-bottom: 2rem;
         }
 
+        /* Cards */
         .card {
             border-radius: 20px;
             transition: transform 0.4s, box-shadow 0.4s, background 1.5s;
             cursor: pointer;
             color: #fff;
             position: relative;
-            z-index: 1;
             overflow: hidden;
         }
-        .card:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 25px 40px rgba(0,0,0,0.2);
-        }
-
-        /* Dégradé animé pour toutes les cartes */
-        .card-gradient-stat {
-            background: linear-gradient(45deg, #52b788, #2d6a4f, #40916c);
-            background-size: 400% 400%;
-            animation: gradientBG 10s ease infinite;
-        }
-
-        .card-gradient-alert {
-            background: linear-gradient(45deg, #d90429, #ff4d6d, #b6031f);
-            background-size: 400% 400%;
-            animation: gradientBG 10s ease infinite;
-        }
-
-        @keyframes gradientBG {
-            0% {background-position: 0% 50%;}
-            50% {background-position: 100% 50%;}
-            100% {background-position: 0% 50%;}
-        }
-
+        .card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 0 25px 40px rgba(0,0,0,0.2); }
         .card-icon {
             font-size: 3rem;
             padding: 15px;
@@ -69,116 +91,131 @@
             display: inline-block;
             background-color: rgba(255,255,255,0.2);
         }
-
-        .btn {
-            border: none;
-            color: #fff;
-            transition: 0.3s;
+        .card-gradient-stat {
+            background: linear-gradient(45deg, #52b788, #2d6a4f, #40916c);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+        }
+        .card-gradient-alert {
+            background: linear-gradient(45deg, #d90429, #ff4d6d, #b6031f);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
         }
 
-        footer {
-            background-color: #2d6a4f;
-        }
-        footer p { margin: 0; color: #fff; }
+        /* Footer */
+        footer { background-color: #2d6a4f; text-align: center; padding: 15px 0; color: #fff; position: relative; }
 
-        .card-text { color: #fff; }
-
-        /* Particules */
-        #particlesCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
+        /* Responsive */
+        @media(max-width:991px){
+            .main-content { margin-left: 0; padding-top: 120px; }
+            .sidebar { transform: translateX(-250px); }
+            .sidebar.show { transform: translateX(0); }
         }
+        #sidebarToggle { display:none; cursor:pointer; font-size:1.5rem; color:#fff; margin-right:10px; }
+        @media(max-width:991px){ #sidebarToggle { display:block; } }
     </style>
 </head>
 <body>
+
 <canvas id="particlesCanvas"></canvas>
 
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top">
     <div class="container-fluid">
+        <span id="sidebarToggle"><i class="bi bi-list"></i></span>
         <a class="navbar-brand fw-bold" href="#">Espace Décideur</a>
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center ms-auto">
             <span class="me-3">Connecté : <b th:text="${email}"></b></span>
             <a href="/auth/logout" class="btn btn-outline-light btn-sm">Déconnexion</a>
         </div>
     </div>
 </nav>
 
-<div class="container mt-5 position-relative" style="z-index:1;">
-    <h2>📊 Bienvenue, Décideur</h2>
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <a href="/alertes"><i class="bi bi-exclamation-triangle-fill"></i> Alertes</a>
+    <a href="/statistiques"><i class="bi bi-bar-chart-fill"></i> Statistiques</a>
+    <div class="submenu">
+        <div class="submenu-toggle"><i class="bi bi-gear"></i> Paramètres <i class="bi bi-chevron-down ms-auto"></i></div>
+        <div class="submenu-items">
+            <a href="/parametres/profil"><i class="bi bi-person"></i> Profil</a>
+            <a href="/parametres/securite"><i class="bi bi-shield-lock"></i> Sécurité</a>
+        </div>
+    </div>
+    <a href="/parametres/about"><i class="bi bi-info-circle"></i> À propos</a>
+</div>
 
+<!-- Main content -->
+<div class="main-content">
+    <h2>📊 Bienvenue, Décideur</h2>
     <div class="row g-4">
-        <!-- Alertes -->
         <div class="col-md-6">
             <div class="card shadow-sm border-0 text-center card-gradient-alert">
                 <div class="card-body">
                     <div class="card-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
                     <h5 class="card-title">Alertes</h5>
                     <p class="card-text">Suivez toutes les alertes générées par le système.</p>
-                    <a href="/alertes" class="btn btn-lg">Voir les alertes</a>
+                    <a href="/alertes" class="btn btn-lg text-white">Voir les alertes</a>
                 </div>
             </div>
         </div>
-
-        <!-- Statistiques -->
         <div class="col-md-6">
             <div class="card shadow-sm border-0 text-center card-gradient-stat">
                 <div class="card-body">
                     <div class="card-icon"><i class="bi bi-bar-chart-fill"></i></div>
                     <h5 class="card-title">Statistiques</h5>
                     <p class="card-text">Consultez les statistiques globales de la plateforme.</p>
-                    <a th:href="@{/decideur/statistiques}" class="btn btn-lg">Voir les statistiques</a>
+                    <a href="/statistiques" class="btn btn-lg text-white">Voir les statistiques</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<footer class="text-center py-3 mt-5">
+<footer class="mt-5">
     <p>© 2025 - Plateforme Agricole - Espace Décideur</p>
 </footer>
 
 <script>
-    // Particules animées
+    // Particules
     const canvas = document.getElementById('particlesCanvas');
     const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
+    function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-
     const particles = [];
-    for(let i=0;i<120;i++){
-        particles.push({
-            x: Math.random()*canvas.width,
-            y: Math.random()*canvas.height,
-            r: Math.random()*3+1,
-            dx: (Math.random()-0.5)*0.7,
-            dy: (Math.random()-0.5)*0.7
-        });
-    }
-
-    function animate() {
+    for(let i=0;i<120;i++){ particles.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*3+1, dx:(Math.random()-0.5)*0.7, dy:(Math.random()-0.5)*0.7 }); }
+    function animate(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        particles.forEach(p => {
-            p.x += p.dx;
-            p.y += p.dy;
-            if(p.x<0 || p.x>canvas.width) p.dx*=-1;
-            if(p.y<0 || p.y>canvas.height) p.dy*=-1;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-            ctx.fillStyle = 'rgba(64,145,108,0.3)';
-            ctx.fill();
+        particles.forEach(p=>{
+            p.x+=p.dx; p.y+=p.dy;
+            if(p.x<0||p.x>canvas.width)p.dx*=-1;
+            if(p.y<0||p.y>canvas.height)p.dy*=-1;
+            ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(64,145,108,0.3)'; ctx.fill();
         });
         requestAnimationFrame(animate);
     }
     animate();
+
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    toggleBtn.addEventListener('click',()=> sidebar.classList.toggle('show'));
+
+    // Submenu toggle
+    document.querySelectorAll('.submenu-toggle').forEach(el=>{
+        el.addEventListener('click',function(){ this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open'); });
+    });
+
+    // Click outside to close sidebar (mobile)
+    document.addEventListener('click',e=>{
+        const isClickInside = sidebar.contains(e.target)||toggleBtn.contains(e.target);
+        if(!isClickInside && sidebar.classList.contains('show')) sidebar.classList.remove('show');
+    });
 </script>
 </body>
 </html>

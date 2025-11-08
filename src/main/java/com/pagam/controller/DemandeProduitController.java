@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/produits/demande")
@@ -25,23 +26,19 @@ public class DemandeProduitController {
     public String envoyerDemande(@RequestParam("nomProduit") String nomProduit,
                                  @RequestParam(value = "message", required = false) String message,
                                  RedirectAttributes redirectAttributes) {
-        // Création de la demande
         DemandeProduit demande = new DemandeProduit();
         demande.setNomProduit(nomProduit);
         demande.setMessage(message);
 
-        // Enregistrement
-        DemandeProduit nouvelleDemande = demandeService.enregistrerDemande(demande);
+        demandeService.enregistrerDemande(demande);
 
-        // Envoi email à l'admin
-        emailService.envoyerMailAdmin(nouvelleDemande.getId(),
-                nomProduit,
-                message);
+        // Envoi email à l’admin
+        emailService.envoyerMailAdmin(demande.getId(), nomProduit, message);
 
-        redirectAttributes.addFlashAttribute("success",
-                "Votre demande a été envoyée à l’administrateur !");
-        return "redirect:/produits";
+        redirectAttributes.addFlashAttribute("success", "Votre demande a été envoyée à l’administrateur !");
+        return "redirect:/produits"; // page principale ou liste des produits
     }
+
 
     // ✅ Liste des demandes pour l'admin
     @GetMapping("/admin/liste")
@@ -49,18 +46,25 @@ public class DemandeProduitController {
     public String listeDemandes(Model model) {
         List<DemandeProduit> demandes = demandeService.findAll();
         model.addAttribute("demandes", demandes);
-        return "demandes/demandes"; // chemin vers ton HTML
+        return "redirect:/produits/demande/admin/liste";
     }
 
     // ✅ L'admin clique sur "Accepter"
     @GetMapping("/admin/accepter/{id}")
     @Secured("ROLE_ADMIN")
-    public String accepterDemande(@PathVariable Long id,
-                                  RedirectAttributes redirectAttributes) {
-        demandeService.accepterDemande(id);
-        redirectAttributes.addFlashAttribute("success", "La demande a été acceptée !");
+    public String accepterDemande(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Optional<DemandeProduit> demandeOpt = demandeService.findById(id);
+
+        if (demandeOpt.isPresent()) {
+            demandeService.accepterDemande(id);
+            redirectAttributes.addFlashAttribute("success", "La demande a été acceptée !");
+        } else {
+            redirectAttributes.addFlashAttribute("info", "La demande n'existe pas !");
+        }
+
         return "redirect:/produits/demande/admin/liste";
     }
+
 
     // ❌ L'admin clique sur "Refuser"
     @GetMapping("/admin/refuser/{id}")

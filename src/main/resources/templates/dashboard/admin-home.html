@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Agricole 🌿 - PAGAM</title>
 
     <!-- Bootstrap & Icons -->
@@ -14,192 +14,298 @@
         :root {
             --accent-600: #2e7d32;
             --accent-500: #43a047;
-            --accent-300: #a5d6a7;
+            --kpi-hover: rgba(255,255,255,0.08);
         }
+
+        /* Reset & Body */
         html, body { height:100%; margin:0; font-family:"Poppins", sans-serif; }
         body {
-            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=1600&auto=format&fit=crop') center/cover fixed no-repeat;
-            position: relative; color: #0b3b14;
+            background: url('/images/arriere-plan.png') center/cover fixed no-repeat;
+            color:#fff; overflow-x:hidden;
         }
         body::before {
             content:""; position:fixed; inset:0;
-            background: linear-gradient(180deg, rgba(11,53,12,0.55), rgba(6,32,8,0.68));
-            z-index:0; backdrop-filter: blur(2px);
+            background: rgba(0,0,0,0.2); z-index:0;
         }
 
         /* Sidebar */
         .sidebar {
-            position: fixed; top: 20px; left: 20px; bottom: 20px;
-            width: 260px; padding: 22px; border-radius: 18px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 20px 40px rgba(6,32,8,0.6);
-            color: #e9f7ef; display:flex; flex-direction:column; gap:12px;
-            transition: width .28s ease, transform .28s ease; z-index:20;
+            position:fixed; top:0; left:0; bottom:0; width:260px; padding:20px;
+            background:#15401a; display:flex; flex-direction:column; gap:12px;
+            border-right:1px solid rgba(255,255,255,0.1); border-radius:0 18px 18px 0;
+            z-index:1000; transition: all 0.3s ease;
         }
-        .sidebar.collapsed { width:86px; }
-        .sidebar h3{ margin:0; font-size:1.2rem; font-weight:700; color:#eaf7ea; display:flex; gap:10px; align-items:center; }
-        .sidebar nav{ display:flex; flex-direction:column; gap:6px; margin-top:8px; }
-        .sidebar a {
-            display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px;
-            text-decoration:none; color:rgba(255,255,255,0.92); font-weight:600;
-            transition: background .25s, transform .2s;
+        .sidebar h3 { color:#fff; display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.4rem; margin-bottom:12px; }
+        .sidebar nav a {
+            display:flex; align-items:center; padding:10px 14px; border-radius:12px;
+            color:#eaf7ea; font-weight:600; text-decoration:none; transition:0.25s;
         }
-        .sidebar a:hover, .sidebar a.active { background: rgba(255,255,255,0.06); transform: translateX(6px); }
-        .sidebar i { font-size:1.25rem; color:#fff; }
-        .sidebar .logout { margin-top:auto; padding-top:8px; }
-        .sidebar .logout a { color:#ffd; font-weight:700; }
+        .sidebar nav a:hover, .sidebar nav a.active { background: var(--kpi-hover); transform:translateX(6px); }
+        .submenu-items { display:none; flex-direction:column; gap:6px; margin-top:6px; padding-left:16px; }
+        .submenu-items a { color:#dbeedb; font-weight:500; font-size:0.95rem; }
+        .submenu-toggle { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-radius:12px; cursor:pointer; }
+        .submenu-toggle:hover { background: var(--kpi-hover); }
+        .arrow { transition: transform 0.3s ease; }
 
-        /* Main container */
-        .main { margin-left: 300px; padding: 34px; transition: margin-left .28s ease; position:relative; z-index:5; }
-        .main.collapsed { margin-left:120px; }
-
-        /* Topbar */
-        .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px; }
-        .menu-toggle {
-            background: linear-gradient(90deg,var(--accent-600),var(--accent-500));
-            border: none; color: white; padding:10px 12px; border-radius:12px;
-            cursor:pointer; display:flex; gap:8px; align-items:center; font-weight:700;
-            box-shadow:0 8px 20px rgba(0,0,0,0.25);
-        }
-        .topbar .title { font-size:1.2rem; font-weight:700; color:#f1fff1; text-shadow:0 6px 18px rgba(0,0,0,0.35); }
+        /* Main */
+        .main { margin-left:260px; padding:34px; position:relative; z-index:5; transition:0.3s; }
+        .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+        .menu-toggle { background: linear-gradient(90deg,var(--accent-600),var(--accent-500)); border:none; color:white; padding:10px 14px; border-radius:12px; cursor:pointer; display:flex; gap:8px; align-items:center; font-weight:700; }
+        .topbar .title { font-size:1.3rem; font-weight:800; text-shadow:0 4px 14px rgba(0,0,0,0.35); }
 
         /* Hero */
-        .hero {
-            border-radius:18px; padding:28px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.04);
-            box-shadow: 0 20px 40px rgba(6,32,8,0.45);
-            color:#f7fff7; overflow:hidden; position:relative; margin-bottom:22px;
-        }
-        .hero .overlay { position:absolute; inset:0; pointer-events:none; background: linear-gradient(90deg, rgba(34,139,34,0.12), rgba(46,125,50,0.06)); mix-blend-mode: overlay; }
-        .hero h1 { margin:0; font-size:clamp(1.4rem,2.6vw,2.2rem); font-weight:800; color:#e8ffef; }
-        .hero p { margin-top:8px; color: #e9f7ef; opacity:0.95; }
+        .hero { border-radius:20px; padding:30px; background: rgba(31,59,31,0.85); border:1px solid #2e7d32; box-shadow:0 18px 38px rgba(0,0,0,0.25); margin-bottom:24px; }
+        .hero h1 { margin:0; font-size:clamp(1.6rem, 3vw, 2.6rem); font-weight:900; color:#e8ffef; text-shadow:0 4px 12px rgba(0,0,0,0.35); }
+        .hero p { margin-top:10px; font-size:1.05rem; color:#fff; }
 
-        /* KPI grid */
-        .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; }
-        .kpi-card {
-            border-radius:14px; padding:18px; position:relative; overflow:hidden;
-            background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-            border:1px solid rgba(255,255,255,0.04);
-            box-shadow: 0 14px 30px rgba(6,32,8,0.35);
-            color:#fff; transition: transform .28s ease, box-shadow .28s ease;
-        }
-        .kpi-card:hover { transform: translateY(-8px); box-shadow: 0 28px 46px rgba(6,32,8,0.5); }
-        .kpi-icon { font-size:2.2rem; width:64px; height:64px; display:flex; align-items:center; justify-content:center; border-radius:12px; box-shadow:0 10px 22px rgba(0,0,0,0.22);}
-        .kpi-title { font-weight:700; margin-top:8px; font-size:1rem; color:#e9fff0; }
-        .kpi-desc { font-size:.92rem; color:rgba(255,255,255,0.85); margin-top:6px; }
-        .kpi-badge { position:absolute; top:12px; right:12px; background: rgba(255,255,255,0.95); color: var(--accent-600); font-weight:800; padding:6px 10px; border-radius:12px; }
+        /* KPI Grid */
+        .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:18px; }
+        .kpi-card { position:relative; border-radius:16px; padding:20px; background: rgba(31,59,31,0.9); color:#fff; border:1px solid #2e7d32; box-shadow:0 14px 32px rgba(0,0,0,0.25); transition:0.35s; cursor:pointer; }
+        .kpi-card:hover { transform: translateY(-6px) scale(1.02); box-shadow:0 28px 48px rgba(0,0,0,0.35); background: rgba(34,78,34,0.95); }
+        .kpi-icon { font-size:2.4rem; width:64px; height:64px; display:flex; align-items:center; justify-content:center; border-radius:14px; transition:0.3s; }
+        .kpi-card:hover .kpi-icon { transform: scale(1.1); }
+        .kpi-title { margin-top:8px; font-weight:700; font-size:1.05rem; }
+        .kpi-desc { margin-top:6px; font-size:0.95rem; color:#e0f2f1; }
+        .kpi-badge { position:absolute; top:12px; right:12px; background:#fff; color:#2e7d32; font-weight:800; padding:6px 10px; border-radius:12px; }
 
-        /* Card colors */
-        .card-user .kpi-icon { background: linear-gradient(135deg,#81c784,#2e7d32); color:#072b10; }
-        .card-sensor .kpi-icon { background: linear-gradient(135deg,#00c9ff,#92fe9d); color:#013; }
-        .card-product .kpi-icon { background: linear-gradient(135deg,#ffd54f,#ffb74d); color:#2b2b2b; }
-        .card-stock .kpi-icon { background: linear-gradient(135deg,#ff8a65,#ff5722); color:#fff; }
-        .card-order .kpi-icon { background: linear-gradient(135deg,#fb7185,#f97316); color:#fff; }
-        .card-alert .kpi-icon { background: linear-gradient(135deg,#90caf9,#c2e9fb); color:#063449; }
-        .card-sale .kpi-icon { background: linear-gradient(135deg,#11998e,#38ef7d); color:#042; }
-        .card-weather .kpi-icon { background: linear-gradient(135deg,#00b4db,#0083b0); color:#fff; }
+        /* KPI Card Icon Colors */
+        .card-user .kpi-icon { background: #6fa96f; color:#fff; }
+        .card-sensor .kpi-icon { background: #4fc3f7; color:#013; }
+        .card-product .kpi-icon { background: #ffca28; color:#222; }
+        .card-order .kpi-icon { background: #f48fb1; color:#fff; }
+        .card-alert .kpi-icon { background: #81d4fa; color:#063449; }
+        .card-sale .kpi-icon { background: #26a69a; color:#fff; }
+        .card-weather .kpi-icon { background: #4dd0e1; color:#fff; }
+        .card-stock .kpi-icon { background: #ba68c8; color:#fff; }
 
         /* Footer */
-        footer { margin-top:36px; padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); color:#eaf7ea; text-align:center; box-shadow: 0 12px 30px rgba(6,32,8,0.32); }
+        footer { margin-top:36px; padding:30px 20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
+        .footer-card { background: linear-gradient(145deg,#1f3b1f,#2e7d32); color:#fff; border-radius:16px; padding:18px; text-align:center; box-shadow:0 14px 36px rgba(0,0,0,0.25); transition:0.3s; }
+        .footer-card:hover { transform: translateY(-4px); box-shadow:0 24px 42px rgba(0,0,0,0.32); }
+        .footer-card h4 { margin-bottom:8px; font-weight:700; }
+        .footer-card p { margin:0.25rem 0; font-size:0.95rem; }
+        .footer-card a { color:#c8facc; text-decoration:none; font-weight:600; }
+        .footer-card a:hover { text-decoration:underline; }
+
+        /* Social Icons */
+        .social-icons a {
+            display:inline-block; margin:0 6px; font-size:1.3rem;
+            transition: transform 0.3s, opacity 0.3s;
+            padding:6px; border-radius:50%;
+            color:#fff;
+        }
+        .social-icons a.facebook { background:#1877f2; }
+        .social-icons a.twitter { background:#1da1f2; }
+        .social-icons a.instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285aeb 90%); }
+        .social-icons a.whatsapp { background:#25d366; }
+        .social-icons a.linkedin { background:#0a66c2; }
+        .social-icons a.youtube { background:#ff0000; }
+        .social-icons a:hover { transform: translateY(-3px) scale(1.2); opacity:0.85; }
 
         /* Responsive */
-        @media (max-width:768px){ .sidebar { width:86px; } .sidebar h3, .sidebar nav a span { display:none; } .main { margin-left:110px; padding:14px; } .kpis { grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; } }
+        @media (max-width:992px){
+            .sidebar { left:-260px; position:fixed; }
+            .sidebar.active { left:0; }
+            .main { margin-left:0; padding:18px; }
+        }
     </style>
 </head>
 <body>
 
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
-    <h3><i class="ri-seedling-line"></i> <span>PAGAM</span></h3>
+    <h3><i class="ri-seedling-line"></i> PAGAM</h3>
     <nav>
-        <a href="/utilisateurs" class="active"><i class="ri-user-settings-line"></i><span>Utilisateurs</span></a>
-        <a href="/capteurs"><i class="ri-windy-line"></i><span>Capteurs</span></a>
-        <a href="/produits"><i class="ri-seedling-line"></i><span>Produits</span></a>
-        <a href="/commandes"><i class="ri-truck-line"></i><span>Commandes</span></a>
-        <a href="/alertes"><i class="ri-alert-line"></i><span>Alertes</span></a>
-        <a href="/agriculteur/ventes"><i class="ri-store-2-line"></i><span>Ventes</span></a>
-        <a href="/meteo"><i class="ri-sun-cloudy-line"></i><span>Météo</span></a>
+        <a href="/utilisateurs"><i class="ri-user-settings-line"></i> Utilisateurs</a>
+        <a href="/capteurs"><i class="ri-windy-line"></i> Capteurs</a>
+        <a href="/produits"><i class="ri-seedling-line"></i> Produits</a>
+        <a href="/commandes"><i class="ri-truck-line"></i> Commandes</a>
+        <a href="/alertes"><i class="ri-alert-line"></i> Alertes</a>
+        <a href="/ventes"><i class="ri-store-2-line"></i> Ventes</a>
+        <a href="/meteo"><i class="ri-sun-cloudy-line"></i> Météo</a>
+        <a href="/stock"><i class="ri-box-3-line"></i> Stock</a>
     </nav>
-    <div class="logout"><a href="/auth/logout"><i class="ri-logout-box-line"></i><span>Déconnexion</span></a></div>
+    <nav style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:12px;">
+        <div class="submenu">
+            <a href="#" class="submenu-toggle">
+                <i class="ri-settings-3-line"></i> Paramètres
+                <i class="ri-arrow-down-s-line ms-auto arrow"></i>
+            </a>
+            <div class="submenu-items">
+                <a href="/parametres/profil"><i class="ri-user-line"></i> Profil</a>
+                <a href="/parametres/securite"><i class="ri-shield-keyhole-line"></i> Sécurité</a>
+            </div>
+        </div>
+        <a href="/about"><i class="ri-information-line"></i> À propos</a>
+    </nav>
+    <div class="logout"><a href="/auth/logout"><i class="ri-logout-box-line"></i> Déconnexion</a></div>
 </aside>
 
-<!-- Main content -->
+<!-- Main -->
 <section class="main" id="main">
     <div class="topbar">
-        <button id="menuToggle" class="menu-toggle"><i class="ri-menu-3-line"></i> <span style="margin-left:6px">Menu</span></button>
+        <button id="menuToggle" class="menu-toggle"><i class="ri-menu-3-line"></i> Menu</button>
         <div class="title">Tableau de bord Agricole</div>
     </div>
 
     <div class="hero">
-        <div class="overlay"></div>
-        <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
-            <div>
-                <h1>Bienvenue, Administrateur 🌻</h1>
-                <p class="mb-0">Gérez fermes, capteurs, produits et ventes avec une interface moderne et sécurisée.</p>
-            </div>
-            <div class="text-end">
-                <div class="small text-light">Capteurs actifs</div>
-                <div class="h4 fw-bold text-white">24</div>
-            </div>
-        </div>
+        <h1>Bienvenue, Administrateur 🌻</h1>
+        <p>Gérez les capteurs, produits, commandes, ventes et alertes agricoles en temps réel.</p>
 
-        <div class="kpis">
-            <!-- Tous les KPI cards -->
-            <a href="/utilisateurs"><div class="kpi-card card-user"><div class="d-flex gap-3 align-items-center"><div class="kpi-icon"><i class="ri-user-settings-line"></i></div><div><div class="kpi-title">Utilisateurs</div><div class="kpi-desc">Gestion des membres</div></div></div><div class="kpi-badge" th:text="${nbUtilisateurs}">0</div></div></a>
+        <div class="kpis mt-4">
+            <!-- KPI Cards -->
+            <a href="/utilisateurs">
+                <div class="kpi-card card-user">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="kpi-icon"><i class="ri-user-settings-line"></i></div>
+                        <div>
+                            <div class="kpi-title">Utilisateurs</div>
+                            <div class="kpi-desc">Gestion des membres</div>
+                        </div>
+                    </div>
+                    <div class="kpi-badge" th:text="${nbUtilisateurs}">0</div>
+                </div>
+            </a>
 
-            <a href="/capteurs"><div class="kpi-card card-sensor"><div class="d-flex gap-3 align-items-center"><div class="kpi-icon"><i class="ri-windy-line"></i></div><div><div class="kpi-title">Capteurs</div><div class="kpi-desc">Surveillance climatique</div></div></div><div class="kpi-badge" th:text="${nbCapteurs}">0</div></div></a>
+            <a href="/capteurs">
+                <div class="kpi-card card-sensor">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="kpi-icon"><i class="ri-windy-line"></i></div>
+                        <div>
+                            <div class="kpi-title">Capteurs</div>
+                            <div class="kpi-desc">Surveillance climatique</div>
+                        </div>
+                    </div>
+                    <div class="kpi-badge" th:text="${nbCapteurs}">0</div>
+                </div>
+            </a>
 
-            <a href="/produits"><div class="kpi-card card-product"><div class="d-flex gap-3 align-items-center"><div class="kpi-icon"><i class="ri-seedling-line"></i></div><div><div class="kpi-title">Produits</div><div class="kpi-desc">Suivi des cultures</div></div></div><div class="kpi-badge" th:text="${nbProduits}">0</div></div></a>
+            <a href="/produits">
+                <div class="kpi-card card-product">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="kpi-icon"><i class="ri-seedling-line"></i></div>
+                        <div>
+                            <div class="kpi-title">Produits</div>
+                            <div class="kpi-desc">Inventaire agricole</div>
+                        </div>
+                    </div>
+                    <div class="kpi-badge" th:text="${nbProduits}">0</div>
+                </div>
+            </a>
 
-            <a href="/produits"><div class="kpi-card card-stock"><div class="d-flex gap-3 align-items-center"><div class="kpi-icon"><i class="ri-stack-line"></i></div><div><div class="kpi-title">Stock</div><div class="kpi-desc">Quantité totale</div></div></div><div class="kpi-badge" th:text="${totalStock}">0</div></div></a>
+            <a href="/commandes">
+                <div class="kpi-card card-order">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="kpi-icon"><i class="ri-truck-line"></i></div>
+                        <div>
+                            <div class="kpi-title">Commandes</div>
+                            <div class="kpi-desc">Suivi des livraisons</div>
+                        </div>
+                    </div>
+                    <div class="kpi-badge" th:text="${nbCommandes}">0</div>
+                </div>
+            </a>
 
-            <a href="/commandes"><div class="kpi-card card-order"><div class="d-flex gap-3 align-items-center"><div class="kpi-icon"><i class="ri-truck-line"></i></div><div><div class="kpi-title">Commandes</div><div class="kpi-desc">Livraisons & clients</div></div></div><div class="kpi-badge" th:text="${nbCommandes}">0</div></div></a>
+            <a href="/ventes">
+                <div class="kpi-card card-sale">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="kpi-icon"><i class="ri-store-2-line"></i></div>
+                        <div>
+                            <div class="kpi-title">Ventes</div>
+                            <div class="kpi-desc">Revenus générés</div>
+                        </div>
+                    </div>
+                    <div class="kpi-badge" th:text="${nbVentes}">0</div>
+                </div>
+            </a>
 
-            <a href="/alertes"><div class="kpi-card card-alert"><div class="d-flex gap-3 align-items-center"><div class="kpi-icon"><i class="ri-alert-line"></i></div><div><div class="kpi-title">Alertes</div><div class="kpi-desc">Surveillance anomalies</div></div></div><div class="kpi-badge" th:text="${nbAlertes}">0</div></div></a>
+            <a href="/alertes">
+                <div class="kpi-card card-alert">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="kpi-icon"><i class="ri-alert-line"></i></div>
+                        <div>
+                            <div class="kpi-title">Alertes</div>
+                            <div class="kpi-desc">Risques et notifications</div>
+                        </div>
+                    </div>
+                    <div class="kpi-badge" th:text="${nbAlertes}">0</div>
+                </div>
+            </a>
 
-            <a href="/agriculteur/ventes"><div class="kpi-card card-sale"><div class="d-flex gap-3 align-items-center"><div class="kpi-icon"><i class="ri-store-2-line"></i></div><div><div class="kpi-title">Ventes</div><div class="kpi-desc">Suivi des revenus</div></div></div><div class="kpi-badge" th:text="${nbVentes}">0</div></div></a>
+            <a href="/meteo">
+                <div class="kpi-card card-weather">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="kpi-icon"><i class="ri-sun-cloudy-line"></i></div>
+                        <div>
+                            <div class="kpi-title">Météo</div>
+                            <div class="kpi-desc">Conditions climatiques</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
 
-            <a href="/meteo"><div class="kpi-card card-weather"><div class="d-flex gap-3 align-items-center"><div class="kpi-icon" id="weatherIcon"><i class="ri-sun-cloudy-line"></i></div><div><div class="kpi-title">Météo</div><div class="kpi-desc">Température à <span id="city">Dakar</span></div></div></div><div class="kpi-badge" id="temperature">--°C</div></div></a>
+            <a href="/stock">
+                <div class="kpi-card card-stock">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="kpi-icon"><i class="ri-box-3-line"></i></div>
+                        <div>
+                            <div class="kpi-title">Stock</div>
+                            <div class="kpi-desc">Niveau des produits</div>
+                        </div>
+                    </div>
+                    <div class="kpi-badge" th:text="${nbStocks}">0</div>
+                </div>
+            </a>
         </div>
     </div>
 
-    <footer>© 2025 - Tableau Agricole Intelligent • PAGAM</footer>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-card"><h4><i class="ri-customer-service-2-line"></i> Support Client</h4><p>Nous répondons à vos questions 24/7.</p></div>
+        <div class="footer-card"><h4><i class="ri-truck-line"></i> Livraison Rapide</h4><p>Suivi en temps réel de vos commandes.</p></div>
+        <div class="footer-card"><h4><i class="ri-shield-check-line"></i> Sécurité des Données</h4><p>Vos informations sont entièrement protégées.</p></div>
+        <div class="footer-card"><h4><i class="ri-newspaper-line"></i> Actualités Agricoles</h4><p>Recevez les dernières tendances et conseils agricoles.</p></div>
+
+        <div class="footer-card"><h4><i class="ri-calendar-line"></i> Événements & Webinaires</h4><p>Participez à nos formations et événements agricoles.</p></div>
+        <div class="footer-card"><h4><i class="ri-question-line"></i> FAQ</h4><p>Trouvez rapidement les réponses à vos questions.</p></div>
+        <div class="footer-card"><h4><i class="ri-mail-send-line"></i> Newsletter</h4><p>Abonnez-vous pour recevoir nos conseils et actualités.</p></div>
+        <div class="footer-card"><h4><i class="ri-hand-coin-line"></i> Partenaires</h4><p>Découvrez nos partenaires et collaborations.</p></div>
+        <div class="footer-card"><h4><i class="ri-smartphone-line"></i> Applications Mobiles</h4><p>Téléchargez nos apps iOS et Android pour gérer vos activités agricoles.</p></div>
+
+        <div class="footer-card">
+            <h4><i class="ri-mail-line"></i> Contact</h4>
+            <p>Email : <a href="mailto:support@pagam.com">sadikhyade851@gmail.com</a></p>
+            <p>Téléphone : <a href="tel:+221784766175">+221 78 476 61 75</a></p>
+            <p>Suivez-nous :</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com" target="_blank" class="facebook"><i class="bi bi-facebook"></i></a>
+                <a href="https://www.twitter.com" target="_blank" class="twitter"><i class="bi bi-twitter"></i></a>
+                <a href="https://www.instagram.com" target="_blank" class="instagram"><i class="bi bi-instagram"></i></a>
+                <a href="https://wa.me/221784766175" target="_blank" class="whatsapp"><i class="bi bi-whatsapp"></i></a>
+                <a href="https://www.linkedin.com" target="_blank" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                <a href="https://www.youtube.com" target="_blank" class="youtube"><i class="bi bi-youtube"></i></a>
+            </div>
+        </div>
+
+    </footer>
 </section>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const sidebar = document.getElementById("sidebar");
-    const main = document.getElementById("main");
     const menuToggle = document.getElementById("menuToggle");
-    menuToggle.addEventListener("click", () => {
-        sidebar.classList.toggle("collapsed");
-        main.classList.toggle("collapsed");
+
+    menuToggle.addEventListener("click", ()=> sidebar.classList.toggle("active"));
+
+    document.querySelectorAll(".submenu-toggle").forEach(toggle => {
+        toggle.addEventListener("click", () => {
+            const submenu = toggle.nextElementSibling;
+            const arrow = toggle.querySelector(".arrow");
+            const isOpen = submenu.style.display === "flex";
+            submenu.style.display = isOpen ? "none" : "flex";
+            arrow.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
+        });
     });
-
-    // Météo OpenWeather
-    const apiKey = "91a421e86c57cd1309cb65e78e8d673a";
-    const cityName = "Dakar";
-    const temperatureEl = document.getElementById("temperature");
-    const cityEl = document.getElementById("city");
-    const weatherIconEl = document.getElementById("weatherIcon");
-
-    async function updateDashboardWeather() {
-        try {
-            const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&lang=fr&appid=${apiKey}`);
-            const data = await res.json();
-            temperatureEl.innerText = Math.round(data.main.temp) + "°C";
-            cityEl.innerText = data.name || cityName;
-            const weatherId = data.weather[0].id;
-            if(weatherId>=200 && weatherId<600) weatherIconEl.innerHTML='<i class="ri-cloud-lightning-line"></i>';
-            else if(weatherId>=600 && weatherId<700) weatherIconEl.innerHTML='<i class="ri-snowy-line"></i>';
-            else if(weatherId>=700 && weatherId<800) weatherIconEl.innerHTML='<i class="ri-foggy-line"></i>';
-            else if(weatherId===800) weatherIconEl.innerHTML='<i class="ri-sun-line"></i>';
-            else weatherIconEl.innerHTML='<i class="ri-cloudy-line"></i>';
-        } catch(e){ temperatureEl.innerText="--°C"; cityEl.innerText=cityName; }
-    }
-    updateDashboardWeather(); setInterval(updateDashboardWeather,600000);
 </script>
+
 </body>
 </html>

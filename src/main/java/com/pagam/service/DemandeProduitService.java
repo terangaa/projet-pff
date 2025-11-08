@@ -39,4 +39,9 @@ public class DemandeProduitService {
     public List<DemandeProduit> findAll() {
         return demandeProduitRepository.findAll();
     }
+
+    // Retourne un Optional contenant la demande si elle existe
+    public Optional<DemandeProduit> findById(Long id) {
+        return repository.findById(id);
+    }
 }

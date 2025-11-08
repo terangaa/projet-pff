@@ -27,7 +27,7 @@
 
     <h2 class="mb-4">Modifier la vente</h2>
 
-    <form th:action="@{/agriculteur/ventes/modifier/{id}(id=${vente.id})}"
+    <form th:action="@{/ventes/modifier/{id}(id=${vente.id})}"
           th:object="${vente}" method="post">
 
         <div class="mb-3">
@@ -68,7 +68,7 @@
 
         <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-primary">💾 Modifier</button>
-            <a th:href="@{/agriculteur/ventes}" class="btn btn-secondary">↩ Retour</a>
+            <a th:href="@{/ventes}" class="btn btn-secondary">↩ Retour</a>
         </div>
     </form>
 </div>
