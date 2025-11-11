@@ -25,10 +25,7 @@ public class VenteService {
 
     // 🔹 Récupérer toutes les ventes triées par date décroissante
     public List<Vente> findAllVentes() {
-        return venteRepository.findAll()
-                .stream()
-                .sorted(Comparator.comparing(Vente::getDateVente, Comparator.nullsLast(Comparator.reverseOrder())))
-                .collect(Collectors.toList());
+        return venteRepository.findAllWithProduitAndAcheteur();
     }
 
     public List<Vente> findAll() {
@@ -122,4 +119,5 @@ public class VenteService {
 
         return savedVente;
     }
+
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -29,13 +30,24 @@ public class Produit {
     @ManyToOne
     private Producteur agriculteur;
 
-    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LignePanier> lignesPanier = new ArrayList<>();
 
-    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LigneCommande> lignesCommande = new ArrayList<>();
 
-    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vente> ventes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "produit", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Commande> commandes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "produit")
+    private List<CommandeValidation> commandeValidations;
+
+    @OneToMany(mappedBy = "produit")
+    private List<Commande> commandeAnnulees;
+
+
 }
+

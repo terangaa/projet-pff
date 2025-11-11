@@ -191,6 +191,21 @@
                     </div>
                     <div class="kpi-badge" th:text="${nbProduits}">0</div>
                 </div>
+
+                <!-- 🛒 Panier -->
+                <a href="/panier">
+                    <div class="kpi-card card-panier">
+                        <div class="d-flex gap-3 align-items-center">
+                            <div class="kpi-icon"><i class="ri-shopping-cart-2-line"></i></div>
+                            <div>
+                                <div class="kpi-title">Panier</div>
+                                <div class="kpi-desc">Produits ajoutés par les clients</div>
+                            </div>
+                        </div>
+                        <div class="kpi-badge" th:text="${nbPaniers}">0</div>
+                    </div>
+                </a>
+
             </a>
 
             <a href="/commandes">

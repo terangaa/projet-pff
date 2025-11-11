@@ -21,10 +21,13 @@ public class Vente {
     private Commande commande;
 
     @ManyToOne
+    @JoinColumn(name = "produit_id")
     private Produit produit;
 
     @ManyToOne
+    @JoinColumn(name = "acheteur_id")
     private Utilisateur acheteur;
+
 
     @ManyToOne
     private Utilisateur agriculteur;
@@ -32,6 +35,7 @@ public class Vente {
     private Integer quantite;
     private Double prix;
     private Double montantTotal;
+    private String statut;
 
     @PrePersist
     public void initialiser() {

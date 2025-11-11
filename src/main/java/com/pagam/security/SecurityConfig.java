@@ -47,8 +47,11 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/produits/creer-admin/**",
                                 "/produits/modifier/**",
-                                "/produits/supprimer/**")
+                                "/produits/supprimer/**",
+                                "/ventes/modifier/**",
+                                "/ventes/supprimer/**")
                         .hasRole("ADMIN")
+
 
                         // accès agriculteur/utilisateur
                         .requestMatchers("/produits/creer-utilisateur/**")

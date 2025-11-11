@@ -338,5 +338,4 @@ public class ProduitController {
         redirectAttributes.addFlashAttribute("info", "La demande a été refusée.");
         return "redirect:/demandes/demandes";
     }
-
 }

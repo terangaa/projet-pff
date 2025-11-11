@@ -1,15 +1,20 @@
 package com.pagam.controller;
 
-import com.pagam.entity.*;
+import com.pagam.entity.Panier;
+import com.pagam.service.PanierService;
 import com.pagam.repository.CommandeRepository;
 import com.pagam.repository.ProduitRepository;
-import com.pagam.service.PanierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/panier")
@@ -20,7 +25,7 @@ public class PanierController {
     private final ProduitRepository produitRepository;
     private final CommandeRepository commandeRepository;
 
-    // Affichage de la page panier
+
     @GetMapping
     public String afficherPanier(Model model) {
         Panier panier = panierService.getPanierFromSession();
@@ -30,82 +35,96 @@ public class PanierController {
         return "panier/panier";
     }
 
-    // Ajouter un produit au panier
     @PostMapping("/ajouter/{produitId}")
     public ResponseEntity<?> ajouterAuPanier(@PathVariable Long produitId,
                                              @RequestParam(defaultValue = "1") Integer quantite) {
         try {
             panierService.ajouterProduit(produitId, quantite);
             Panier panier = panierService.getPanierFromSession();
-            return ResponseEntity.ok(panierSummary(panier));
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Produit ajouté au panier");
+            response.put("totalItems", panier.getItems().size());
+            response.put("total", panier.getTotal());
+
+            return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
-    // Modifier la quantité d'un produit
     @PostMapping("/modifier/{produitId}")
     public ResponseEntity<?> modifierQuantite(@PathVariable Long produitId,
                                               @RequestParam Integer quantite) {
         try {
             panierService.modifierQuantite(produitId, quantite);
             Panier panier = panierService.getPanierFromSession();
-            return ResponseEntity.ok(panierSummary(panier));
+            return ResponseEntity.ok(new PanierSummary(panier.getItems().size(), panier.getTotal()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // Supprimer un produit
     @DeleteMapping("/supprimer/{produitId}")
     public ResponseEntity<?> supprimerDuPanier(@PathVariable Long produitId) {
         try {
             panierService.supprimerProduit(produitId);
             Panier panier = panierService.getPanierFromSession();
-            return ResponseEntity.ok(panierSummary(panier));
+            return ResponseEntity.ok(new PanierSummary(panier.getItems().size(), panier.getTotal()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    // Vider le panier
     @PostMapping("/vider")
     public ResponseEntity<?> viderPanier() {
         panierService.viderPanier();
         Panier panier = panierService.getPanierFromSession();
-        return ResponseEntity.ok(panierSummary(panier));
+        return ResponseEntity.ok(new PanierSummary(panier.getItems().size(), panier.getTotal()));
     }
 
-    // Nombre d'articles
     @GetMapping("/count")
     @ResponseBody
     public ResponseEntity<?> getNombreArticles() {
         Panier panier = panierService.getPanierFromSession();
-        return ResponseEntity.ok(panierSummary(panier));
+        return ResponseEntity.ok(new PanierSummary(panier.getItems().size(), panier.getTotal()));
     }
 
-    // Valider le panier
     @PostMapping("/valider")
-    public ResponseEntity<?> validerPanier(@SessionAttribute(name = "utilisateur", required = false) Utilisateur acheteur) {
-        if (acheteur == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Vous devez être connecté pour valider le panier.");
-        }
-
+    public ResponseEntity<?> validerPanier() {
         try {
-            panierService.validerPanier(acheteur);
-            Panier panier = panierService.getPanierFromSession();
-            return ResponseEntity.ok("Panier validé et commandes créées !");
+            // Récupérer l'utilisateur connecté
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            System.out.println("=== VALIDATION DU PANIER ===");
+            System.out.println("Utilisateur: " + email);
+
+            // Appeler avec l'email
+            panierService.validerPanier(email);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Panier validé et commandes créées !");
+            response.put("redirectUrl", "/commandes");
+
+            return ResponseEntity.ok(response);
+
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            System.err.println("ERREUR validation panier: " + e.getMessage());
+            e.printStackTrace();
+
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
-    // Méthode utilitaire pour résumé du panier
-    private PanierSummary panierSummary(Panier panier) {
-        return new PanierSummary(panier.getItems().size(), panier.getTotal());
-    }
-
-    // DTO pour résumé du panier
     private record PanierSummary(int nombreArticles, double total) {}
 }

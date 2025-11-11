@@ -12,8 +12,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <!-- CSRF meta - VERSION CORRIGÉE -->
+    <meta th:if="${_csrf != null}" th:attr="name='_csrf', content=${_csrf.token}"/>
+    <meta th:if="${_csrf != null}" th:attr="name='_csrf_header', content=${_csrf.headerName}"/>
 
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f8fafc; }
@@ -25,6 +26,10 @@
         .badge-stock { position: absolute; top: 12px; left: 12px; background: #0d6efd; font-size: 0.75rem; font-weight: 500; border-radius: 6px; padding: 4px 8px; color: #fff; }
         .badge-new { position: absolute; top: 12px; right: 12px; background: #ff9800; font-size: 0.75rem; font-weight: 500; border-radius: 6px; padding: 4px 8px; color: #fff; }
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
+        @media (max-width: 576px) {
+            .navbar .d-flex { flex-wrap: wrap; gap: 0.5rem; }
+            .navbar .form-control { flex: 1 1 100%; }
+        }
     </style>
 </head>
 <body>
@@ -32,15 +37,24 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top py-3">
     <div class="container-fluid px-4">
         <a class="navbar-brand text-success" th:href="@{/dashboard}">🌿 AgriShop</a>
+
+        <!-- Bouton Accueil -->
+        <div class="navbar-nav me-auto">
+            <a class="nav-link text-light" th:href="@{/dashboard}">
+                <i class="bi bi-house"></i> Accueil
+            </a>
+        </div>
+
         <div class="d-flex ms-auto gap-2">
-            <form th:action="@{/produits}" method="get" class="d-flex">
+            <form th:action="@{/produits}" method="get" class="d-flex flex-grow-1 flex-sm-grow-0">
                 <input name="q" th:value="${q}" type="search" class="form-control rounded-pill" placeholder="Rechercher un produit...">
                 <button type="submit" class="btn btn-primary ms-2"><i class="bi bi-search"></i></button>
             </form>
             <a href="/panier" class="btn btn-outline-light position-relative">
                 <i class="bi bi-cart3"></i> Panier
                 <span id="badgePanier" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                      th:text="${#lists.size(panier.items)}">0</span>
+                      th:text="${panier?.items != null ? #lists.size(panier.items) : 0}">0
+                </span>
             </a>
             <a href="/auth/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
         </div>
@@ -63,8 +77,7 @@
                      alt="Produit" class="card-img-top">
 
                 <span th:if="${role != 'ADMIN'}" class="badge-stock"
-                      th:text="${p.stock >= 1 ? 'Stock: ' + #numbers.formatDecimal(p.stock,2,'COMMA',2,'POINT') + ' kg'
-                                           : 'Stock: ' + #numbers.formatDecimal(p.stock*1000,0,'COMMA',0,'POINT') + ' g'}">
+                      th:text="${p.stock >= 1 ? 'Stock: ' + p.stock + ' kg' : 'Stock: ' + (p.stock*1000) + ' g'}">
                 </span>
 
                 <span th:if="${p.dateCreation != null and #dates.daysBetween(p.dateCreation, #dates.createNow()) <= 7}" class="badge-new">Nouveau</span>
@@ -76,7 +89,7 @@
                         <span th:text="${p.agriculteur != null ? p.agriculteur.prenom + ' ' + p.agriculteur.nom : 'Inconnu'}"></span>
                     </p>
                     <p class="card-text mb-2" th:text="${p.description}"></p>
-                    <p class="price mb-3" th:text="${#numbers.formatDecimal(p.prix ?: 0, 0, 'COMMA', 0, 'POINT')} + ' FCFA'"></p>
+                    <p class="price mb-3" th:text="${p.prix ?: 0} + ' FCFA'"></p>
 
                     <button class="btn btn-success mt-auto w-100"
                             th:onclick="'addToCart(' + ${p.id} + ',1)'">
@@ -91,15 +104,15 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
     // Toast
     function showToast(message, type='success') {
         const container = document.getElementById('toastContainer');
+        const icon = type === 'success' ? '✔️' : '❌';
         const toastEl = document.createElement('div');
         toastEl.className = `toast align-items-center text-bg-${type} border-0 mb-2`;
         toastEl.innerHTML = `<div class="d-flex">
-            <div class="toast-body">${message}</div>
+            <div class="toast-body">${icon} ${message}</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>`;
         container.appendChild(toastEl);
@@ -108,28 +121,90 @@
         toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
     }
 
-    // Ajouter au panier
+    // Ajouter au panier - VERSION AMÉLIORÉE avec gestion CSRF robuste
     function addToCart(productId, quantite) {
+        // Méthode 1: Récupérer depuis les meta tags (version corrigée)
+        let csrfToken = document.querySelector("meta[name='_csrf']")?.getAttribute('content');
+        let csrfHeader = document.querySelector("meta[name='_csrf_header']")?.getAttribute('content');
+
+        console.log('CSRF Token (méthode 1):', csrfToken);
+        console.log('CSRF Header (méthode 1):', csrfHeader);
+
+        // Méthode 2: Si pas trouvé, chercher dans les forms cachés
+        if (!csrfToken) {
+            const csrfInput = document.querySelector('input[name="_csrf"]');
+            if (csrfInput) {
+                csrfToken = csrfInput.value;
+                csrfHeader = 'X-CSRF-TOKEN';
+                console.log('CSRF Token (méthode 2):', csrfToken);
+            }
+        }
+
+        // Méthode 3: Si toujours pas trouvé, utiliser une valeur par défaut
+        if (!csrfToken) {
+            console.warn('CSRF token non trouvé, utilisation de fallback');
+            // Vous pouvez temporairement désactiver CSRF dans SecurityConfig pour tester
+        }
+
+        const headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        };
+
+        // Ajouter CSRF seulement si disponible
+        if (csrfHeader && csrfToken) {
+            headers[csrfHeader] = csrfToken;
+        }
+
+        // Préparer les données avec CSRF
+        const formData = new URLSearchParams();
+        if (csrfToken) {
+            formData.append('_csrf', csrfToken);
+        }
+
+        console.log('Envoi requête vers:', `/panier/ajouter/${productId}?quantite=${quantite}`);
+        console.log('Headers:', headers);
+
         fetch(`/panier/ajouter/${productId}?quantite=${quantite}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                [document.querySelector("meta[name='_csrf_header']").content]:
-                document.querySelector("meta[name='_csrf']").content
-            }
+            headers: headers,
+            body: formData,
+            credentials: 'include'
         })
-            .then(res => {
-                if(res.ok) {
-                    showToast('Produit ajouté au panier 🌿');
-                    // Mettre à jour badge panier
-                    const badge = document.getElementById('badgePanier');
-                    badge.innerText = parseInt(badge.innerText) + parseInt(quantite);
+            .then(response => {
+                console.log('Status HTTP:', response.status);
+                console.log('URL:', response.url);
+
+                if (!response.ok) {
+                    // Essayer de lire le message d'erreur détaillé
+                    return response.text().then(text => {
+                        console.error('Réponse erreur:', text);
+                        throw new Error(`Erreur HTTP ${response.status}: ${text.substring(0, 100)}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Réponse serveur:', data);
+                if(data.success) {
+                    showToast('Produit ajouté au panier 🌿', 'success');
+                    document.getElementById('badgePanier').innerText = data.totalItems;
                 } else {
-                    showToast('Erreur lors de l’ajout au panier ❌', 'danger');
+                    showToast(data.message || 'Erreur lors de l’ajout au panier ❌', 'danger');
                 }
             })
-            .catch(() => showToast('Erreur réseau ❌', 'danger'));
+            .catch(error => {
+                console.error('Erreur complète:', error);
+                showToast('Erreur: ' + error.message, 'danger');
+            });
     }
+
+    // Debug au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== DEBUG CSRF ===');
+        console.log('Meta CSRF:', document.querySelector("meta[name='_csrf']"));
+        console.log('Meta CSRF Header:', document.querySelector("meta[name='_csrf_header']"));
+        console.log('Tous les meta tags:', document.querySelectorAll('meta'));
+    });
 </script>
 
 </body>

@@ -91,6 +91,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Thymeleaf Spring Security Extras -->
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
+
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>

@@ -1,18 +1,21 @@
 package com.pagam.controller;
 
 import com.pagam.entity.*;
-import com.pagam.service.CommandeService;
-import com.pagam.service.ProduitService;
-import com.pagam.service.UtilisateurService;
-import com.pagam.service.VenteService;
+import com.pagam.repository.CommandeRepository;
+import com.pagam.repository.UtilisateurRepository;
+import com.pagam.repository.VenteRepository;
+import com.pagam.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,8 +24,12 @@ public class CommandeController {
 
     private final CommandeService commandeService;
     private final UtilisateurService utilisateurService;
+    private final VenteRepository venteRepository;
+    private final CommandeRepository commandeRepository;
     private final ProduitService produitService;
+    private final PanierService panierService;
     private final VenteService venteService;
+    private final UtilisateurRepository utilisateurRepository;
 
     // 🔹 Liste des commandes
     @GetMapping
@@ -126,6 +133,30 @@ public class CommandeController {
         return "redirect:/commandes";
     }
 
+    @DeleteMapping("/{id}/supprimer")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> supprimerCommandeAjax(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            if (!commandeRepository.existsById(id)) {
+                response.put("success", false);
+                response.put("message", "Commande introuvable !");
+                return ResponseEntity.status(404).body(response);
+            }
+
+            commandeRepository.deleteById(id);
+            response.put("success", true);
+            response.put("message", "✅ Commande supprimée avec succès !");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "❌ Erreur lors de la suppression : " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+
     // 🔹 Valider une commande et créer une vente correspondante
     @GetMapping("/valider/{id}")
     public String validerCommande(@PathVariable Long id, RedirectAttributes redirectAttributes) {
@@ -154,4 +185,85 @@ public class CommandeController {
 
         return "redirect:/commandes";
     }
+
+    @PostMapping("/{id}/valider")
+    @ResponseBody
+    public ResponseEntity<?> validerCommande(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Commande commande = commandeRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
+
+            if (commande.getStatut() == StatutCommande.VALIDEE) {
+                response.put("success", false);
+                response.put("message", "Cette commande est déjà validée");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Créer la vente
+            Vente vente = new Vente();
+            vente.setCommande(commande);
+            vente.setDateVente(LocalDateTime.now());
+            vente.setQuantite(commande.getQuantite());
+            vente.setPrix(commande.getPrixUnitaire());
+            vente.setMontantTotal(commande.getPrixTotal());
+            vente.setStatut("COMPLETEE");
+            venteRepository.save(vente);
+
+            // Mettre à jour le statut et réduire le stock
+            commande.setStatut(StatutCommande.VALIDEE);
+            Produit produit = commande.getProduit();
+            produit.setStock(produit.getStock() - commande.getQuantite());
+            commandeRepository.save(commande);
+            produitService.saveProduit(produit); // ⚡ sauvegarde du produit avec le stock à jour
+
+            // Réponse Ajax avec stock mis à jour
+            response.put("success", true);
+            response.put("message", "Commande validée et vente créée avec succès");
+            response.put("stock", produit.getStock());
+            response.put("produitId", produit.getId());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Erreur: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PostMapping("/{id}/annuler")
+    @ResponseBody
+    public ResponseEntity<?> annulerCommande(@PathVariable Long id) {
+        try {
+            Commande commande = commandeRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Commande non trouvée"));
+
+            // Vérifier si la commande peut être annulée
+            if (commande.getStatut() == StatutCommande.VALIDEE) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", "Impossible d'annuler une commande déjà validée");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Mettre à jour le statut
+            commande.setStatut(StatutCommande.ANNULEE);
+            commandeRepository.save(commande);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Commande annulée avec succès");
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Erreur: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
 }

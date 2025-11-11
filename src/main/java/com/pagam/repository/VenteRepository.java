@@ -2,6 +2,7 @@ package com.pagam.repository;
 
 import com.pagam.entity.Producteur;
 import com.pagam.entity.Produit;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.pagam.entity.Vente;
 import com.pagam.entity.Commande;
@@ -17,5 +18,11 @@ public interface VenteRepository extends JpaRepository<Vente, Long> {
     List<Vente> findByProduit(Produit produit);
 
     boolean existsByCommande(Commande commande);
-}
+
+        @Query("SELECT v FROM Vente v " +
+                "LEFT JOIN FETCH v.produit p " +
+                "LEFT JOIN FETCH v.acheteur a " +
+                "LEFT JOIN FETCH v.commande c")
+        List<Vente> findAllWithProduitAndAcheteur();
+    }
 

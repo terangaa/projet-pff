@@ -1,17 +1,16 @@
 package com.pagam.service;
 
-import com.pagam.entity.Commande;
-import com.pagam.entity.Produit;
-import com.pagam.entity.Utilisateur;
-import com.pagam.entity.Vente;
+import com.pagam.entity.*;
 import com.pagam.repository.CommandeRepository;
 import com.pagam.repository.ProduitRepository;
 import com.pagam.repository.VenteRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +19,8 @@ public class CommandeService {
     private final CommandeRepository commandeRepository;
     private final ProduitRepository produitRepository; // ⚡ pour gérer le stock
     private final VenteRepository venteRepository;
+    private final ProduitService produitService;
+    private final UtilisateurService utilisateurService;
 
     // ✅ Créer une commande avec contrôle du stock
     public Commande saveCommande(Commande commande) {
@@ -87,34 +88,88 @@ public class CommandeService {
         commandeRepository.save(commande);
     }
 
+    @Transactional
     public Vente creerVenteDepuisCommande(Commande commande) {
-        if (commande.getVentes() != null && !commande.getVentes().isEmpty()) {
-            throw new RuntimeException("Cette commande a déjà été transformée en vente");
-        }
+        if (commande == null || commande.getId() == null)
+            throw new IllegalArgumentException("La commande doit être persistée.");
 
-        Vente vente = Vente.builder()
-                .acheteur(commande.getAcheteur())
-                .produit(commande.getProduit())
-                .quantite(commande.getQuantite())
-                .prix(commande.getPrixUnitaire())
-                .dateVente(LocalDateTime.now())
-                .commande(commande)
-                .montantTotal(commande.getPrixTotal())
-                .montantTotal
-                        (commande.getPrixTotal())
-                .agriculteur(commande.getProduit().getAgriculteur().getUtilisateur())
-                .build();
+        Optional<Vente> existingVente = venteRepository.findByCommande(commande);
+        if (existingVente.isPresent())
+            return existingVente.get();
 
-        // Ajouter la vente à la liste de la commande
-        if (commande.getVentes() != null) {
-            commande.getVentes().add(vente);
-        }
+        if (commande.getProduit() == null || commande.getAcheteur() == null)
+            throw new IllegalArgumentException("Commande invalide : produit ou acheteur manquant.");
 
-        return vente;
+        Vente vente = new Vente();
+        vente.setProduit(produitService.findById(commande.getProduit().getId()));
+        vente.setAcheteur(utilisateurService.findById(commande.getAcheteur().getId()));
+        vente.setQuantite(commande.getQuantite() != null ? commande.getQuantite() : 0);
+        vente.setPrix(vente.getProduit().getPrix());
+        vente.setCommande(commande);
+        vente.setDateVente(LocalDateTime.now());
+        vente.getMontantTotal();
+
+        Vente savedVente = venteRepository.save(vente);
+        commande.setVente(savedVente);
+
+        return savedVente;
     }
 
     public Commande findById(Long id) {
         return commandeRepository.findById(id).orElse(null);
+    }
+
+    // Valider une commande
+    public Commande validerCommande(Long id) {
+        Commande commande = commandeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+
+        if (!StatutCommande.VALIDEE.equals(commande.getStatut())) {
+            Produit produit = commande.getProduit();
+            if (produit.getStock() < commande.getQuantite()) {
+                throw new RuntimeException("Stock insuffisant pour " + produit.getNom());
+            }
+            produit.setStock(produit.getStock() - commande.getQuantite());
+            produitRepository.save(produit);
+
+            commande.setStatut(StatutCommande.VALIDEE);
+            commandeRepository.save(commande);
+        }
+
+        return commande;
+    }
+
+    // Annuler une commande
+    public Commande annulerCommande(Long id) {
+        Commande commande = commandeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+
+        if (!StatutCommande.ANNULEE.equals(commande.getStatut())) {
+            if (StatutCommande.VALIDEE.equals(commande.getStatut())) {
+                Produit produit = commande.getProduit();
+                produit.setStock(produit.getStock() + commande.getQuantite());
+                produitRepository.save(produit);
+            }
+
+            commande.setStatut(StatutCommande.ANNULEE);
+            commandeRepository.save(commande);
+        }
+
+        return commande;
+    }
+
+    // Supprimer une commande
+    public void supprimerCommande(Long id) {
+        Commande commande = commandeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
+
+        if (StatutCommande.VALIDEE.equals(commande.getStatut())) {
+            Produit produit = commande.getProduit();
+            produit.setStock(produit.getStock() + commande.getQuantite());
+            produitRepository.save(produit);
+        }
+
+        commandeRepository.delete(commande);
     }
 
 }
