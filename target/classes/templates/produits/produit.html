@@ -1,109 +1,127 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Produits | AgriShop</title>
-
-    <!-- Bootstrap + Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <!-- CSRF meta - VERSION CORRIGÉE -->
+<head th:replace="~{head :: head('Produits')}">
+    <!-- CSRF meta -->
     <meta th:if="${_csrf != null}" th:attr="name='_csrf', content=${_csrf.token}"/>
     <meta th:if="${_csrf != null}" th:attr="name='_csrf_header', content=${_csrf.headerName}"/>
-
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f8fafc; }
-        .card { border: none; border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.4s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        .card-img-top { height: 220px; object-fit: cover; transition: transform 0.4s ease; }
-        .card:hover .card-img-top { transform: scale(1.05); }
-        .price { color: #0d6efd; font-weight: 700; font-size: 1.1rem; }
-        .badge-stock { position: absolute; top: 12px; left: 12px; background: #0d6efd; font-size: 0.75rem; font-weight: 500; border-radius: 6px; padding: 4px 8px; color: #fff; }
-        .badge-new { position: absolute; top: 12px; right: 12px; background: #ff9800; font-size: 0.75rem; font-weight: 500; border-radius: 6px; padding: 4px 8px; color: #fff; }
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
-        @media (max-width: 576px) {
-            .navbar .d-flex { flex-wrap: wrap; gap: 0.5rem; }
-            .navbar .form-control { flex: 1 1 100%; }
-        }
-    </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top py-3">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(135deg, var(--primary-800), var(--primary-600)); box-shadow: var(--shadow-lg);">
     <div class="container-fluid px-4">
-        <a class="navbar-brand text-success" th:href="@{/dashboard}">🌿 AgriShop</a>
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" th:href="@{/dashboard}">
+            <i class="bi bi-seedling-fill fs-4"></i>
+            <span>PAGAM</span>
+        </a>
 
-        <!-- Bouton Accueil -->
-        <div class="navbar-nav me-auto">
-            <a class="nav-link text-light" th:href="@{/dashboard}">
-                <i class="bi bi-house"></i> Accueil
-            </a>
-        </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <div class="d-flex ms-auto gap-2">
-            <form th:action="@{/produits}" method="get" class="d-flex flex-grow-1 flex-sm-grow-0">
-                <input name="q" th:value="${q}" type="search" class="form-control rounded-pill" placeholder="Rechercher un produit...">
-                <button type="submit" class="btn btn-primary ms-2"><i class="bi bi-search"></i></button>
-            </form>
-            <a href="/panier" class="btn btn-outline-light position-relative">
-                <i class="bi bi-cart3"></i> Panier
-                <span id="badgePanier" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                      th:text="${panier?.items != null ? #lists.size(panier.items) : 0}">0
-                </span>
-            </a>
-            <a href="/auth/logout" class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="bi bi-house-fill me-1"></i>Accueil
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/produits}">
+                        <i class="bi bi-shop me-1"></i>Produits
+                    </a>
+                </li>
+            </ul>
+
+            <div class="d-flex gap-2 align-items-center">
+                <form th:action="@{/produits}" method="get" class="search-bar">
+                    <i class="bi bi-search search-icon"></i>
+                    <input name="q" th:value="${q}" type="search" class="form-control" placeholder="Rechercher un produit..." style="min-width: 250px;">
+                </form>
+                <a th:href="@{/panier}" class="btn btn-outline-light position-relative">
+                    <i class="bi bi-cart3"></i> Panier
+                    <span id="badgePanier" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          th:text="${panier?.items != null ? #lists.size(panier.items) : 0}">0
+                    </span>
+                </a>
+                <a th:href="@{/auth/logout}" class="btn btn-outline-light">
+                    <i class="bi bi-box-arrow-right"></i> Déconnexion
+                </a>
+            </div>
         </div>
     </div>
 </nav>
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">🛒 Produits disponibles</h2>
-        <a th:if="${role == 'ADMIN' or role == 'AGRICULTEUR'}"
-           class="btn btn-success px-4 py-2" th:href="@{/produits/creer}">
-            <i class="bi bi-plus-circle"></i> Ajouter un produit
-        </a>
+<div class="page-header gradient-animated">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h1 class="float-animation"><i class="bi bi-shop me-2"></i>Produits disponibles</h1>
+                <p>Découvrez notre sélection de produits agricoles frais et de qualité</p>
+            </div>
+            <a th:if="${role == 'ADMIN' or role == 'AGRICULTEUR'}"
+               class="btn btn-light btn-lg glow-hover btn-glow" th:href="@{/produits/creer}">
+                <i class="bi bi-plus-circle me-2"></i>Ajouter un produit
+            </a>
+        </div>
     </div>
+</div>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+<div class="container">
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
         <div class="col" th:each="p : ${produits}">
-            <div class="card h-100 position-relative">
-                <img th:src="${p.image != null ? (p.image.startsWith('/images/') ? p.image : '/images/produits/' + p.image) : '/images/default.png'}"
-                     alt="Produit" class="card-img-top">
+            <div class="product-card card h-100 position-relative card-hover-effect animate-on-scroll">
+                <div class="position-relative shine-effect" style="overflow: hidden;">
+                    <img th:src="${p.image != null ? (p.image.startsWith('/images/') ? p.image : '/images/produits/' + p.image) : '/images/default.png'}"
+                         alt="Produit" class="product-image">
 
-                <span th:if="${role != 'ADMIN'}" class="badge-stock"
-                      th:text="${p.stock >= 1 ? 'Stock: ' + p.stock + ' kg' : 'Stock: ' + (p.stock*1000) + ' g'}">
-                </span>
+                    <span th:if="${role != 'ADMIN'}" class="product-badge stock pulse-animation"
+                          th:text="${p.stock >= 1 ? 'Stock: ' + p.stock + ' kg' : 'Stock: ' + (p.stock*1000) + ' g'}">
+                    </span>
 
-                <span th:if="${p.dateCreation != null and #dates.daysBetween(p.dateCreation, #dates.createNow()) <= 7}" class="badge-new">Nouveau</span>
+                    <span th:if="${p.dateCreation != null and #dates.daysBetween(p.dateCreation, #dates.createNow()) <= 7}" 
+                          class="product-badge new float-animation" style="left: auto; right: 15px;">Nouveau</span>
+                </div>
 
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title" th:text="${p.nom}"></h5>
-                    <p class="text-muted mb-1">
-                        <i class="bi bi-person"></i>
+                    <h5 class="card-title fw-bold gradient-text" th:text="${p.nom}"></h5>
+                    <p class="text-muted mb-2 small">
+                        <i class="bi bi-person-fill me-1"></i>
                         <span th:text="${p.agriculteur != null ? p.agriculteur.prenom + ' ' + p.agriculteur.nom : 'Inconnu'}"></span>
                     </p>
-                    <p class="card-text mb-2" th:text="${p.description}"></p>
-                    <p class="price mb-3" th:text="${p.prix ?: 0} + ' FCFA'"></p>
+                    <p class="card-text text-muted mb-3 small" 
+                       th:text="${#strings.abbreviate(p.description, 80)}"
+                       style="flex-grow: 1;"></p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fs-4 fw-bold text-primary neon-text" th:text="${p.prix ?: 0} + ' FCFA'"></span>
+                    </div>
 
-                    <button class="btn btn-success mt-auto w-100"
-                            th:onclick="'addToCart(' + ${p.id} + ',1)'">
-                        <i class="bi bi-cart-plus"></i> Ajouter au panier
+                    <button class="btn btn-primary w-100 mt-auto btn-glow ripple-effect"
+                            th:onclick="'addToCart(' + ${p.id} + ',1)'"
+                            style="background: linear-gradient(135deg, var(--primary-600), var(--primary-500)); border: none;">
+                        <i class="bi bi-cart-plus me-2"></i>Ajouter au panier
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div th:if="${#lists.isEmpty(produits)}" class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <h3>Aucun produit trouvé</h3>
+        <p>Il n'y a pas de produits disponibles pour le moment.</p>
+        <a th:if="${role == 'ADMIN' or role == 'AGRICULTEUR'}" 
+           th:href="@{/produits/creer}" 
+           class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Ajouter le premier produit
+        </a>
+    </div>
 </div>
 
-<div class="toast-container" id="toastContainer"></div>
+<footer th:replace="~{footer :: footer}"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 <script>
     // Toast
     function showToast(message, type='success') {

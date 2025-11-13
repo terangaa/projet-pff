@@ -31,6 +31,9 @@ public class Commande {
 
     private LocalDateTime dateCommande;
 
+    private String adresseLivraison;
+
+
     @OneToOne(mappedBy = "commande", cascade = CascadeType.ALL)
     private Vente vente;
 

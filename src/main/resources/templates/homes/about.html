@@ -1,255 +1,237 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>À propos - PIGAM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
     <style>
-        /* --- BASE --- */
+        :root {
+            --primary-color: #28a745;
+            --primary-dark: #1e7e34;
+            --gradient-bg: linear-gradient(135deg, #d1f0e2, #f4f9f4);
+        }
+
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to bottom, #e8f5e9, #f9fff9);
-            color: #333;
-            overflow-x: hidden;
+            font-family: "Poppins", sans-serif;
+            background: var(--gradient-bg);
+            min-height: 100vh;
         }
 
-        /* --- HEADER --- */
-        header {
-            background: linear-gradient(90deg, #2e7d32, #1b5e20);
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        header h2 {
-            margin: 0;
-            font-size: 1.6rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-        }
-
-        /* --- NAVBAR --- */
-        nav {
-            display: flex;
-            gap: 1rem;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-        }
-
-        nav a:hover {
-            background: rgba(255,255,255,0.15);
-            transform: translateY(-2px);
-        }
-
-        /* --- MENU BURGER --- */
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-        }
-
-        .menu-toggle span {
-            height: 3px;
-            width: 25px;
-            background: white;
-            margin: 4px 0;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        /* --- MAIN CONTENT --- */
-        main {
-            max-width: 900px;
-            margin: 4rem auto;
-            padding: 2.5rem;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            position: relative;
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        main::before {
-            content: "";
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 5px;
-            border-radius: 10px;
-            background: #2e7d32;
-        }
-
-        h1 {
-            color: #1b5e20;
-            margin-bottom: 1rem;
-            text-align: center;
+        .navbar-brand {
             font-weight: 700;
         }
 
-        p {
-            line-height: 1.8;
-            font-size: 1.05rem;
-            color: #444;
-        }
-
-        a.back-btn {
-            display: inline-block;
-            margin-top: 2.5rem;
-            padding: 0.75rem 1.5rem;
-            background: #2e7d32;
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        a.back-btn:hover {
-            background: #43a047;
-            transform: translateY(-2px);
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            background: linear-gradient(90deg, #2e7d32, #1b5e20);
-            color: white;
+            padding: 80px 0;
             text-align: center;
-            padding: 1.5rem 0;
-            margin-top: 50px;
-            font-size: 0.9rem;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
         }
 
-        footer .icons {
-            margin-bottom: 0.5rem;
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
         }
 
-        footer .icons a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 1.3rem;
-            transition: transform 0.3s, color 0.3s;
-        }
-
-        footer .icons a:hover {
-            transform: scale(1.2);
-            color: #c8e6c9;
-        }
-
-        footer hr {
-            width: 60%;
-            margin: 0.5rem auto;
+        .card {
             border: none;
-            border-top: 1px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
 
-        /* --- ANIMATIONS --- */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(25px); }
-            to { opacity: 1; transform: translateY(0); }
+        .card:hover {
+            transform: translateY(-5px);
         }
 
-        /* --- RESPONSIVE --- */
-        @media (max-width: 768px) {
-            .menu-toggle { display: flex; }
-            nav {
-                display: none;
-                flex-direction: column;
-                background: #1b5e20;
-                position: absolute;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                text-align: center;
-                padding: 1rem 0;
-                box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            }
-            nav.active { display: flex; }
-            nav a { padding: 1rem; width: 100%; }
+        .team-member {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .team-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-color);
+            margin-bottom: 1rem;
         }
     </style>
 </head>
-
 <body>
-<header>
-    <h2><i class="bi bi-leaf"></i> PIGAM</h2>
-
-    <!-- Menu burger -->
-    <div class="menu-toggle" id="menu-toggle">
-        <span></span><span></span><span></span>
+<!-- Navbar simplifiée -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+            <i class="bi bi-seedling me-2"></i>
+            <span>PIGAM</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="bi bi-house me-1"></i>Accueil
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/about}">
+                        <i class="bi bi-info-circle me-1"></i>À propos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/parametres/profil}">
+                        <i class="bi bi-person me-1"></i>Mon Profil
+                    </a>
+                </li>
+            </ul>
+            <div class="navbar-nav">
+                <a class="nav-link" th:href="@{/auth/logout}">
+                    <i class="bi bi-box-arrow-right me-1"></i>Déconnexion
+                </a>
+            </div>
+        </div>
     </div>
+</nav>
 
-    <!-- Navigation -->
-    <nav id="navbar">
-        <a th:href="@{/home}"><i class="bi bi-house-door"></i> Accueil</a>
-        <a th:href="@{/services}"><i class="bi bi-gear"></i> Services</a>
-        <a th:href="@{/about}"><i class="bi bi-info-circle"></i> À propos</a>
-        <a th:href="@{/contact}"><i class="bi bi-envelope"></i> Contact</a>
-        <a th:href="@{/auth/logout}"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
-    </nav>
-</header>
-
-<main>
-    <h1>À propos de notre plateforme</h1>
-    <p>
-        <strong>PIGAM</strong> — Plateforme Intelligente de Gestion Agricole et de Marché — est une solution numérique innovante dédiée à la transformation du secteur agricole au Sénégal.
-        Elle vise à relier les producteurs, les distributeurs et les consommateurs à travers une interface moderne, intelligente et durable.
-    </p>
-    <p>
-        Grâce à l’<strong>Internet des Objets (IoT)</strong>, à l’<strong>Intelligence Artificielle</strong> et à la <strong>Blockchain</strong>,
-        PIGAM offre des outils de suivi de cultures, de gestion de ressources et de traçabilité des produits agricoles,
-        garantissant une transparence totale et une meilleure rentabilité pour tous les acteurs.
-    </p>
-    <p>
-        Notre mission est de promouvoir une agriculture connectée, durable et prospère — au service du développement rural et de l’autonomie des agriculteurs 🌱.
-    </p>
-    <a th:href="@{/home}" class="back-btn"><i class="bi bi-arrow-left"></i> Retour à l'accueil</a>
-</main>
-
-<footer>
-    <div class="icons">
-        <a href="https://www.facebook.com/" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
-        <a href="https://twitter.com/" target="_blank" title="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
-        <a href="https://www.linkedin.com/" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
-        <a href="https://wa.me/221784766175" target="_blank" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
-        <a href="mailto:contact@pagam.sn" title="Envoyer un e-mail"><i class="bi bi-envelope"></i></a>
+<!-- Section Hero -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">À propos de PIGAM</h1>
+        <p class="lead mb-4">Plateforme Intelligente de Gestion Agricole et de Marché</p>
+        <p>Optimisez vos rendements et accédez à un marché connecté</p>
     </div>
-    <hr>
-    © 2025 <strong>PIGAM</strong> — Plateforme Intelligente de Gestion Agricole et de Marché — Tous droits réservés.
+</section>
+
+<!-- Section Mission -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4">Notre Mission</h2>
+                <p class="lead mb-4">
+                    PIGAM a pour mission de révolutionner l'agriculture moderne en fournissant
+                    aux agriculteurs les outils nécessaires pour optimiser leur production,
+                    réduire les pertes et accéder à des marchés plus rentables.
+                </p>
+                <p>
+                    Notre plateforme combine intelligence artificielle, données météorologiques
+                    et analyses de marché pour offrir des recommandations personnalisées
+                    à chaque agriculteur.
+                </p>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="bi bi-bullseye feature-icon"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Fonctionnalités -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Nos Fonctionnalités</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center p-4">
+                    <i class="bi bi-graph-up feature-icon"></i>
+                    <h4>Analyses Avancées</h4>
+                    <p>Surveillance en temps réel des cultures et analyses prédictives</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center p-4">
+                    <i class="bi bi-cloud-sun feature-icon"></i>
+                    <h4>Météo Intelligente</h4>
+                    <p>Prévisions météorologiques précises et recommandations adaptées</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center p-4">
+                    <i class="bi bi-cart-check feature-icon"></i>
+                    <h4>Marché Connecté</h4>
+                    <p>Accès direct aux acheteurs et optimisation des prix de vente</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Équipe -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Notre Équipe</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="team-member card">
+                    <img src="/images/team1.jpg" alt="Membre d'équipe" class="team-photo mx-auto">
+                    <h4>Sadikh Yade</h4>
+                    <p class="text-muted">Fondateur & CEO</p>
+                    <p>Expert en agriculture digitale avec 10 ans d'expérience</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-member card">
+                    <img src="/images/team2.jpg" alt="Membre d'équipe" class="team-photo mx-auto">
+                    <h4>Équipe Technique</h4>
+                    <p class="text-muted">Développeurs & Data Scientists</p>
+                    <p>Spécialistes en IA, big data et développement web</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-member card">
+                    <img src="/images/team3.jpg" alt="Membre d'équipe" class="team-photo mx-auto">
+                    <h4>Conseillers Agricoles</h4>
+                    <p class="text-muted">Experts Agricoles</p>
+                    <p>Agronomes et experts en cultures locales</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Contact -->
+<section class="py-5 bg-dark text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="fw-bold mb-4">Contactez-nous</h2>
+                <p class="lead mb-4">Vous avez des questions ? Nous sommes là pour vous aider.</p>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <i class="bi bi-envelope fs-1 mb-3"></i>
+                        <h5>Email</h5>
+                        <p>contact@pigam.com</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="bi bi-phone fs-1 mb-3"></i>
+                        <h5>Téléphone</h5>
+                        <p>+221 78 476 61 75</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="bi bi-geo-alt fs-1 mb-3"></i>
+                        <h5>Localisation</h5>
+                        <p>Dakar, Sénégal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-success text-white text-center py-4">
+    <div class="container">
+        <p class="mb-0">&copy; 2025 PIGAM. Tous droits réservés.</p>
+    </div>
 </footer>
 
-<script>
-    const menuToggle = document.getElementById('menu-toggle');
-    const navbar = document.getElementById('navbar');
-    menuToggle.addEventListener('click', () => {
-        navbar.classList.toggle('active');
-        menuToggle.classList.toggle('open');
-    });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

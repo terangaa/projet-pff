@@ -12,10 +12,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile; // ← AJOUTEZ CET IMPORT
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 @Controller
 @RequestMapping("/parametres")
 public class ParametreController {
@@ -52,19 +57,58 @@ public class ParametreController {
     // Enregistrement modifications du profil
     @PostMapping("/modifier-profil")
     public String enregistrerProfil(@RequestParam String nom,
+                                    @RequestParam String prenom,
                                     @RequestParam String email,
-                                    @RequestParam(required=false) String localite,
+                                    @RequestParam(required = false) String localite,
+                                    @RequestParam(value = "photo", required = false) MultipartFile photoFile,
                                     Principal principal,
-                                    Model model) {
-        Utilisateur utilisateur = getUtilisateurConnecte(principal);
-        utilisateur.setNom(nom);
-        utilisateur.setEmail(email);
-        utilisateur.setLocalite(localite); // <-- mise à jour
-        utilisateurService.save(utilisateur);
+                                    RedirectAttributes redirectAttributes) {
 
-        model.addAttribute("utilisateur", utilisateur);
-        model.addAttribute("success", "Profil mis à jour avec succès !");
-        return "parametres/modifier-profil";
+        try {
+            Utilisateur utilisateur = getUtilisateurConnecte(principal);
+            utilisateur.setNom(nom);
+            utilisateur.setPrenom(prenom);
+            utilisateur.setEmail(email);
+            utilisateur.setLocalite(localite);
+
+            // Gestion de l'upload de photo
+            if (photoFile != null && !photoFile.isEmpty()) {
+                String contentType = photoFile.getContentType();
+                if (contentType != null && contentType.startsWith("image/")) {
+
+                    // Créer le dossier s'il n'existe pas
+                    Path uploadDir = Paths.get("uploads/images/utilisateurs");
+                    Files.createDirectories(uploadDir);
+
+                    // Générer un nom de fichier unique
+                    String originalFileName = photoFile.getOriginalFilename();
+                    String fileExtension = "";
+                    if (originalFileName != null && originalFileName.contains(".")) {
+                        fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+                    }
+                    String fileName = System.currentTimeMillis() + "_" +
+                            (originalFileName != null ? originalFileName : "avatar") + fileExtension;
+
+                    // Sauvegarder le fichier
+                    Path filePath = uploadDir.resolve(fileName);
+                    Files.copy(photoFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                    // Mettre à jour le chemin dans la base de données
+                    utilisateur.setPhoto("/images/utilisateurs/" + fileName);
+
+                    System.out.println("✅ Image sauvegardée: " + filePath.toString());
+                }
+            }
+
+            utilisateurService.save(utilisateur);
+            redirectAttributes.addFlashAttribute("success", "Profil mis à jour avec succès !");
+
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors de la mise à jour: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de la mise à jour du profil");
+        }
+
+        return "redirect:/parametres/profil";
     }
 
 
@@ -113,17 +157,11 @@ public class ParametreController {
 
     // Page sécurité (changement mot de passe à implémenter)
     @GetMapping("/securite")
-    public String securite() {
+    public String securite(Model model, Authentication authentication) {
+        // Ajoutez l'utilisateur au modèle
+        Utilisateur utilisateur = getUtilisateurConnecte(authentication);
+        model.addAttribute("utilisateur", utilisateur);
         return "parametres/parametre-securite";
-    }
-
-    // Méthode utilitaire pour récupérer l'utilisateur connecté via Authentication
-    private Utilisateur getUtilisateurConnecte(Authentication authentication) {
-        if (!(authentication.getPrincipal() instanceof UserDetails)) {
-            throw new IllegalStateException("Utilisateur non authentifié");
-        }
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return utilisateurService.findByEmail(userDetails.getUsername());
     }
 
     // Méthode utilitaire pour récupérer l'utilisateur connecté via Principal

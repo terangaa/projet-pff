@@ -3,19 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - PIGAM</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Contact - PAGAM</title>
+    
+    <!-- Head Fragment -->
+    <head th:replace="~{head :: head('Contact')}">
+    </head>
+    
     <style>
-        body { background: #e8f5e9; font-family: "Segoe UI", sans-serif; padding-top: 70px; }
-        .navbar { background-color: #2e7d32; }
+        body { 
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--gray-50) 100%);
+            font-family: "Poppins", "Segoe UI", sans-serif; 
+            padding-top: 70px; 
+            position: relative;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(76, 175, 80, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(76, 175, 80, 0.1) 0%, transparent 50%);
+            z-index: 0;
+            animation: particleMove 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .navbar { 
+            background: linear-gradient(135deg, var(--primary-800), var(--primary-600));
+            box-shadow: var(--shadow-lg);
+        }
         .navbar-brand { font-weight: bold; color: #fff !important; }
         .nav-link { color: #e8f5e9 !important; }
-        .nav-link:hover { color: #c8e6c9 !important; }
-        .contact-card { background: #fff; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 25px; }
-        h2 { font-weight: bold; margin-bottom: 25px; text-align: center; color: #2e7d32; }
-        .back-btn { margin-top: 1.5rem; display: inline-block; padding: 0.7rem 1.3rem; background: #2e7d32; color: white; border-radius: 8px; text-decoration: none; transition: background 0.3s ease; }
-        .back-btn:hover { background: #43a047; }
+        .nav-link:hover { color: #fff !important; }
+        .contact-card { 
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1); 
+            padding: 40px; 
+            position: relative;
+            z-index: 1;
+        }
+        h2 { 
+            font-weight: bold; 
+            margin-bottom: 25px; 
+            text-align: center; 
+            background: linear-gradient(135deg, var(--primary-600), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .back-btn { 
+            margin-top: 1.5rem; 
+            display: inline-block; 
+            padding: 0.7rem 1.3rem; 
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-500));
+            color: white; 
+            border-radius: 50px; 
+            text-decoration: none; 
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+        .back-btn:hover { 
+            background: linear-gradient(135deg, var(--primary-700), var(--primary-600));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
     </style>
 </head>
 <body>
@@ -23,7 +76,10 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/home}">🌾 PIGAM</a>
+        <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/home}">
+            <i class="bi bi-seedling-fill"></i>
+            <span>PAGAM</span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
@@ -42,11 +98,14 @@
 </nav>
 
 <!-- Contact Form -->
-<div class="container my-5">
-    <h2>Contactez-nous</h2>
+<div class="container my-5" style="position: relative; z-index: 1;">
+    <div class="text-center mb-5">
+        <h1 class="gradient-text float-animation">Contactez-nous</h1>
+        <p class="text-muted">Nous sommes là pour vous aider</p>
+    </div>
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="contact-card">
+        <div class="col-md-8 col-lg-6">
+            <div class="contact-card animate-on-scroll">
 
                 <!-- Message de succès -->
                 <div th:if="${success}" class="alert alert-success text-center" th:text="${success}"></div>
@@ -64,7 +123,10 @@
                         <label for="message" class="form-label">Message</label>
                         <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-success w-100">Envoyer</button>
+                    <button type="submit" class="btn btn-primary w-100 btn-lg btn-glow ripple-effect" 
+                            style="background: linear-gradient(135deg, var(--primary-600), var(--primary-500)); border: none;">
+                        <i class="bi bi-send-fill me-2"></i>Envoyer le message
+                    </button>
                 </form>
 
                 <a th:href="@{/home}" class="back-btn"><i class="bi bi-arrow-left"></i> Retour à l'accueil</a>
@@ -73,10 +135,9 @@
     </div>
 </div>
 
-<footer class="text-center py-3 bg-success text-light">
-    © 2025 Plateforme Intelligente de Gestion Agricole et de Marché (PIGAM) — Tous droits réservés.
-</footer>
+<footer th:replace="~{footer :: footer}"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

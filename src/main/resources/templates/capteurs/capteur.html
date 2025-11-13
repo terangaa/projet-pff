@@ -1,204 +1,131 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head>
-    <meta charset="UTF-8" />
-    <title>Liste des Capteurs</title>
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    />
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <style>
-        body {
-            background: linear-gradient(135deg, #183a1d 0%, #274e13 100%);
-            color: #e0e0e0;
-            min-height: 100vh;
-        }
-        .card {
-            background: #223322;
-            border-radius: 18px;
-            box-shadow: 0 4px 24px rgba(24, 58, 29, 0.15);
-        }
-        .card-header {
-            background: linear-gradient(90deg, #388e3c 60%, #183a1d 100%);
-            color: #fff;
-            border-radius: 18px 18px 0 0;
-        }
-        .btn-agri {
-            background: linear-gradient(90deg, #43a047 60%, #388e3c 100%);
-            color: #fff;
-            border: none;
-        }
-        .btn-agri:hover {
-            background: linear-gradient(90deg, #388e3c 60%, #43a047 100%);
-            color: #fff;
-        }
-        .table thead {
-            background: #388e3c;
-            color: #fff;
-        }
-        .table tbody tr {
-            background: #223322;
-            color: #e0e0e0;
-        }
-        .table-hover tbody tr:hover {
-            background-color: #2e4d2c;
-            color: #fff;
-        }
-        .btn-action {
-            min-width: 90px;
-        }
-    </style>
+<head th:replace="~{head :: head('Capteurs')}">
 </head>
-<body>
-<!-- Header / Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
-    <div class="container">
-        <a class="navbar-brand fw-bold" th:href="@{/}">
-            <i class="fas fa-seedling me-2"></i>AgriPlateforme
+<body class="particle-bg">
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(135deg, var(--primary-800), var(--primary-600)); box-shadow: var(--shadow-lg);">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" th:href="@{/dashboard}">
+            <i class="bi bi-seedling-fill fs-4"></i>
+            <span>PAGAM</span>
         </a>
-        <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-                aria-controls="navbarNav"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-        >
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/}"
-                    ><i class="fas fa-home"></i> Accueil</a
-                    >
+                    <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="bi bi-house-fill me-1"></i>Accueil
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/produits}"
-                    ><i class="fas fa-carrot"></i> Produits</a
-                    >
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/capteurs}"
-                    ><i class="fas fa-microchip"></i> Capteurs</a
-                    >
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/producteurs}"
-                    ><i class="fas fa-tractor"></i> Producteurs</a
-                    >
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/utilisateurs}"
-                    ><i class="fas fa-users"></i> Utilisateurs</a
-                    >
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/dashboard}"
-                    ><i class="fas fa-tachometer-alt"></i> Tableau de bord</a
-                    >
+                    <a class="nav-link active" th:href="@{/capteurs}">
+                        <i class="bi bi-wind me-1"></i>Capteurs
+                    </a>
                 </li>
             </ul>
+            <a th:href="@{/auth/logout}" class="btn btn-outline-light">
+                <i class="bi bi-box-arrow-right me-1"></i>Déconnexion
+            </a>
         </div>
     </div>
 </nav>
 
-<!-- Contenu principal -->
-<main class="container my-5">
-    <div class="card shadow-lg">
-        <div
-                class="card-header d-flex justify-content-between align-items-center"
-        >
-            <h2 class="mb-0">
-                <i class="fas fa-seedling me-2"></i>Liste des Capteurs
-            </h2>
-            <div class="d-flex gap-2">
-                <a
-                        class="btn btn-agri d-flex align-items-center"
-                        th:href="@{/dashboard}"
-                ><i class="fas fa-home fs-5 me-1"></i>Accueil</a
-                >
-                <a
-                        class="btn btn-agri d-flex align-items-center"
-                        th:href="@{/capteurs/ajouter}"
-                ><i class="fas fa-plus-circle fs-5 me-1"></i>Ajouter</a
-                >
+<div class="page-header gradient-animated">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h1 class="float-animation">
+                    <i class="bi bi-wind me-2"></i>Liste des Capteurs
+                </h1>
+                <p>Surveillez vos capteurs IoT en temps réel</p>
             </div>
+            <a th:href="@{/capteurs/ajouter}" class="btn btn-light btn-lg glow-hover btn-glow">
+                <i class="bi bi-plus-circle me-2"></i>Ajouter un capteur
+            </a>
         </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <!-- Messages -->
+    <div th:if="${successMessage}" class="alert alert-success animate-fade-in">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger animate-fade-in">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Tableau des capteurs -->
+    <div th:if="${!#lists.isEmpty(capteurs)}" class="card-modern animate-on-scroll">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0 text-center">
+                <table class="table table-modern mb-0" data-sortable>
                     <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Référence</th>
-                        <th>Type</th>
-                        <th>Agriculteur</th>
-                        <th>Localisation</th>
-                        <th>Moyenne</th>
-                        <th>Actions</th>
-                    </tr>
+                        <tr>
+                            <th data-sort>Nom</th>
+                            <th data-sort>Référence</th>
+                            <th data-sort>Type</th>
+                            <th>Agriculteur</th>
+                            <th>Localisation</th>
+                            <th data-sort>Moyenne</th>
+                            <th>Actions</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="capteur : ${capteurs}">
-                        <td>
-                            <i th:class="${capteur.iconClass} + ' me-1'"></i>
-                            <span th:text="${capteur.nom}"></span>
-                        </td>
-                        <td th:text="${capteur.reference}"></td>
-                        <td th:text="${capteur.type}"></td>
-                        <td th:text="${capteur.agriculteur.prenom} + ' ' + ${capteur.agriculteur.nom}"></td>
-                        <td th:text="${capteur.localisation}"></td>
-                        <td
-                                th:text="${#numbers.formatDecimal(capteur.moyenne, 1, 1, 'POINT')}"
-                        ></td>
-                        <td class="d-flex justify-content-center gap-1 flex-wrap">
-                            <a
-                                    th:href="@{/capteurs/modifier/{id}(id=${capteur.id})}"
-                                    class="btn btn-outline-warning btn-action btn-sm d-flex align-items-center mb-1"
-                            ><i class="fas fa-pen me-1"></i
-                            ></a>
-                            <a
-                                    th:href="@{/capteurs/detail/{id}(id=${capteur.id})}"
-                                    class="btn btn-outline-info btn-action btn-sm d-flex align-items-center mb-1"
-                            ><i class="fas fa-info-circle me-1"></i
-                            ></a>
-                            <a
-                                    th:href="@{/capteurs/supprimer/{id}(id=${capteur.id})}"
-                                    class="btn btn-outline-danger btn-action btn-sm d-flex align-items-center mb-1"
-                                    onclick="return confirm('Voulez-vous vraiment supprimer ce capteur ?');"
-                            ><i class="fas fa-trash me-1"></i
-                            ></a>
-                        </td>
-                    </tr>
+                        <tr th:each="capteur, iterStat : ${capteurs}" class="animate-on-scroll" th:style="'animation-delay: ' + ${iterStat.index * 0.05} + 's;'">
+                            <td>
+                                <i th:class="${capteur.iconClass} + ' me-2'" style="color: var(--primary-600);"></i>
+                                <strong th:text="${capteur.nom}"></strong>
+                            </td>
+                            <td th:text="${capteur.reference}"></td>
+                            <td>
+                                <span class="badge bg-info" th:text="${capteur.type}"></span>
+                            </td>
+                            <td th:text="${capteur.agriculteur.prenom} + ' ' + ${capteur.agriculteur.nom}"></td>
+                            <td th:text="${capteur.localisation}"></td>
+                            <td>
+                                <span class="fw-bold text-primary" th:text="${#numbers.formatDecimal(capteur.moyenne, 1, 1, 'POINT')}"></span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 justify-content-center">
+                                    <a th:href="@{/capteurs/detail/{id}(id=${capteur.id})}" class="btn-action view" data-tooltip="Voir les détails">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a th:href="@{/capteurs/modifier/{id}(id=${capteur.id})}" class="btn-action edit" data-tooltip="Modifier">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a th:href="@{/capteurs/supprimer/{id}(id=${capteur.id})}" 
+                                       class="btn-action delete" 
+                                       data-tooltip="Supprimer"
+                                       onclick="return confirm('Voulez-vous vraiment supprimer ce capteur ?');">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-</main>
 
-<!-- Footer -->
-<footer class="bg-success text-white text-center py-3 mt-auto shadow-sm">
-    <div class="container">
-        <div class="mb-2">
-            <i class="fas fa-seedling"></i> Plateforme Agricole &copy; 2025
-        </div>
-        <div>
-            <a href="#" class="text-white me-3"
-            ><i class="fab fa-facebook-f"></i
-            ></a>
-            <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
-        </div>
+    <!-- Message si vide -->
+    <div th:if="${#lists.isEmpty(capteurs)}" class="empty-state animate-on-scroll">
+        <i class="bi bi-wind" style="font-size: 5rem; color: var(--gray-400);"></i>
+        <h3 class="gradient-text">Aucun capteur trouvé</h3>
+        <p class="text-muted">Commencez par ajouter votre premier capteur</p>
+        <a th:href="@{/capteurs/ajouter}" class="btn btn-primary btn-lg mt-3 btn-glow">
+            <i class="bi bi-plus-circle me-2"></i>Ajouter un capteur
+        </a>
     </div>
-</footer>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<footer th:replace="~{footer :: footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

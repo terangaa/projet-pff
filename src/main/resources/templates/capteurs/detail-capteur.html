@@ -114,9 +114,7 @@
                 </thead>
                 <tbody id="mesureTable">
                 <tr th:each="m : ${mesures}">
-                    <td th:text="${#temporals.format(m.date, 'dd/MM/yyyy HH:mm')}">
-                        01/01/2025
-                    </td>
+                    <td th:text="${#temporals.format(m.dateMesure, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
                     <td th:text="${m.valeur}">0.0</td>
                 </tr>
                 </tbody>
