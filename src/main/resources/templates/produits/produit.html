@@ -79,7 +79,7 @@
                           th:text="${p.stock >= 1 ? 'Stock: ' + p.stock + ' kg' : 'Stock: ' + (p.stock*1000) + ' g'}">
                     </span>
 
-                    <span th:if="${p.dateCreation != null and #dates.daysBetween(p.dateCreation, #dates.createNow()) <= 7}" 
+                    <span th:if="${p.dateCreation != null and #dates.daysBetween(p.dateCreation, #dates.createNow()) <= 7}"
                           class="product-badge new float-animation" style="left: auto; right: 15px;">Nouveau</span>
                 </div>
 
@@ -89,7 +89,7 @@
                         <i class="bi bi-person-fill me-1"></i>
                         <span th:text="${p.agriculteur != null ? p.agriculteur.prenom + ' ' + p.agriculteur.nom : 'Inconnu'}"></span>
                     </p>
-                    <p class="card-text text-muted mb-3 small" 
+                    <p class="card-text text-muted mb-3 small"
                        th:text="${#strings.abbreviate(p.description, 80)}"
                        style="flex-grow: 1;"></p>
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -110,8 +110,8 @@
         <i class="bi bi-inbox"></i>
         <h3>Aucun produit trouvé</h3>
         <p>Il n'y a pas de produits disponibles pour le moment.</p>
-        <a th:if="${role == 'ADMIN' or role == 'AGRICULTEUR'}" 
-           th:href="@{/produits/creer}" 
+        <a th:if="${role == 'ADMIN' or role == 'AGRICULTEUR'}"
+           th:href="@{/produits/creer}"
            class="btn btn-primary">
             <i class="bi bi-plus-circle me-2"></i>Ajouter le premier produit
         </a>

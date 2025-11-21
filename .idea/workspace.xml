@@ -6,104 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="820025a4-2ed6-4e4a-81b6-fb6066a9486e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/CapteurController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/CapteurController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/controller/ParametreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/controller/ParametreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Capteur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Capteur.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Commande.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Commande.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Utilisateur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/pagam/entity/Utilisateur.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/achats/mes-commandes.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/achats/mes-commandes.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/alertes/alerte.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/alertes/alerte.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/capteurs/capteur.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/capteurs/capteur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/capteurs/detail-capteur.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/capteurs/detail-capteur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/commandes/commande.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/commandes/commande.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/dashboard/admin-home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/dashboard/admin-home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/footer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/head.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/head.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/homes/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/homes/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/homes/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/homes/contact.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/homes/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/homes/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/homes/service.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/homes/service.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/panier/panier.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/panier/panier.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/parametres/modifier-profil.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/parametres/modifier-profil.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/parametres/parametre-profil.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/parametres/parametre-profil.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/parametres/parametre-securite.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/parametres/parametre-securite.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/produits/creer-produit-admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/creer-produit-admin.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/produits/produit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/produit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/produits/stock.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/produits/stock.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/creer-utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/creer-utilisateur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/utilisateurs/utilisateur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/ventes/liste-vente.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/ventes/liste-vente.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/PagamApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/PagamApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/config/WebSocketConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/config/WebSocketConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/AlerteController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/AlerteController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/AuthController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/CapteurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/CapteurController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/DashboardController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/DashboardController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/MarketplaceController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/MarketplaceController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/MesureController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/MesureController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/ProducteurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/ProducteurController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/ProduitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/ProduitController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/SimulationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/SimulationController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/controller/UtilisateurController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/controller/UtilisateurController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/dto/AuthRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/dto/AuthRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/dto/AuthResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/dto/AuthResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/dto/RegisterRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/dto/RegisterRequest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Alerte$AlerteBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Alerte$AlerteBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Alerte.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Alerte.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Capteur$CapteurBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Capteur$CapteurBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Capteur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Capteur.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Commande$CommandeBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Commande$CommandeBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Commande.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Commande.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Mesure$MesureBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Mesure$MesureBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Mesure.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Mesure.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Producteur$ProducteurBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Producteur$ProducteurBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Producteur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Producteur.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Produit$ProduitBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Produit$ProduitBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Produit.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Produit.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Role.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/StatutCommande.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/StatutCommande.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Utilisateur$UtilisateurBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Utilisateur$UtilisateurBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/entity/Utilisateur.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/entity/Utilisateur.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/AlerteRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/AlerteRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/CapteurRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/CapteurRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/CommandeRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/CommandeRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/MesureRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/MesureRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/ProducteurRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/ProducteurRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/ProduitRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/ProduitRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/repository/UtilisateurRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/repository/UtilisateurRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/security/JwtAuthFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/security/JwtAuthFilter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/security/JwtFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/security/JwtFilter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/security/JwtService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/security/JwtService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/security/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/security/SecurityConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/AlerteService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/AlerteService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/AuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/AuthService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/CapteurService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/CapteurService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/CommandeService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/CommandeService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/CustomUserDetailsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/CustomUserDetailsService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/EmailService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/EmailService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/MachineLearningService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/MachineLearningService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/MesureService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/MesureService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/NotificationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/NotificationService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/ProducteurService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/ProducteurService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/ProduitService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/ProduitService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/SimulationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/SimulationService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/UtilisateurService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/UtilisateurService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/WebSocketAlerteService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/WebSocketAlerteService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/pagam/service/WebSocketService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/pagam/service/WebSocketService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/alertes/alerte.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/alertes/alerte.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/capteurs/capteur.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/capteurs/capteur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/capteurs/detail-capteur.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/capteurs/detail-capteur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/commandes/commande.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/commandes/commande.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/footer.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/footer.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/head.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/head.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/templates/produits/produit.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/produits/produit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/utilisateurs/creer-utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/utilisateurs/creer-utilisateur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/utilisateurs/utilisateur.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/utilisateurs/utilisateur.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/com/pagam/PagamApplicationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/pagam/PagamApplicationTests.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -281,7 +185,9 @@
       <workItem from="1762901148090" duration="3544000" />
       <workItem from="1762944719270" duration="10344000" />
       <workItem from="1762980780843" duration="596000" />
-      <workItem from="1763048477453" duration="675000" />
+      <workItem from="1763048477453" duration="891000" />
+      <workItem from="1763237220679" duration="2850000" />
+      <workItem from="1763241574128" duration="2336000" />
     </task>
     <servers />
   </component>
