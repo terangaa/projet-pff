@@ -178,7 +178,7 @@ public class SimulationService {
                                 "Message ML: " + messageML + "\n" +
                                 "Alerte: " + niveauAlerte
                 );
-                // mailSender.send(email);
+                 // mailSender.send(email);
             }
 
         } catch (Exception e) {
