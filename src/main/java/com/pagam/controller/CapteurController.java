@@ -4,9 +4,11 @@ import com.pagam.entity.Capteur;
 import com.pagam.entity.Mesure;
 import com.pagam.service.CapteurService;
 import com.pagam.service.MesureService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -82,10 +84,17 @@ public class CapteurController {
 
     // 6️⃣ Suppression
     @GetMapping("/supprimer/{id}")
-    public String supprimerCapteur(@PathVariable Long id){
-        capteurService.deleteById(id);
-        return "redirect:/capteurs";
+    public String supprimerCapteur(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            capteurService.deleteById(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Capteur supprimé avec succès !");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Impossible de supprimer ce capteur : il a des mesures associées !");
+        }
+        return "redirect:/capteurs"; // redirect + message
     }
+
 
     // 7️⃣ Détail d’un capteur
     @GetMapping("/detail/{id}")

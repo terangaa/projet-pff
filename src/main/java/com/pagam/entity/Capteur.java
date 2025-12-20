@@ -2,7 +2,6 @@ package com.pagam.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.List;
 
 @Entity
@@ -16,19 +15,18 @@ public class Capteur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
-    private String reference; // ex: CAP-001
-    private String type; // SOL, HUMIDITE, TEMP
+    private String reference;
+    private String type;
     private String localisation;
     private String ville;
     private Double latitude;
-    private Double longitude;// région ou GPS
+    private Double longitude;
+    private Double moyenne;
 
-    private Double moyenne; // ← doit être présent
-
-    @Transient // pas besoin de le stocker en base
+    @Transient
     private String iconClass;
 
-    @OneToMany(mappedBy = "capteur", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "capteur", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Mesure> mesures;
 
     @ManyToOne

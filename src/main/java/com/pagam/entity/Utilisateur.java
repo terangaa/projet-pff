@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +30,7 @@ public class Utilisateur implements UserDetails {
     private String nom;
     private String email;
     private String localite;
+    private LocalDateTime dateInscription;
 
     @Column(nullable = false, length = 60)
     private String motDePasse;
